@@ -1,7 +1,16 @@
+using Microsoft.EntityFrameworkCore;
+using MittClick.Models;
+using Microsoft.AspNetCore.Identity;
+
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddDbContext<ProfileContext>(options =>
+            options.UseLazyLoadingProxies().UseSqlServer(builder.Configuration.GetConnectionString("ProfileContext")));
+builder.Services.AddIdentity<User, IdentityRole>().AddEntityFrameworkStores<ProfileContext>().AddDefaultTokenProviders();
+
 
 var app = builder.Build();
 

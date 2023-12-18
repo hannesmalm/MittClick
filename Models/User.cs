@@ -1,6 +1,8 @@
-﻿namespace MittClick.Models
+﻿using Microsoft.AspNetCore.Identity;
+
+namespace MittClick.Models
 {
-    public class User
+    public class User : IdentityUser
     {
     }
 }

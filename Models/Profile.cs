@@ -1,6 +1,6 @@
 ﻿namespace MittClick.Models
 {
-    public class Class
+    public class Profile
     {
     }
 }
