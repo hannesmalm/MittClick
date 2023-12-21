@@ -7,9 +7,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-builder.Services.AddDbContext<ProfileContext>(options =>
+builder.Services.AddDbContext<MittClick.Models.DbContext>(options =>
             options.UseLazyLoadingProxies().UseSqlServer(builder.Configuration.GetConnectionString("ProfileContext")));
-builder.Services.AddIdentity<User, IdentityRole>().AddEntityFrameworkStores<ProfileContext>().AddDefaultTokenProviders();
+builder.Services.AddIdentity<User, IdentityRole>().AddEntityFrameworkStores<MittClick.Models.DbContext>().AddDefaultTokenProviders();
 
 
 var app = builder.Build();
