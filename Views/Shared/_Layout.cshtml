@@ -4,32 +4,51 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - MittClick</title>
+    <link rel="stylesheet" href="~/BreakPoints.css" />
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/MittClick.styles.css" asp-append-version="true" />
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+
+
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">MittClick</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                    </ul>
+    
+    <header class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container">
+            <a class="navbar-brand" href="/">Mitt Click</a>
+
+        <form asp-controller="Home" asp-action="Search" method="get">
+    <input class="form-control mr-sm-2" type="search" placeholder="Sök..." aria-label="Search" name="query">
+    
+    <!-- Dropdown för filtrering -->
+    <select name="filter">
+        <option value="option1">Personer</option>
+        <option value="option2">Projekt</option>
+        <!-- Lägg till fler filteralternativ här -->
+    </select>
+
+    <button class="btn btn-outline-primary my-2 my-sm-0" type="submit">Sök</button>
+</form>
+
+            <a asp-action="Login" asp-controller="Account">Logga in</a>
+
+            <div class="navbar-nav ml-auto">
+                <div class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Meny</a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="#">Profil</a>
+                        <a class="dropdown-item" href="#">Inställningar</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="#">Logga ut</a>
+                    </div>
                 </div>
             </div>
-        </nav>
+        </div>
     </header>
+
+
     <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()
