@@ -16,18 +16,18 @@
 									<label for="username" class="form-label">Användarnamn</label>
 									<span asp-validation-for="UserName" class="text-danger"></span>
 								</div>
-								<div class="form-floating">
+								<div class="form-floating mt-2">
 								<input type="text" asp-for="Password" id="password" type="password" class="form-control" placeholder="Input password here" />
 									<label for="password" class="form-label">Lösenord</label>
 									<span asp-validation-for="Password" class="text-danger"></span>
 								</div>
-								<div class="form-group mt-1">
+								<div class="form-group mt-2">
 									<div class="custom-control custom-checkbox">
 										<input type="checkbox" asp-for="RememberMe" class="custom-control-input" id="rememberMeCheck">
 										<label class="custom-control-label" for="rememberMeCheck">Kom ihåg mig</label>
 									</div>
 								</div>
-								<div class="form-group text-center">
+								<div class="form-group text-center ">
 									<button type="submit" class="btn btn-primary btn-block mt-2">Logga in</button>
 								</div>
 							</form>

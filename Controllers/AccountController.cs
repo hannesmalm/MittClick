@@ -19,5 +19,11 @@ namespace MittClick.Controllers
             RegisterViewModel registerViewModel = new RegisterViewModel();
             return View(registerViewModel);
         }
+
+        public IActionResult Profile()
+        {
+            ProfileViewModel profileViewModel = new ProfileViewModel();
+            return View(profileViewModel);
+        }
     }
 }

@@ -8,7 +8,7 @@ namespace MittClick.Models
     {
         public ProfileContext(DbContextOptions<ProfileContext> options) : base(options) { }
 
-        public DbSet<Profile> Profiles { get; set; }
+        public DbSet<ProfileViewModel> Profiles { get; set; }
         public DbSet<Project> Projects { get; set; }
         public DbSet<User> Users { get; set; }
     }
