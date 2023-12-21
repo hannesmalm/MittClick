@@ -32,7 +32,11 @@
     <button class="btn btn-outline-primary my-2 my-sm-0" type="submit">Sök</button>
 </form>
 
-            <a asp-action="Login" asp-controller="Account">Logga in</a>
+            @if (!User.Identity.IsAuthenticated)
+            {
+                <a asp-action="Login" asp-controller="Account">Logga in</a>
+            }
+            
 
             <div class="navbar-nav ml-auto">
                 <div class="nav-item dropdown">
@@ -40,8 +44,12 @@
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                         <a asp-action="Profile" asp-controller="Account" class="dropdown-item">Profil</a>
                         <a class="dropdown-item" >Inställningar</a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item">Logga ut</a>
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <a class="dropdown-item">
+                                <a asp-action="LogOut" asp-controller="Account" class="dropdown-item">Logga ut</a>
+                            </a>
+                        }
                     </div>
                 </div>
             </div>
