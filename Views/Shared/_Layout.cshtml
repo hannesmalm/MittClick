@@ -43,7 +43,7 @@
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Meny</a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                         <a asp-action="Profile" asp-controller="Account" class="dropdown-item">Profil</a>
-                        <a class="dropdown-item" >Inställningar</a>
+                        <a asp-action="AccountSettings" asp-controller="Account" class="dropdown-item" >Inställningar</a>
                         @if (User.Identity.IsAuthenticated)
                         {
                             <a class="dropdown-item">

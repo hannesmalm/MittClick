@@ -50,6 +50,11 @@ namespace MittClick.Controllers
             return View(registerViewModel);
         }
 
+        public IActionResult AccountSettings()
+        {
+            return View();
+        }
+
         [HttpPost]
         public async Task<IActionResult> Register(RegisterViewModel registerViewModel)
         {

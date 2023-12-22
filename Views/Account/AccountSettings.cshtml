@@ -1,0 +1,85 @@
+﻿@model SettingsViewModel
+
+<body>
+    <div class="container mt-5">
+        <div class="card">
+            <div class="card-header">
+                <h2>Inställningar</h2>
+            </div>
+            <div class="card-body">
+                <!-- Knapp för att ändra användarnamn och som triggar popup -->
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#changeUsernameModal">
+                    Ändra användarnamn
+                </button>
+
+                <!-- Popup för användarnamn byte sak grej -->
+                <div class="modal fade" id="changeUsernameModal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="modalLabel">Ändra användarnamn</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form id="usernameForm">
+                                    <div class="form-group">
+                                        <label for="newUsername">Nytt användarnamn:</label>
+                                        <input type="text" class="form-control" id="newUsername">
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Stäng</button>
+                                <button type="button" class="btn btn-primary">Spara ändringar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Knapp för att ändra lösen -->
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#changePasswordModal">
+                    Ändra lösenord
+                </button>
+
+                <!-- Pop-up meddelande som har lösenordgrejsimojs -->
+                <div class="modal fade" id="changePasswordModal" tabindex="-1" role="dialog" aria-labelledby="changePasswordModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="changePasswordModalLabel">Ändra lösenord</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form id="passwordForm">
+                                    <div class="form-group">
+                                        <label for="currentPasswordModal">Nuvarande lösenord:</label>
+                                        <input type="password" class="form-control" id="currentPasswordModal">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="newPasswordModal">Nytt lösenord:</label>
+                                        <input type="password" class="form-control" id="newPasswordModal">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="confirmPasswordModal">Bekräfta nytt lösenord:</label>
+                                        <input type="password" class="form-control" id="confirmPasswordModal">
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Stäng</button>
+                                <button type="button" class="btn btn-primary">Spara</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-check mt-4">
+                    <input type="checkbox" class="form-check-input" id="privateProfile">
+                    <label class="form-check-label" for="privateProfile">Privat profil</label>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
