@@ -14,53 +14,56 @@
 
 </head>
 <body>
-    
+
+    @{
+        var routeController = ViewContext.RouteData.Values["controller"].ToString();
+        var routeAction = ViewContext.RouteData.Values["action"].ToString();
+    }
+
     <header class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container">
             <a class="navbar-brand" href="/">Mitt Click</a>
 
-        <form asp-controller="Home" asp-action="Search" method="get">
-    <input class="form-control mr-sm-2" type="search" placeholder="Sök..." aria-label="Search" name="query">
-    
-    <!-- Dropdown för filtrering -->
-    <select name="filter">
-        <option value="option1">Personer</option>
-        <option value="option2">Projekt</option>
-        <!-- Lägg till fler filteralternativ här -->
-    </select>
-
-    <button class="btn btn-outline-primary my-2 my-sm-0" type="submit">Sök</button>
-</form>
-
-            @if (!User.Identity.IsAuthenticated)
+            @if (!(routeController == "Home" && routeAction == "Index"))
             {
-                <a asp-action="Login" asp-controller="Account">Logga in</a>
+                <form asp-controller="Home" asp-action="Search" method="get">
+                    <input class="form-control mr-sm-2" type="search" placeholder="Sök..." aria-label="Search" name="query">
+                    <!-- Dropdown för filtrering -->
+@*                     <select name="filter">
+                        <option value="option1">Personer</option>
+                        <option value="option2">Projekt</option>
+                        <!-- Lägg till fler filtreralternativ här -->
+                    </select>
+                    <button class="btn btn-outline-primary my-2 my-sm-0" type="submit">Sök</button> *@
+                </form>
             }
-            
 
             <div class="navbar-nav ml-auto">
-                <div class="nav-item dropdown align-content-center">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-fill" viewBox="0 0 16 16">
-                            <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />
-                        </svg>
-                    </a>
-                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
 
-                        @if (User.Identity.IsAuthenticated)
-                        {
+                @if (!User.Identity.IsAuthenticated)
+                {
+                    <a asp-action="Login" asp-controller="Account" class="btn btn-primary">Logga in</a>
+                }
+
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <div class="nav-item dropdown align-content-center">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-person-fill" viewBox="0 0 16 16">
+                                <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />
+                            </svg>
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                             <a asp-action="Profile" asp-controller="Account" class="dropdown-item">Profil</a>
                             <a asp-action="AccountSettings" asp-controller="Account" class="dropdown-item">Inställningar</a>
                             <div class="dropdown-divider"></div>
                             <form method="post" asp-controller="Account" asp-action="Logout" class="text-center">
-                                @if (User.Identity.IsAuthenticated)
-                                {
-                                    <input type="submit" value="Logga ut" />
-                                }
+                                <input type="submit" value="Logga ut" />
                             </form>
-                        }
+                        </div>
                     </div>
-                </div>
+                }
+
             </div>
         </div>
     </header>
