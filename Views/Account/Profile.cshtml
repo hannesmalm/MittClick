@@ -1,1 +1,38 @@
-﻿<a asp-action="EditProfile" asp-controller="Account">Redigera profil</a>
+﻿@model ProfileViewModel
+
+@{
+    ViewData["Title"] = "profile";
+}
+
+<div class="conteiner">
+    <div class="row">
+        <div class="col">
+            <div class="card">
+                <img src="" alt="Profilbild">
+            </div>
+            <div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+<a asp-action="EditProfile" asp-controller="Account">Redigera profil</a>
+
+@if (User.Identity.IsAuthenticated)
+{
+    <h1>Här är din profil, @User.Identity.Name</h1>
+}
+
+@if (!User.Identity.IsAuthenticated)
+{
+    <h1>Ingen användare inloggad</h1>
+}
+

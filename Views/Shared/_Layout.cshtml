@@ -39,16 +39,20 @@
             
 
             <div class="navbar-nav ml-auto">
-                <div class="nav-item dropdown">
+                <div class="nav-item dropdown align-content-center">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Meny</a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                         <a asp-action="Profile" asp-controller="Account" class="dropdown-item">Profil</a>
                         <a asp-action="AccountSettings" asp-controller="Account" class="dropdown-item" >Inställningar</a>
                         @if (User.Identity.IsAuthenticated)
                         {
-                            <a class="dropdown-item">
-                                <a asp-action="LogOut" asp-controller="Account" class="dropdown-item">Logga ut</a>
-                            </a>
+                            <div class="dropdown-divider"></div>
+                            <form method="post" asp-controller="Account" asp-action="Logout" class="text-center">
+                                @if (User.Identity.IsAuthenticated)
+                                {
+                                    <input type="submit" value="Logga ut" />
+                                }
+                            </form>
                         }
                     </div>
                 </div>

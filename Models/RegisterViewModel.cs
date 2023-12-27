@@ -3,7 +3,8 @@ using System.ComponentModel.DataAnnotations;
 
 namespace MittClick.Models
 {
-    public class RegisterViewModel : PageModel
+
+    public class RegisterViewModel
     {
         [Required(ErrorMessage = "Välj ett användarnamn.")]
         public String UserName { get; set; }

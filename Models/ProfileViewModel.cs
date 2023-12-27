@@ -4,8 +4,9 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MittClick.Models
 {
-    public class ProfileViewModel : PageModel
+    public class ProfileViewModel
     {
+        [Key]
 		[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
 		public int ProfileId { get; set; }
 
