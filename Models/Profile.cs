@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MittClick.Models
 {
-    public class ProfileViewModel
+    public class Profile
     {
         [Key]
 		[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -21,5 +21,8 @@ namespace MittClick.Models
         public string ProfileImg { get; set; }
 
         public int Resume { get; set; }
+
+        public string? UserId { get; set; }
+        public virtual User User { get; set; }
     }
 }

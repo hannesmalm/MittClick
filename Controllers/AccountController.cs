@@ -82,13 +82,63 @@ namespace MittClick.Controllers
 
         public IActionResult Profile()
         {
-            ProfileViewModel profileViewModel = new ProfileViewModel();
-            return View(profileViewModel);
+            Profile profile = new Profile();
+            return View(profile);
         }
 
-        public IActionResult EditProfile()
+        public async Task<IActionResult> EditProfile()
         {
-            EditProfileViewModel editProfileViewModel = new EditProfileViewModel();
+            var currentUser = await userManager.GetUserAsync(User);
+
+            EditProfileViewModel editProfileViewModel = new EditProfileViewModel()
+            {
+                ProfileId = currentUser.Profile.ProfileId,
+                Name = currentUser.Profile.Name,
+                PrivateProfile = currentUser.Profile.PrivateProfile,
+                Information = currentUser.Profile.Information,
+                ProfileImg = currentUser.Profile.ProfileImg,
+                Resume = currentUser.Profile.Resume
+            };
+
+            return View(editProfileViewModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EditProfile(EditProfileViewModel editProfileViewModel)
+        {
+            if (ModelState.IsValid)
+            {
+                var currentUser = await userManager.GetUserAsync(User);
+
+                currentUser.UserName = editProfileViewModel.Name;
+
+                if (currentUser.Profile == null)
+                {
+                    currentUser.Profile = new Profile();
+                }
+
+                currentUser.Profile.ProfileId = editProfileViewModel.ProfileId;
+                currentUser.Profile.PrivateProfile = editProfileViewModel.PrivateProfile;
+                currentUser.Profile.Information = editProfileViewModel.Information;
+                currentUser.Profile.ProfileImg = editProfileViewModel.ProfileImg;
+                currentUser.Profile.Resume = editProfileViewModel.Resume;
+
+                
+                var result = await userManager.UpdateAsync(currentUser);
+
+                if (result.Succeeded)
+                {
+                    return RedirectToAction("Profile");
+                }
+                else
+                {
+                    foreach (var error in result.Errors)
+                    {
+                        ModelState.AddModelError("", error.Description);
+                    }
+                }
+            }
+
             return View(editProfileViewModel);
         }
 

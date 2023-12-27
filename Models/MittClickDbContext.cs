@@ -6,8 +6,25 @@ namespace MittClick.Models
     public class MittClickDbContext : IdentityDbContext<User>
     {
         public MittClickDbContext(DbContextOptions<MittClickDbContext> options) : base(options) { }
-        public DbSet<ProfileViewModel> Profiles { get; set; }
+        public DbSet<Profile> Profiles { get; set; }
         public DbSet<Project> Projects { get; set; }
-        public DbSet<User> Users { get; set; }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            base.OnConfiguring(optionsBuilder);
+
+            optionsBuilder.UseLazyLoadingProxies();
+        }
+
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder);
+
+            builder.Entity<User>()
+                .HasOne(u => u.Profile)
+                .WithOne(p => p.User)
+                .HasForeignKey<Profile>(p => p.ProfileId)
+                .HasPrincipalKey<User>(u => u.Id);
+        }
     }
 }
