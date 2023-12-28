@@ -1,19 +1,18 @@
-﻿using Microsoft.AspNetCore.Identity;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MittClick.Models
 {
-    public class Profile
+    public class CreateProfileViewModel
     {
         [Key]
-		[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-		public int ProfileId { get; set; }
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int ProfileId { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Snel fyll förstnamnet!")]
         public string FirstName { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Snel fyll andernamnet!")]
         public string LastName { get; set; }
 
         [Required]

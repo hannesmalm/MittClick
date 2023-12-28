@@ -34,3 +34,14 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();
+
+//TESTDATA
+
+void ConfigureServices(IServiceCollection services)
+{
+    // ...
+
+    services.AddScoped<DataSeeder>();
+
+    // ...
+}

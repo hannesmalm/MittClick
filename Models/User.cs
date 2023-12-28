@@ -6,11 +6,8 @@ namespace MittClick.Models
 {
     public class User : IdentityUser
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int UserId { get; set; }
-
-        public int ProfileId { get; set; }
+        [ForeignKey("ProfileId")]
+        public int? ProfileId { get; set; }
 
         public virtual Profile Profile { get; set; }
     }

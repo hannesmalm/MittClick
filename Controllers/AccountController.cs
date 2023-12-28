@@ -34,14 +34,25 @@ namespace MittClick.Controllers
                     loginViewModel.Password,
                     isPersistent: loginViewModel.RememberMe,
                     lockoutOnFailure: false);
-                    
-                if (result.Succeeded)
+
+                var currentUser = userManager.GetUserAsync(User).Result;
+                string currentUserId = currentUser.Id.ToString();
+                var currentUserProfile = dbContext.Profiles.FirstOrDefault(p => p.UserId == currentUserId);
+
+                if (currentUserProfile != null)
                 {
-                    return RedirectToAction("Profile", "Account");
+                    if (result.Succeeded)
+                    {
+                        return RedirectToAction("MyProfile");
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("", "Fel användarnamn/lösenord");
+                    }
                 }
                 else
                 {
-                    ModelState.AddModelError("", "Fel användarnamn/lösenord");
+                    return RedirectToAction("CreateProfile", new CreateProfileViewModel { UserId = currentUser.Id });
                 }
             }
             return View(loginViewModel);
@@ -53,36 +64,25 @@ namespace MittClick.Controllers
             return View(registerViewModel);
         }
 
-        public IActionResult AccountSettings()
-        {
-            return View();
-        }
-
         [HttpPost]
         public async Task<IActionResult> Register(RegisterViewModel registerViewModel)
         {
             if (ModelState.IsValid)
             {
-                Profile newProfile = new Profile()
-                {
-                    PrivateProfile = false
-                };
-
-                dbContext.Profiles.Add(newProfile);
-                await dbContext.SaveChangesAsync();
-
                 User newUser = new User
                 {
-                    UserName = registerViewModel.UserName,
-                    ProfileId = newProfile.ProfileId
+                    UserName = registerViewModel.UserName
                 };
 
                 var result = await userManager.CreateAsync(newUser, registerViewModel.Password);
-                
+
+                // när ny användare lagts till
                 if (result.Succeeded)
                 {
                     await signInManager.SignInAsync(newUser, isPersistent: true);
-                    return RedirectToAction("EditProfile", "Account");
+
+                    // går direkt till skapandet av ny profil
+                    return RedirectToAction("CreateProfile");
                 }
                 else
                 {
@@ -95,12 +95,71 @@ namespace MittClick.Controllers
             return View(registerViewModel);
         }
 
-        public IActionResult Profile()
+        public async Task<IActionResult> MyProfile()
         {
-            Profile profile = new Profile();
-            return View(profile);
+            var currentUser = await userManager.GetUserAsync(User);
+
+            if (currentUser != null)
+            {
+                string currentUserId = currentUser.Id.ToString();
+                var currentUserProfile = await dbContext.Profiles.FirstOrDefaultAsync(p => p.UserId == currentUserId);
+
+                if (currentUserProfile != null) // om användaren har en profil
+                {
+                    return View(currentUserProfile);
+                }
+
+                else // om användaren inte har en profil, skapa den
+                {
+                    return RedirectToAction("CreateProfile");
+                }
+            }
+            return RedirectToAction("Index", "Home");
         }
 
+        public IActionResult GetProfile()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        public IActionResult CreateProfile()
+        {
+            CreateProfileViewModel createProfileViewModel = new CreateProfileViewModel();
+            return View(createProfileViewModel);
+        }
+
+        [HttpPost]
+        public IActionResult CreateProfile(CreateProfileViewModel createProfileViewModel)
+        {
+            if (ModelState.IsValid)
+            {
+                var currentUser = userManager.GetUserAsync(User).Result;
+
+                Profile newProfile = new Profile
+                {
+                    User = currentUser,
+                    UserId = currentUser.Id,
+                    FirstName = createProfileViewModel.FirstName,
+                    LastName = createProfileViewModel.LastName,
+                    PrivateProfile = createProfileViewModel.PrivateProfile,
+                    Information = createProfileViewModel.Information,
+                    ProfileImg = createProfileViewModel.ProfileImg,
+                    Resume = createProfileViewModel.Resume,
+                };
+
+                dbContext.Profiles.Add(newProfile);
+                dbContext.SaveChanges();
+
+                return RedirectToPage("MyProfile", new { userId = currentUser.Id });
+            }
+            else
+            {
+                return View(createProfileViewModel);
+            }
+        }
+
+        [HttpPost]
         public async Task<IActionResult> EditProfile()
         {
             var currentUser = await userManager.GetUserAsync(User);
@@ -108,7 +167,8 @@ namespace MittClick.Controllers
             EditProfileViewModel editProfileViewModel = new EditProfileViewModel()
             {
                 ProfileId = currentUser.Profile.ProfileId,
-                Name = currentUser.Profile.Name,
+                FirstName = currentUser.Profile.FirstName,
+                LastName = currentUser.Profile.LastName,
                 PrivateProfile = currentUser.Profile.PrivateProfile,
                 Information = currentUser.Profile.Information,
                 ProfileImg = currentUser.Profile.ProfileImg,
@@ -118,44 +178,45 @@ namespace MittClick.Controllers
             return View(editProfileViewModel);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> EditProfile(EditProfileViewModel editProfileViewModel)
-        {
-            if (ModelState.IsValid)
-            {
-                var currentUser = await userManager.GetUserAsync(User);
 
-                currentUser.UserName = editProfileViewModel.Name;
+        //[HttpPost]
+        //public async Task<IActionResult> EditProfile(EditProfileViewModel editProfileViewModel)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        var currentUser = await userManager.GetUserAsync(User);
 
-                if (currentUser.Profile == null)
-                {
-                    currentUser.Profile = new Profile();
-                }
+        //        currentUser.Id = editProfileViewModel.UserId;
 
-                currentUser.Profile.ProfileId = editProfileViewModel.ProfileId;
-                currentUser.Profile.PrivateProfile = editProfileViewModel.PrivateProfile;
-                currentUser.Profile.Information = editProfileViewModel.Information;
-                currentUser.Profile.ProfileImg = editProfileViewModel.ProfileImg;
-                currentUser.Profile.Resume = editProfileViewModel.Resume;
+        //        if (currentUser.Profile == null)
+        //        {
+        //            currentUser.Profile = new Profile();
+        //        }
 
-                
-                var result = await userManager.UpdateAsync(currentUser);
+        //        currentUser.Profile.ProfileId = editProfileViewModel.ProfileId;
+        //        currentUser.Profile.PrivateProfile = editProfileViewModel.PrivateProfile;
+        //        currentUser.Profile.Information = editProfileViewModel.Information;
+        //        currentUser.Profile.ProfileImg = editProfileViewModel.ProfileImg;
+        //        currentUser.Profile.Resume = editProfileViewModel.Resume;
 
-                if (result.Succeeded)
-                {
-                    return RedirectToAction("Profile");
-                }
-                else
-                {
-                    foreach (var error in result.Errors)
-                    {
-                        ModelState.AddModelError("", error.Description);
-                    }
-                }
-            }
 
-            return View(editProfileViewModel);
-        }
+        //        var result = await userManager.UpdateAsync(currentUser);
+
+        //        if (result.Succeeded)
+        //        {
+        //            return RedirectToAction("Profile");
+        //        }
+        //        else
+        //        {
+        //            foreach (var error in result.Errors)
+        //            {
+        //                ModelState.AddModelError("", error.Description);
+        //            }
+        //        }
+        //    }
+
+        //    return View(editProfileViewModel);
+        //}
 
         [HttpPost]
         public async Task<IActionResult> LogOut()
@@ -165,3 +226,4 @@ namespace MittClick.Controllers
         }
     }
 }
+

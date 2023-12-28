@@ -11,7 +11,10 @@ namespace MittClick.Models
         public int ProfileId { get; set; }
 
         [Required]
-        public string Name { get; set; }
+        public string FirstName { get; set; }
+
+        [Required]
+        public string LastName { get;set; }
 
         [Required]
         public bool PrivateProfile { get; set; }
