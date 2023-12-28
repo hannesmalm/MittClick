@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using MittClick.Models;
 
 namespace MittClick.Controllers
@@ -8,10 +9,12 @@ namespace MittClick.Controllers
     {
         private UserManager<User> userManager;
         private SignInManager<User> signInManager;
-        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager)
+        private readonly MittClickDbContext dbContext;
+        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager, MittClickDbContext dbContext)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
+            this.dbContext = dbContext;
         }
 
         [HttpGet]
@@ -60,14 +63,26 @@ namespace MittClick.Controllers
         {
             if (ModelState.IsValid)
             {
-                User newUser = new User();
-                newUser.UserName = registerViewModel.UserName;
-                var result =
-                await userManager.CreateAsync(newUser, registerViewModel.Password);
+                Profile newProfile = new Profile()
+                {
+                    PrivateProfile = false
+                };
+
+                dbContext.Profiles.Add(newProfile);
+                await dbContext.SaveChangesAsync();
+
+                User newUser = new User
+                {
+                    UserName = registerViewModel.UserName,
+                    ProfileId = newProfile.ProfileId
+                };
+
+                var result = await userManager.CreateAsync(newUser, registerViewModel.Password);
+                
                 if (result.Succeeded)
                 {
                     await signInManager.SignInAsync(newUser, isPersistent: true);
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("EditProfile", "Account");
                 }
                 else
                 {

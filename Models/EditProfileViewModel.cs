@@ -20,6 +20,6 @@ namespace MittClick.Models
 
         public string ProfileImg { get; set; }
 
-        public int Resume { get; set; }
+        public string Resume { get; set; }
     }
 }

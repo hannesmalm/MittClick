@@ -6,6 +6,7 @@ namespace MittClick.Models
     public class MittClickDbContext : IdentityDbContext<User>
     {
         public MittClickDbContext(DbContextOptions<MittClickDbContext> options) : base(options) { }
+
         public DbSet<Profile> Profiles { get; set; }
         public DbSet<Project> Projects { get; set; }
 
@@ -24,7 +25,7 @@ namespace MittClick.Models
                 .HasOne(u => u.Profile)
                 .WithOne(p => p.User)
                 .HasForeignKey<Profile>(p => p.ProfileId)
-                .HasPrincipalKey<User>(u => u.Id);
+                .HasPrincipalKey<User>(u => u.UserId);
         }
     }
 }
