@@ -1,0 +1,76 @@
+﻿@model ProfileViewModel
+
+@{
+    ViewData["Title"] = "profile";
+}
+
+
+<div class="d-flex justify-content-between">
+    <div class="m-5">
+        <img src="~/lib/profilbild_anonym.png" class="rounded-circle">
+            <div class="col">
+            <h1 class="row justify-content-center>@Model.Name</h1>
+            <h4 class="text-black-50 row justify-content-center">@User.Identity.Name</h4>
+            </div>
+    </div>
+    <div class="m-5">
+
+        <div class="bg-light rounded-1 shadow-sm p-2">
+            <h5>
+                Presentation
+            </h5>
+            <p>
+                The driving force behind quality assurance and sustainability at RECYCLE, the pioneering sustainable bicycle company.
+                Hannes is a dedicated Quality Engineer whose mission is to ensure that every RECYCLE bicycle embodies the highest standards of quality and environmental responsibility.
+            </p>
+        </div>
+
+        <h5>Meticulous Quality Control</h5>
+        <p>
+            Hannes expertise lies in meticulous quality control.
+            He is responsible for crafting and implementing stringent quality control measures, standards, and procedures that cover every aspect of the bicycle manufacturing process.
+            From the selection of sustainable materials to the final assembly, Hannes leaves no detail unattended.
+            His dedication to quality guarantees that each RECYCLE bicycle meets or surpasses industry-leading environmental and safety standards.
+        </p>
+        <h5>Supplier Collaboration</h5>
+        <p>
+            Beyond the workshop, Hannes fosters essential partnerships with suppliers who share RECYCLE's commitment to sustainability.
+            Through supplier audits, performance evaluations, and continuous improvement programs, Hannes ensures that raw materials and components used in RECYCLE bicycles adhere to eco-conscious principles.
+            These collaborations are essential in forging sustainable practices throughout our supply chain.
+        </p>
+        <h5>Continuous Improvement</h5>
+        <p>
+            Hannes work is an ongoing quest for perfection.
+            He tirelessly analyze customer feedback and data to identify opportunities for enhancement.
+            Researching sustainable technologies, materials, and production techniques, Hannes strives to reduce RECYCLE's carbon footprint while maintaining the exceptional quality that defines the brand which is RECYCLE.
+        </p>
+        <h5>Advocating for Sustainability</h5>
+        <p>
+            Hannes is not just an engineer; he is a passionate advocate for sustainability.
+            His leadership drives environmentally responsible manufacturing practices within RECYCLE and inspires our colleagues and suppliers to embrace the cause. Hannes commitment ensures that every RECYCLE bicycle not only meets the needs of riders but also contributes to a greener future.
+        </p>
+        <p>
+            Hannes dedication to quality and sustainability makes them an integral part of the RECYCLE team.
+            His work aligns perfectly with our mission to provide eco-friendly, high-quality bicycles that not only enrich the lives of riders but also protect the planet for generations to come.
+            We are proud to have Hannes as a key player in our relentless pursuit of sustainable mobility solutions.
+        </p>
+    </div>
+</div>
+
+
+
+
+
+
+<a asp-action="EditProfile" asp-controller="Account">Redigera profil</a>
+
+@if (User.Identity.IsAuthenticated)
+{
+    <h1>Här är din profil, @User.Identity.Name</h1>
+}
+
+@if (!User.Identity.IsAuthenticated)
+{
+    <h1>Ingen användare inloggad</h1>
+}
+

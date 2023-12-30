@@ -1,14 +1,14 @@
 ﻿using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics.CodeAnalysis;
 
 namespace MittClick.Models
 {
     public class ProfileViewModel
     {
-        [Key]
 		[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-		public int ProfileId { get; set; }
+		public int Id { get; set; }
 
         [Required]
         public string Name { get; set; }
@@ -20,6 +20,12 @@ namespace MittClick.Models
 
         public string ProfileImg { get; set; }
 
-        public int Resume { get; set; }
+        public string Resume { get; set; }
+
+        [AllowNull]
+        public string? UserId { get; set; }
+
+        [ForeignKey(nameof(UserId))]
+        public virtual User User { get; set; }
     }
 }

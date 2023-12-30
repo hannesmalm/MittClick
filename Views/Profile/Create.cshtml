@@ -1,0 +1,43 @@
+﻿@model ProfileViewModel
+
+<form asp-action="Create" asp-controller="Profile" method="post" enctype="multipart/form-data" class="p-3 bg-light rounded-2 mx-5 ">
+    <div class="row">
+        <!-- Name Field -->
+        <div class="col-md-6 mb-3">
+            <label for="Name" class="form-label">Namn</label>
+            <input type="text" class="form-control" id="Name" asp-for="Name" required>
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+
+
+    </div>
+
+    <!-- Textfält för presentation -->
+    <div class="mb-3">
+        <label for="Information" class="form-label">Presentation av dig</label>
+        <textarea class="form-text form-comtrol" id="Information" asp-for="Information" rows="3"></textarea>
+    </div>
+
+    <!-- Profile Image Upload -->
+    <div class="mb-3">
+        <label for="ProfileImg" class="form-label">Profile Image</label>
+        <input type="text" class="form-control" id="ProfileImg" asp-for="ProfileImg">
+    </div>
+
+    <!-- Resume Upload -->
+    <div class="mb-3">
+        <label for="Resume" class="form-label">CV</label>
+        <input type="text" class="form-control" id="Resume" asp-for="Resume">
+    </div>
+
+    <!-- Private Profile Checkbox -->
+    <div class="col-md-6 mb-3 d-flex align-items-center">
+        <div class="form-check">
+            <input type="checkbox" class="form-check-input" id="PrivateProfile" asp-for="PrivateProfile">
+            <label class="form-check-label" for="PrivateProfile">Private Profile</label>
+        </div>
+    </div>
+
+    <!-- Submit Button -->
+    <button type="submit" class="btn btn-primary">Spara</button>
+</form>

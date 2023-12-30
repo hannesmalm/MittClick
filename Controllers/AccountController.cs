@@ -34,7 +34,7 @@ namespace MittClick.Controllers
                     
                 if (result.Succeeded)
                 {
-                    return RedirectToAction("Profile", "Account");
+                    return RedirectToAction("CreateProfile", "Account");
                 }
                 else
                 {
@@ -62,12 +62,12 @@ namespace MittClick.Controllers
             {
                 User newUser = new User();
                 newUser.UserName = registerViewModel.UserName;
-                var result =
-                await userManager.CreateAsync(newUser, registerViewModel.Password);
+                var result = await userManager.CreateAsync(newUser, registerViewModel.Password);
                 if (result.Succeeded)
                 {
                     await signInManager.SignInAsync(newUser, isPersistent: true);
-                    return RedirectToAction("Index", "Home");
+                    TempData["UserId"] = newUser.Id;
+                    return RedirectToAction("Create", "Profile");
                 }
                 else
                 {
@@ -80,17 +80,19 @@ namespace MittClick.Controllers
             return View(registerViewModel);
         }
 
-        public IActionResult Profile()
-        {
-            ProfileViewModel profileViewModel = new ProfileViewModel();
-            return View(profileViewModel);
-        }
+
 
         public IActionResult EditProfile()
         {
             EditProfileViewModel editProfileViewModel = new EditProfileViewModel();
             return View(editProfileViewModel);
         }
+
+        //public IActionResult CreateProfile()
+        //{
+        //    ProfileViewModel profileViewModel = new ProfileViewModel();
+        //    return View(profileViewModel);
+        //}
 
         [HttpPost]
         public async Task<IActionResult> LogOut()
