@@ -98,5 +98,132 @@ namespace MittClick.Controllers
             await signInManager.SignOutAsync();
             return RedirectToAction("Index", "Home");
         }
+
+        [HttpPost]
+        // GET: /Account/ChangeUsername
+        public IActionResult ChangeUsername()
+        {
+            return View();
+        }
+
+        // POST: /Account/ChangeUsername
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ChangeUsername(string newUsername)
+        {
+            var user = await userManager.GetUserAsync(User);
+            if (user != null)
+            {
+                user.UserName = newUsername;
+                var result = await userManager.UpdateAsync(user);
+
+                if (result.Succeeded)
+                {
+                    await signInManager.RefreshSignInAsync(user);
+                    return RedirectToAction("Index", "Home");
+                }
+                else
+                {
+                    ModelState.AddModelError("", "Något gick fel");
+                }
+            }
+
+            return View();
+        }
+
+        // GET: /Account/ChangePassword
+        public IActionResult ChangePassword()
+        {
+            return View();
+        }
+
+        // POST: /Account/ChangePassword
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ChangePassword(string currentPassword, string newPassword)
+        {
+            var user = await userManager.GetUserAsync(User);
+            if (user != null)
+            {
+                var result = await userManager.ChangePasswordAsync(user, currentPassword, newPassword);
+
+                if (result.Succeeded)
+                {
+                    await signInManager.RefreshSignInAsync(user);
+                    return RedirectToAction("Index", "Home");
+                }
+                else
+                {
+                    ModelState.AddModelError("", "Fel lösenord");
+                }
+            }
+
+            return View();
+        }
+
+
+        [HttpGet]
+        public IActionResult CreateProfile()
+        {
+            ProfileViewModel profileViewModel = new ProfileViewModel();
+            return View(profileViewModel);
+
+        }
+
+        [HttpPost]
+        public IActionResult CreateProfile(ProfileViewModel profileViewModel)
+        {
+            if (ModelState.IsValid)
+            {
+                // Om modellen är giltig kan du göra något med den här, t.ex. spara den i en databas.
+                // Exempel:
+                // _repository.SaveProfile(profileViewModel);
+
+                return RedirectToAction("Index","Home"); // Redirect till en annan vy eller åtgärd
+            }
+
+            // Om modellen inte är giltig, återvänd till vyn med felmeddelanden
+            return View(profileViewModel);
+        }
+
+        [HttpPost]
+        public IActionResult AddSkill(ProfileViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                if (!string.IsNullOrWhiteSpace(model.NewSkill))
+                {
+                    var existingSkill = model.Skills
+                        .Find(skill => skill.Equals(model.NewSkill, StringComparison.OrdinalIgnoreCase));
+
+                    if (existingSkill == null)
+                    {
+                        model.Skills.Add(model.NewSkill);
+                    }
+                    else
+                    {
+                        ModelState.AddModelError(nameof(model.NewSkill), "Skill already exists.");
+                    }
+                }
+            }
+
+            // Återgå till sidan med den uppdaterade listan
+            return RedirectToAction( "CreateProfile",model);
+        }
+        [HttpPost]
+        public IActionResult RemoveSkill(ProfileViewModel model, string removeSkill)
+        {
+            var skillToRemove = model.Skills
+                .Find(s => s.Equals(removeSkill, StringComparison.OrdinalIgnoreCase));
+
+            if (skillToRemove != null)
+            {
+                model.Skills.Remove(skillToRemove);
+            }
+
+            // Återgå till sidan med den uppdaterade listan
+            return View("CreateProfile", model);
+        }
     }
 }
+

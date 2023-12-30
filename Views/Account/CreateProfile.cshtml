@@ -1,0 +1,131 @@
+﻿
+@model ProfileViewModel
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-9 col-lg-6">
+            <div class="card">
+                <div class="card-header text-center">
+                <h4> Skapa profil </h4>
+                </div>
+            <div class="card-body">
+                    <form asp-action="add" method="post" enctype="multipart/form-data">
+            <!--Förnamn-->
+            <div class="form-floating">
+            <input type="text" asp-for="Firstname" id="firstname" class="form-control" placeholder="Input Firstname here" />
+            <label for="firstname" class="form-label">Förnamn</label>
+            <span asp-validation-for="Firstname" class="text-danger"></span>
+            </div>
+
+            <!--Efternamn-->
+            <div class="form-floating mt-2">
+            <input type="text" asp-for="Lastname" id="lastname" class="form-control" placeholder="Input Lastname here" />
+            <label for="lastname" class="form-label">Efternamn</label>
+            <span asp-validation-for="Lastname" class="text-danger"></span>
+            </div>
+
+            <!--Telefon-->
+            <div class="form-floating mt-2">
+            <input type="tel" asp-for="Number" id="number" class="form-control" inputmode="numeric" pattern="[0-9]*" placeholder="Input phonenumber here" />
+            <label for="number" class="form-label">Telefon</label>
+            <span asp-validation-for="Number" class="text-danger"></span>
+            </div>
+
+            <!--Epost-->
+            <div class="form-floating mt-2">
+            <input type="text" asp-for="Email" id="email" class="form-control" placeholder="Input email here" />
+            <label for="email" class="form-label">Epost</label>
+            <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+
+            <!--Bild-->
+
+            <!--Beskrivning-->
+            <div class="form-floating mt-2">
+            <textarea asp-for="Information" class="form-control" placeholder="Input description here"></textarea>
+            <label asp-for="Information" class="form-label">Kort beskrivning om dig:</label>
+            <span asp-validation-for="Information" class="text-danger"></span>
+            </div>
+
+			<!--CV-->
+			<div class="form-floating mt-2">
+			<textarea asp-for="CV" class="form-control" placeholder="Input CV here"></textarea>
+			<label asp-for="CV" class="form-label">CV:</label>
+			<span asp-validation-for="CV" class="text-danger"></span>
+			</div>
+
+            <!-- Bilduppladdning -->
+            <div class="form-group mt-2">
+            <label asp-for="ProfileImg" class="mb-0 mr-2">Ladda upp bild</label>
+            <div class="d-flex">
+            <input type="file" class="form-control" asp-for="ProfileImg" id="inputGroupFile02">
+            <label class="input-group-text" for="inputGroupFile02">Upload</label>
+            </div>
+            </div>
+
+            <div id="imageContainer" class="mt-2">
+            <img id="uploadedImage" class="img-fluid" src="#" alt="Uploaded Image" style="display: none;">
+            </div>
+            <!--Skills-->
+		    <div class="form-floating mt-2">
+				<div class="input-group mt-2">
+                    <input type="text" class="form-control"id="textInput" placeholder="Enter skill">
+                <div class="input-group-append">
+                    <button class="btn btn-outline-secondary" id="addItemButton">Add Skill</button>
+			    </div>
+			    </div>
+            
+                <ul class="list-group list-group-flush" id="skillslist"></ul>
+                    <script>
+                            var addButton = document.getElementById('addItemButton');
+                            var inputField = document.getElementById('textInput');
+                            var skillsList = document.getElementById('skillslist');
+
+                            addButton.addEventListener('click', function (event) {
+                                event.preventDefault();
+                                var inputValue = inputField.value;
+
+                                if (inputValue.trim() !== '') {
+                                    // Lägg till listelementet i DOM:en
+                                    var listItem = document.createElement('li');
+                                    listItem.className = 'list-group-item';
+                                    listItem.textContent = inputValue;
+
+                                    var removeButton = document.createElement('button');
+                                    removeButton.textContent = 'Ta bort';
+                                    removeButton.className = 'btn btn-danger btn-sm float-end';
+
+                                    removeButton.addEventListener('click', function () {
+                                        RemoveSkill(listItem); // Anropa RemoveSkill med aktuell färdighet
+                                    });
+
+                                    listItem.appendChild(removeButton);
+                                    skillsList.appendChild(listItem);
+                                        inputField.value = '';
+                                }
+                            });
+                            function RemoveSkill(item) {
+                                // Lägg till riktig funktionalitet för att ta bort en färdighet
+                                item.remove();
+                            }
+					</script>
+			</div>
+            
+                        
+
+            <!--Privat profil checkbox-->
+            <div class="form-group mt-2">
+            <div class="custom-control custom-checkbox">
+            <input type="checkbox" asp-for="PrivateProfile" class="custom-control-input" id="privateprofilecheck">
+            <label class="custom-control-label" for="privateprofilecheck">Privat profil</label>
+            </div>
+            </div>
+            <!--Skapa knapp-->
+            <div class="form-group text-center ">
+            <button type="submit" class="btn btn-primary btn-block mt-2">Skapa</button>
+            </div>
+        </form>
+	        </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -11,15 +11,25 @@ namespace MittClick.Models
 		public int ProfileId { get; set; }
 
         [Required]
-        public string Name { get; set; }
+        public string Firstname { get; set; }
+        [Required]
+        public string Lastname { get; set; }
 
         [Required]
         public bool PrivateProfile { get; set; }
 
         public string Information { get; set; }
+        [Required]
+        public int? Number { get; set; }
+        [Required]
+        public string Email { get; set; }
+
+        public string CV {  get; set; }
 
         public string ProfileImg { get; set; }
+        [Required(ErrorMessage = "Please enter a skill.")]
+        public string NewSkill { get; set; }
+        public List<String> Skills { get; set; } = new List<String>();
 
-        public int Resume { get; set; }
     }
 }
