@@ -17,6 +17,7 @@ namespace MittClick.Controllers
             return View();
         }
 
+        [HttpGet]
         public IActionResult Create()
         {
             var userId = TempData["UserId"] as string;

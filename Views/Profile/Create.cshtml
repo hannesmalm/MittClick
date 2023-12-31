@@ -1,6 +1,6 @@
 ﻿@model ProfileViewModel
 
-<form asp-action="Create" asp-controller="Profile" method="post" enctype="multipart/form-data" class="p-3 bg-light rounded-2 mx-5 ">
+<form asp-action="Create" asp-controller="Profile" method="post" enctype="multipart/form-data" class="p-3 bg-light rounded-2 mx-5">
     <div class="row">
         <!-- Name Field -->
         <div class="col-md-6 mb-3">
@@ -18,13 +18,13 @@
         <textarea class="form-text form-comtrol" id="Information" asp-for="Information" rows="3"></textarea>
     </div>
 
-    <!-- Profile Image Upload -->
+    <!-- Profile Image Upload (ändrad till text tillsvidare)-->
     <div class="mb-3">
         <label for="ProfileImg" class="form-label">Profile Image</label>
         <input type="text" class="form-control" id="ProfileImg" asp-for="ProfileImg">
     </div>
 
-    <!-- Resume Upload -->
+    <!-- Ladda upp CV -->
     <div class="mb-3">
         <label for="Resume" class="form-label">CV</label>
         <input type="text" class="form-control" id="Resume" asp-for="Resume">
@@ -38,6 +38,6 @@
         </div>
     </div>
 
-    <!-- Submit Button -->
+    <!-- Submit Knapp -->
     <button type="submit" class="btn btn-primary">Spara</button>
 </form>
