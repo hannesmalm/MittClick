@@ -17,17 +17,16 @@ namespace MittClick.Controllers
             return View();
         }
 
-        [HttpGet]
-        public ActionResult Create()
+        public IActionResult Create()
         {
             var userId = TempData["UserId"] as string;
-            Console.WriteLine(userId);
-            var model = new ProfileViewModel { UserId = userId };
+            ProfileViewModel model = new ProfileViewModel();
+            model.UserId = userId;
             return View(model);
         }
 
         [HttpPost]
-        public ActionResult Create(ProfileViewModel profile)
+        public IActionResult Create(ProfileViewModel profile)
         {
             if (ModelState.IsValid)
             {
