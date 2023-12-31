@@ -58,9 +58,28 @@
             <label asp-for="ProfileImg" class="mb-0 mr-2">Ladda upp bild</label>
             <div class="d-flex">
             <input type="file" class="form-control" asp-for="ProfileImg" id="inputGroupFile02">
-            <label class="input-group-text" for="inputGroupFile02">Upload</label>
+            <button type="button" class="input-group-text" for="inputGroupFile02" id="uploadBtn">Upload</button>
+
             </div>
             </div>
+                        <script>
+                            $(document).ready(function () {
+                                $("#uploadBtn").click(function () {
+                                    var input = $("#inputGroupFile02")[0];
+                                    var file = input.files[0];
+
+                                    if (file) {
+                                        var reader = new FileReader();
+
+                                        reader.onload = function (e) {
+                                            $("#uploadedImage").attr("src", e.target.result).show();
+                                        };
+
+                                        reader.readAsDataURL(file);
+                                    }
+                                });
+                            });
+                        </script>
 
             <div id="imageContainer" class="mt-2">
             <img id="uploadedImage" class="img-fluid" src="#" alt="Uploaded Image" style="display: none;">
