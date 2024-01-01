@@ -1,6 +1,8 @@
 ﻿@model ProfileViewModel
 
-<form asp-action="Create" asp-controller="Profile" method="post" enctype="multipart/form-data" class="p-3 bg-light rounded-2 mx-5">
+<h1 class="mx-5">Skapa din profil</h1>
+
+<form asp-action="Create" asp-controller="Profile" method="post" class="p-3 bg-light rounded-2 mx-5">
     <div class="row">
         <!-- Name Field -->
         <div class="col-md-6 mb-3">
@@ -37,6 +39,12 @@
             <label class="form-check-label" for="PrivateProfile">Private Profile</label>
         </div>
     </div>
+
+    <!-- Gömt textfält som automatiskt fyller i userID-->
+
+    <input type="text" readonly class="form-control-plaintext" asp-for="UserId" id="HiddenField">
+
+
 
     <!-- Submit Knapp -->
     <button type="submit" class="btn btn-primary">Spara</button>

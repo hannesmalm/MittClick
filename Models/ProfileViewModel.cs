@@ -13,19 +13,18 @@ namespace MittClick.Models
         [Required]
         public string Name { get; set; }
 
-        [Required]
-        public bool PrivateProfile { get; set; }
-
         public string Information { get; set; }
 
         public string ProfileImg { get; set; }
 
         public string Resume { get; set; }
 
-        [AllowNull]
-        public string? UserId { get; set; }
+        [Required]
+        public bool PrivateProfile { get; set; }
+
+        public string UserId { get; set; }
 
         [ForeignKey(nameof(UserId))]
-        public virtual User User { get; set; }
+        public virtual User? User { get; set; }
     }
 }

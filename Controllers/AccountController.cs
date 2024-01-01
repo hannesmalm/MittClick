@@ -65,9 +65,8 @@ namespace MittClick.Controllers
                 var result = await userManager.CreateAsync(newUser, registerViewModel.Password);
                 if (result.Succeeded)
                 {
-                    TempData["UserId"] = newUser.Id;
                     await signInManager.SignInAsync(newUser, isPersistent: true);
-                    return RedirectToAction("Create", "Profile");
+                    return RedirectToAction("Create", "Profile", new { userId = newUser.Id });
                 }
                 else
                 {

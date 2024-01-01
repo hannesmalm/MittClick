@@ -18,26 +18,35 @@ namespace MittClick.Controllers
         }
 
         [HttpGet]
-        public IActionResult Create()
+        public IActionResult Create(string userId)
         {
-            var userId = TempData["UserId"] as string;
-            ProfileViewModel model = new ProfileViewModel();
-            model.UserId = userId;
+            
+            var model = new ProfileViewModel
+            {
+                UserId = userId
+            };
+
             return View(model);
         }
 
         [HttpPost]
-        public IActionResult Create(ProfileViewModel profile)
+        public IActionResult Create(ProfileViewModel model)
         {
+            model.UserId = TempData["UI"] as string;
+            Console.WriteLine(model.Name);
+            Console.WriteLine(model.UserId);
+            Console.WriteLine(model.Information);
+            Console.WriteLine(model.Resume);
+
             if (ModelState.IsValid)
             {
-                dbContext.Profiles.Add(profile);
+                dbContext.Profiles.Add(model);
                 dbContext.SaveChanges();
 
                 return RedirectToAction("Index", "Home"); 
             }
 
-            return View(profile);
+            return View(model);
         }
 
         public IActionResult Profile()
