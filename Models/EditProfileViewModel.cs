@@ -6,10 +6,6 @@ namespace MittClick.Models
 {
     public class EditProfileViewModel
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int ProfileId { get; set; }
-
         [Required]
         public string FirstName { get; set; }
 

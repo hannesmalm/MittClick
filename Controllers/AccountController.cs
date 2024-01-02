@@ -199,67 +199,48 @@ namespace MittClick.Controllers
             }
         }
 
-        [HttpPost]
+        [HttpGet]
         public async Task<IActionResult> EditProfile()
         {
-            var currentUser = await userManager.GetUserAsync(User);
-
-            var userProfile = dbContext.Profiles.Include(p => p.User).FirstOrDefault(/* dina kriterier */);
-            var user = userProfile.User; // Hämta användaren för profilen
-
-            EditProfileViewModel editProfileViewModel = new EditProfileViewModel()
-            {
-                ProfileId = userProfile.ProfileId,
-                FirstName = userProfile.FirstName,
-                LastName = userProfile.LastName,
-                PrivateProfile = userProfile.PrivateProfile,
-                Information = userProfile.Information,
-                ProfileImg = userProfile.ProfileImg,
-                Resume = userProfile.Resume
-            };
-
+            EditProfileViewModel editProfileViewModel = new EditProfileViewModel();
             return View(editProfileViewModel);
         }
 
+        [HttpPost]
+        public async Task<IActionResult> EditProfile(EditProfileViewModel editProfileViewModel)
+        {
+            if (ModelState.IsValid)
+            {
+                var currentUser = await userManager.GetUserAsync(User);
 
-        //[HttpPost]
-        //public async Task<IActionResult> EditProfile(EditProfileViewModel editProfileViewModel)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        var currentUser = await userManager.GetUserAsync(User);
+                var userProfile = dbContext.Profiles
+                    .Include(p => p.User)
+                    .FirstOrDefault(p => p.UserId == currentUser.Id);
 
-        //        currentUser.Id = editProfileViewModel.UserId;
+                if (userProfile != null)
+                {
+                    userProfile.FirstName = editProfileViewModel.FirstName;
+                    userProfile.LastName = editProfileViewModel.LastName;
+                    userProfile.PrivateProfile = editProfileViewModel.PrivateProfile;
+                    userProfile.Information = editProfileViewModel.Information;
+                    userProfile.ProfileImg = editProfileViewModel.ProfileImg;
+                    userProfile.Resume = editProfileViewModel.Resume;
 
-        //        if (currentUser.Profile == null)
-        //        {
-        //            currentUser.Profile = new Profile();
-        //        }
+                    dbContext.SaveChanges();
+                }
+                else
+                {
+                    return NotFound();
+                }
 
-        //        currentUser.Profile.ProfileId = editProfileViewModel.ProfileId;
-        //        currentUser.Profile.PrivateProfile = editProfileViewModel.PrivateProfile;
-        //        currentUser.Profile.Information = editProfileViewModel.Information;
-        //        currentUser.Profile.ProfileImg = editProfileViewModel.ProfileImg;
-        //        currentUser.Profile.Resume = editProfileViewModel.Resume;
+                return RedirectToAction("MyProfile", "Account");
+            }
+            else
+            {
+                return View(editProfileViewModel);
+            }
+        }
 
-
-        //        var result = await userManager.UpdateAsync(currentUser);
-
-        //        if (result.Succeeded)
-        //        {
-        //            return RedirectToAction("Profile");
-        //        }
-        //        else
-        //        {
-        //            foreach (var error in result.Errors)
-        //            {
-        //                ModelState.AddModelError("", error.Description);
-        //            }
-        //        }
-        //    }
-
-        //    return View(editProfileViewModel);
-        //}
 
         [HttpPost]
         public async Task<IActionResult> LogOut()

@@ -4,35 +4,95 @@
     ViewData["Title"] = "Profile";
 }
 
-<div>
-    <h2>@Model.FirstName @Model.LastName's Profile</h2>
+<a asp-action="EditProfile" asp-controller="Account" class="btn btn-primary mt-3">Redigera profil</a>
 
-    <dl>
-        <dt>First Name:</dt>
-        <dd>@Model.FirstName</dd>
+<div class="container mt-4">
+    <div class="row">
 
-        <dt>Last Name:</dt>
-        <dd>@Model.LastName</dd>
+        <div class="col-md-4">
+            <div class="card mb-3">
+                @if (@Model.ProfileImg == null)
+                {
+                    <img class="img rounded-circle m-5" src="~/lib/image/defaultprofileimg.jpg" alt="Profile Image">
+                }
+                <!--  Den riktiga profilbilden  -->
 
-        <dt>Private Profile:</dt>
-        <dd>@(Model.PrivateProfile ? "Yes" : "No")</dd>
+                <div class="card-body">
+                    <h5 class="card-title">@Model.FirstName @Model.LastName</h5>
+                    <p class="card-text">@Model.Information</p>
+                    <div class="text-center">
+                    </div>
+                </div>
+            </div>
+        </div>
 
-        @if (!string.IsNullOrEmpty(Model.Information))
-        {
-            <dt>Information:</dt>
-            <dd>@Model.Information</dd>
-        }
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title">Kontaktinfo</h5>
+                </div>
+                <div class="card-body">
+                    <dl class="row">
+                        <dt class="col-sm-3">Namn:</dt>
+                        <dd class="col-sm-9">@Model.FirstName @Model.LastName</dd>
 
-        @if (!string.IsNullOrEmpty(Model.ProfileImg))
-        {
-            <dt>Profile Image:</dt>
-            <dd><img src="@Model.ProfileImg" alt="Profile Image" /></dd>
-        }
+                        <dt class="col-sm-3">Email:</dt>
+                        <dd class="col-sm-9">------------</dd>
 
-        @if (!string.IsNullOrEmpty(Model.Resume))
-        {
-            <dt>Resume:</dt>
-            <dd>@Model.Resume</dd>
-        }
-    </dl>
-</div>
+                        <dt class="col-sm-3">Tel:</dt>
+                        <dd class="col-sm-9">------------</dd>
+
+                        <dt class="col-sm-3">Adress:</dt>
+                        <dd class="col-sm-9">------------</dd>
+
+                        <!-- Vi kan loopa genom en lista med kontaktinfo sen för att slippa tomma fält -->
+
+                    </dl>
+                </div>
+            </div>
+
+            <div class="card mt-3">
+                <div class="card-header">
+                    <h5 class="card-title">Projekt</h5>
+                </div>
+                <div class="card-body d-flex flex-wrap justify-content-center">
+
+                    <div class="card m-2" style="width: 15rem;">
+                        <img class="img mx-4" src="groupImg.png" alt="Card image cap">
+                        <div class="card-body">
+                            <h5 class="card-title">Projekttitel</h5>
+                            <p class="card-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsa ratione magnam delectus! Est nam nihil libero neque esse delectus labore facilis doloremque, pariatur assumenda, perferendis vitae iste dicta debitis quaerat.</p>
+                            <p class="card-text"><small class="text-muted">3 deltagare</small></p>
+                            <div class="text-center">
+                                <button class="btn btn-primary">Se projektdetaljer</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card m-2" style="width: 15rem;">
+                        <img class="img mx-4" src="groupImg.png" alt="Card image cap">
+                        <div class="card-body">
+                            <h5 class="card-title">Projekttitel</h5>
+                            <p class="card-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsa ratione magnam delectus! Est nam nihil libero neque esse delectus labore facilis doloremque, pariatur assumenda, perferendis vitae iste dicta debitis quaerat.</p>
+                            <p class="card-text"><small class="text-muted">3 deltagare</small></p>
+                            <div class="text-center">
+                                <button class="btn btn-primary">Se projektdetaljer</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card m-2" style="width: 15rem;">
+                        <img class="img mx-4" src="groupImg.png" alt="Card image cap">
+                        <div class="card-body">
+                            <h5 class="card-title">Projekttitel</h5>
+                            <p class="card-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsa ratione magnam delectus! Est nam nihil libero neque esse delectus labore facilis doloremque, pariatur assumenda, perferendis vitae iste dicta debitis quaerat.</p>
+                            <p class="card-text"><small class="text-muted">3 deltagare</small></p>
+                            <div class="text-center">
+                                <button class="btn btn-primary">Se projektdetaljer</button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
