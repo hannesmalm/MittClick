@@ -1,14 +1,38 @@
-﻿@model Profile
+﻿@model MittClick.Models.Profile
 
-<a asp-action="EditProfile" asp-controller="Account">Redigera profil</a>
-
-@if (User.Identity.IsAuthenticated)
-{
-    <h1>Här är din profil, @User.Identity.Name</h1>
+@{
+    ViewData["Title"] = "Profile";
 }
 
-@if (!User.Identity.IsAuthenticated)
-{
-    <h1>Ingen användare inloggad</h1>
-}
+<div>
+    <h2>@Model.FirstName @Model.LastName's Profile</h2>
 
+    <dl>
+        <dt>First Name:</dt>
+        <dd>@Model.FirstName</dd>
+
+        <dt>Last Name:</dt>
+        <dd>@Model.LastName</dd>
+
+        <dt>Private Profile:</dt>
+        <dd>@(Model.PrivateProfile ? "Yes" : "No")</dd>
+
+        @if (!string.IsNullOrEmpty(Model.Information))
+        {
+            <dt>Information:</dt>
+            <dd>@Model.Information</dd>
+        }
+
+        @if (!string.IsNullOrEmpty(Model.ProfileImg))
+        {
+            <dt>Profile Image:</dt>
+            <dd><img src="@Model.ProfileImg" alt="Profile Image" /></dd>
+        }
+
+        @if (!string.IsNullOrEmpty(Model.Resume))
+        {
+            <dt>Resume:</dt>
+            <dd>@Model.Resume</dd>
+        }
+    </dl>
+</div>
