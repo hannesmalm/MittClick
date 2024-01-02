@@ -148,17 +148,18 @@ namespace MittClick.Controllers
             Console.WriteLine("Början på metod");
             var currentUser = userManager.GetUserAsync(User).Result;
             Console.WriteLine($"User ID: {currentUser.Id}");
-            //Testgrejer ------------------------------------------
+            //Testgrejer -------------------------------------------
 
             if (ModelState.IsValid)
             {
                 //Testgrejer ------------------------------------------
                 Console.WriteLine("Modelstate är Valid");
-                //Testgrejer --------------------------------------
+                //Testgrejer ------------------------------------------
 
                 Profile newProfile = new Profile
                 {
                     User = currentUser,
+                    UserName = currentUser.UserName,
                     UserId = currentUser.Id,
                     FirstName = createProfileViewModel.FirstName,
                     LastName = createProfileViewModel.LastName,
@@ -170,6 +171,7 @@ namespace MittClick.Controllers
 
                 //Testgrejer ---------------------------------------
                 Console.WriteLine($"User ID: {currentUser.Id}");
+                Console.WriteLine($"User ID: {currentUser.UserName}");
                 Console.WriteLine($"FirstName: {createProfileViewModel.FirstName}");
                 Console.WriteLine($"LastName: {createProfileViewModel.LastName}");
                 //Testgrejer ---------------------------------------
