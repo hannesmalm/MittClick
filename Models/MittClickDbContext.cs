@@ -16,15 +16,5 @@ namespace MittClick.Models
 
             optionsBuilder.UseLazyLoadingProxies();
         }
-
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            base.OnModelCreating(modelBuilder);
-
-            modelBuilder.Entity<User>()
-                .HasOne(u => u.Profile)
-                .WithOne(p => p.User)
-                .HasForeignKey<Profile>(p => p.UserId);
-        }
     }
 }

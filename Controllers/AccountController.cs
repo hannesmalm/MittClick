@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
 using MittClick.Models;
 
@@ -52,7 +53,7 @@ namespace MittClick.Controllers
                 }
                 else
                 {
-                    return RedirectToAction("CreateProfile", new CreateProfileViewModel { UserId = currentUser.Id });
+                    return RedirectToAction("CreateProfile");
                 }
             }
             return View(loginViewModel);
@@ -117,9 +118,20 @@ namespace MittClick.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-        public IActionResult GetProfile()
+        public IActionResult Profile(string userId)
         {
-            return View();
+            var userProfile = dbContext.Profiles.Include(p => p.User)
+                                                .Where(p => p.UserId == userId)
+                                                .FirstOrDefault();
+
+            if (userProfile != null)
+            {
+                return View(userProfile);
+            }
+            else
+            {
+                return NotFound();
+            }
         }
 
         [HttpGet]
@@ -132,9 +144,17 @@ namespace MittClick.Controllers
         [HttpPost]
         public IActionResult CreateProfile(CreateProfileViewModel createProfileViewModel)
         {
+            //Testgrejer -------------------------------------------
+            Console.WriteLine("Början på metod");
+            var currentUser = userManager.GetUserAsync(User).Result;
+            Console.WriteLine($"User ID: {currentUser.Id}");
+            //Testgrejer ------------------------------------------
+
             if (ModelState.IsValid)
             {
-                var currentUser = userManager.GetUserAsync(User).Result;
+                //Testgrejer ------------------------------------------
+                Console.WriteLine("Modelstate är Valid");
+                //Testgrejer --------------------------------------
 
                 Profile newProfile = new Profile
                 {
@@ -148,13 +168,33 @@ namespace MittClick.Controllers
                     Resume = createProfileViewModel.Resume,
                 };
 
+                //Testgrejer ---------------------------------------
+                Console.WriteLine($"User ID: {currentUser.Id}");
+                Console.WriteLine($"FirstName: {createProfileViewModel.FirstName}");
+                Console.WriteLine($"LastName: {createProfileViewModel.LastName}");
+                //Testgrejer ---------------------------------------
+
+
                 dbContext.Profiles.Add(newProfile);
                 dbContext.SaveChanges();
 
-                return RedirectToPage("MyProfile", new { userId = currentUser.Id });
+                return RedirectToAction("Index", "Home");
             }
             else
             {
+                //Testgrejer ---------------------------------------
+                foreach (var modelStateKey in ModelState.Keys)
+                {
+                    var modelStateVal = ModelState[modelStateKey];
+                    foreach (ModelError error in modelStateVal.Errors)
+                    {
+                        Console.WriteLine($"Key: {modelStateKey}, Error: {error.ErrorMessage}");
+                    }
+                }
+
+                Console.WriteLine("Modelstate är inte Valid");
+                //Testgrejer ---------------------------------------
+
                 return View(createProfileViewModel);
             }
         }
@@ -164,15 +204,18 @@ namespace MittClick.Controllers
         {
             var currentUser = await userManager.GetUserAsync(User);
 
+            var userProfile = dbContext.Profiles.Include(p => p.User).FirstOrDefault(/* dina kriterier */);
+            var user = userProfile.User; // Hämta användaren för profilen
+
             EditProfileViewModel editProfileViewModel = new EditProfileViewModel()
             {
-                ProfileId = currentUser.Profile.ProfileId,
-                FirstName = currentUser.Profile.FirstName,
-                LastName = currentUser.Profile.LastName,
-                PrivateProfile = currentUser.Profile.PrivateProfile,
-                Information = currentUser.Profile.Information,
-                ProfileImg = currentUser.Profile.ProfileImg,
-                Resume = currentUser.Profile.Resume
+                ProfileId = userProfile.ProfileId,
+                FirstName = userProfile.FirstName,
+                LastName = userProfile.LastName,
+                PrivateProfile = userProfile.PrivateProfile,
+                Information = userProfile.Information,
+                ProfileImg = userProfile.ProfileImg,
+                Resume = userProfile.Resume
             };
 
             return View(editProfileViewModel);
@@ -224,6 +267,10 @@ namespace MittClick.Controllers
             await signInManager.SignOutAsync();
             return RedirectToAction("Index", "Home");
         }
+
     }
+
 }
+
+
 

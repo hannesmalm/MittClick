@@ -192,8 +192,7 @@ namespace MittClick.Migrations
 
                     b.HasKey("ProfileId");
 
-                    b.HasIndex("UserId")
-                        .IsUnique();
+                    b.HasIndex("UserId");
 
                     b.ToTable("Profiles");
                 });
@@ -263,9 +262,6 @@ namespace MittClick.Migrations
 
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
-
-                    b.Property<int?>("ProfileId")
-                        .HasColumnType("int");
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
@@ -344,18 +340,12 @@ namespace MittClick.Migrations
             modelBuilder.Entity("MittClick.Models.Profile", b =>
                 {
                     b.HasOne("MittClick.Models.User", "User")
-                        .WithOne("Profile")
-                        .HasForeignKey("MittClick.Models.Profile", "UserId")
+                        .WithMany()
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("MittClick.Models.User", b =>
-                {
-                    b.Navigation("Profile")
-                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }
