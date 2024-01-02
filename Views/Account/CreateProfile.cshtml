@@ -1,57 +1,207 @@
 ﻿@model CreateProfileViewModel
-@{
-    ViewData["Title"] = "Create Profile";
-}
 
 <div class="container mt-5">
-	<div class="row justify-content-center">
-		<div class="col-md-9 col-lg-6">
-			<div class="card">
-				<div class="card-header text-center">
-					<h4>Skapa din Profil</h4>
-				</div>
-				<div class="card-body">
-                    <form method="post">
-                        <div class="form-group">
-                            <label asp-for="FirstName"></label>
-                            <input asp-for="FirstName" class="form-control" />
+    <div class="row justify-content-center">
+        <div class="col-md-9 col-lg-6">
+            <div class="card">
+                <div class="card-header text-center">
+                    <h4> Skapa profil </h4>
+                </div>
+                <div class="card-body">
+                    <form asp-action="CreateProfile" method="post" enctype="multipart/form-data">
+                        <!--Förnamn-->
+                        <div class="form-floating">
+                            <input type="text" asp-for="FirstName" id="Firstname" class="form-control" placeholder="Input Firstname here" />
+                            <label for="Firstname" class="form-label">Förnamn</label>
                             <span asp-validation-for="FirstName" class="text-danger"></span>
                         </div>
 
-                        <div class="form-group">
-                            <label asp-for="LastName"></label>
-                            <input asp-for="LastName" class="form-control" />
+                        <!--Efternamn-->
+                        <div class="form-floating mt-2">
+                            <input type="text" asp-for="LastName" id="Lastname" class="form-control" placeholder="Input Lastname here" />
+                            <label for="Lastname" class="form-label">Efternamn</label>
                             <span asp-validation-for="LastName" class="text-danger"></span>
                         </div>
 
-                        <div class="form-group">
-                            <label asp-for="PrivateProfile"></label>
-                            <input asp-for="PrivateProfile" type="checkbox" />
-                            <span asp-validation-for="PrivateProfile" class="text-danger"></span>
+
+                        <!--Kontaktuppgifter-->
+                        <div class="form-floating mt-2">
+                            <div class="input-group mt-3">
+                                <div class="dropdown">
+                                    <button class="btn btn-outline-primary dropdown-toggle" type="button" id="contactDropDown" data-bs-toggle="dropdown" aria-expanded="false">
+                                        Välj kontakttyp
+                                    </button>
+                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                        <a class="dropdown-item" href="#" data-value="Email">Email</a>
+                                        <a class="dropdown-item" href="#" data-value="Telefon">Telefon</a>
+                                        <a class="dropdown-item" href="#" data-value="Annat">Annat</a>
+                                    </div>
+                                </div>
+                                <input type="text" class="form-control" id="contactInput" placeholder="Enter contact">
+                                <div class="input-group-append">
+                                    <button class="btn btn-outline-primary" id="addCButton">Lägg till</button>
+                                </div>
+                            </div>
+                            <ul class="list-group mt-2" id="contactinfo">
+                            </ul>
+                            <script>
+                                var addCButton = document.getElementById('addCButton');
+                                var cInputField = document.getElementById('contactInput');
+                                var contactinfo = document.getElementById('contactinfo');
+                                var contactDropDown = document.getElementById('contactDropDown');
+
+                                var selectedContactType = ''; // Variabel för att hålla reda på det valda kontakttypen
+
+                                // Lyssna på klickhändelser på dropdown-alternativen
+                                var dropdownItems = document.querySelectorAll('.dropdown-item');
+
+                                dropdownItems.forEach(function (item) {
+                                    item.addEventListener('click', function () {
+                                        console.log('Button clicked!');
+                                        selectedContactType = item.getAttribute('data-value');
+                                        contactDropDown.textContent = selectedContactType;
+                                    });
+                                });
+
+                                addCButton.addEventListener('click', function (event) {
+                                    event.preventDefault();
+                                    var inputValue = cInputField.value;
+
+                                    if (inputValue.trim() !== '') {
+                                        // Lägg till listelementet i DOM:en
+
+                                        var listItem = document.createElement('li');
+                                        listItem.className = 'list-group-item list-group-item-primary';
+                                        listItem.textContent = selectedContactType + ": " + inputValue;
+
+                                        var removeButton = document.createElement('button');
+                                        removeButton.textContent = 'Ta bort';
+                                        removeButton.className = 'btn btn-outline-danger btn-sm float-end';
+
+                                        removeButton.addEventListener('click', function () {
+                                            RemoveSkill(listItem); // Anropa RemoveSkill med aktuell färdighet
+                                        });
+
+                                        listItem.appendChild(removeButton);
+                                        contactinfo.appendChild(listItem);
+                                        cInputField.value = '';
+                                        selectedContactType = ''; // Återställ det valda kontakttypen efter att ha lagt till
+                                        contactDropDown.textContent = 'Välj kontakttyp';
+                                    }
+                                });
+                                function RemoveSkill(item) {
+                                    // Lägg till riktig funktionalitet för att ta bort en färdighet
+                                    item.remove();
+                                }
+                            </script>
                         </div>
 
-                        <div class="form-group">
-                            <label asp-for="Information"></label>
-                            <input asp-for="Information" class="form-control" />
+                        <!--Beskrivning-->
+                        <div class="form-floating mt-2">
+                            <textarea asp-for="Information" class="form-control" placeholder="Input description here"></textarea>
+                            <label asp-for="Information" class="form-label">Kort beskrivning om dig:</label>
                             <span asp-validation-for="Information" class="text-danger"></span>
                         </div>
 
-                        <div class="form-group">
-                            <label asp-for="ProfileImg"></label>
-                            <input asp-for="ProfileImg" class="form-control" />
-                            <span asp-validation-for="ProfileImg" class="text-danger"></span>
-                        </div>
-
-                        <div class="form-group">
-                            <label asp-for="Resume"></label>
-                            <input asp-for="Resume" class="form-control" />
+                        <!--CV-->
+                        <div class="form-floating mt-2">
+                            <textarea asp-for="Resume" class="form-control" placeholder="Input resume here"></textarea>
+                            <label asp-for="Resume" class="form-label">CV:</label>
                             <span asp-validation-for="Resume" class="text-danger"></span>
                         </div>
 
-                        <button type="submit" class="btn btn-primary">Create Profile</button>
+                        <!-- Bilduppladdning -->
+                        <div class="form-group mt-2">
+                            <label asp-for="ProfileImg" class="mb-0 mr-2">Ladda upp bild</label>
+                            <div class="d-flex">
+                                <input type="file" class="form-control" asp-for="ProfileImg" id="inputGroupFile02">
+                                <button type="button" class="btn btn-outline-primary" for="inputGroupFile02" id="uploadBtn">Upload</button>
+
+                            </div>
+                        </div>
+                        <script>
+                            $(document).ready(function () {
+                                $("#uploadBtn").click(function () {
+                                    var input = $("#inputGroupFile02")[0];
+                                    var file = input.files[0];
+
+                                    if (file) {
+                                        var reader = new FileReader();
+
+                                        reader.onload = function (e) {
+                                            $("#uploadedImage").attr("src", e.target.result).show();
+                                        };
+
+                                        reader.readAsDataURL(file);
+                                    }
+                                });
+                            });
+                        </script>
+
+                        <div id="imageContainer" class="mt-2">
+                            <img id="uploadedImage" class="img-fluid" src="#" alt="Uploaded Image" style="display: none;">
+                        </div>
+                        <!--Skills-->
+                        <div class="form-floating mt-2">
+                            <div class="input-group mt-2">
+                                <input type="text" class="form-control" id="textInput" placeholder="Enter skill">
+                                <div class="input-group-append">
+                                    <button class="btn btn-outline-primary" id="addSkillButton">Lägg till</button>
+                                </div>
+                            </div>
+
+                            <ul class="list-group list-group-flush" id="skillslist"></ul>
+                            <script>
+                                var addButton = document.getElementById('addSkillButton');
+                                var inputField = document.getElementById('textInput');
+                                var skillsList = document.getElementById('skillslist');
+
+                                addButton.addEventListener('click', function (event) {
+                                    event.preventDefault();
+                                    var inputValue = inputField.value;
+
+                                    if (inputValue.trim() !== '') {
+                                        // Lägg till listelementet i DOM:en
+                                        var listItem = document.createElement('li');
+                                        listItem.className = 'list-group-item list-group-item-light';
+                                        listItem.textContent = inputValue;
+
+                                        var removeButton = document.createElement('button');
+                                        removeButton.textContent = 'Ta bort';
+                                        removeButton.className = 'btn btn-outline-danger btn-sm float-end';
+
+                                        removeButton.addEventListener('click', function () {
+                                            RemoveSkill(listItem); // Anropa RemoveSkill med aktuell färdighet
+                                        });
+
+                                        listItem.appendChild(removeButton);
+                                        skillsList.appendChild(listItem);
+                                        inputField.value = '';
+                                    }
+                                });
+                                function RemoveSkill(item) {
+                                    // Lägg till riktig funktionalitet för att ta bort en färdighet
+                                    item.remove();
+                                }
+                            </script>
+                        </div>
+
+
+
+                        <!--Privat profil checkbox-->
+                        <div class="form-group mt-2">
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" asp-for="PrivateProfile" class="custom-control-input" id="privateprofilecheck">
+                                <label class="custom-control-label" for="privateprofilecheck">Privat profil</label>
+                            </div>
+                        </div>
+                        <!--Skapa knapp-->
+                        <div class="form-group text-center ">
+                            <button type="submit" class="btn btn-primary btn-block mt-2">Skapa</button>
+                        </div>
                     </form>
-				</div>
-			</div>
-		</div>
-	</div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
