@@ -1,4 +1,6 @@
-﻿@{
+﻿@model List<MittClick.Models.UserProfileViewModel>
+
+@{
     ViewData["Title"] = "Home Page";
 }
 
@@ -6,6 +8,38 @@
     <h1>God jul @User.Identity.Name!</h1>
     <br />
     <br />
+
+    -------------------- ! Lista med användare här för testing ! --------------------
+
+    <h2>User Profiles</h2>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>UserName</th>
+                <th>Profile Link</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var userProfile in Model)
+            {
+                <tr>
+                    <td>@userProfile.UserName</td>
+                    <td>
+                        @if (userProfile.HasProfile)
+                        {
+                            <a href="@Url.Action("Profile", "Account", new { userId = userProfile.UserId })">View Profile</a>
+                        }
+                        else
+                        {
+                            <span>No Profile</span>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
     <br />
     <br />
     <h1 class="display-4">Välkommen till din nya click!</h1>

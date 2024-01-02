@@ -1,1 +1,77 @@
-﻿
+﻿@model MittClick.Models.EditProfileViewModel
+
+<a asp-action="EditProfile" asp-controller="Account" class="btn btn-primary mt-3">Redigera profil</a>
+
+<div class="container mt-4">
+    <div class="row">
+
+        <div class="col-md-4">
+            <div class="card mb-3">
+                @if (@Model.ProfileImg == null)
+                {
+                    <img class="img rounded-circle m-5" src="~/lib/image/defaultprofileimg.jpg" alt="Profile Image">
+                }
+
+                <a href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#imageUpload">Byt profilbild</a>
+
+                @* <!-- modal med partialvyn ImageUpload -->
+                <div class="modal" tabindex="-1" role="dialog" id="imageUpload">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Byt Profilbild</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" data-bs-target="#imageUpload" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <partial name="ImageUpload" model="new MittClick.Models.ImageUpload { UserId = Model.UserId }"></partial>
+                            </div>
+                        </div>
+                    </div>
+                </div> *@
+
+                <!--  Den riktiga profilbilden goes here -->
+
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <input asp-for="FirstName" class="form-control" />
+                        <input asp-for="LastName" class="form-control" />
+                    </h5>
+                    <p class="card-text">
+                        <textarea asp-for="Information" style="resize: none;" class="form-control" rows="4"></textarea>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title">Kontaktinfo</h5>
+                </div>
+                <div class="card-body">
+                    <dl class="row">
+                        <dt class="col-sm-3">Namn:</dt>
+                        <dd class="col-sm-9">
+                            <input asp-for="FirstName" class="form-control" />
+                            <input asp-for="LastName" class="form-control" />
+                        </dd>
+
+                        <!-- ... Lägg till fler fält här  ... -->
+
+                    </dl>
+                </div>
+            </div>
+
+            <div class="card mt-3">
+                <div class="card-header">
+                    <h5 class="card-title">Projekt</h5>
+                </div>
+                <div class="card-body d-flex flex-wrap justify-content-center">
+
+                    
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

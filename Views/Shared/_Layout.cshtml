@@ -29,12 +29,13 @@
                 <form asp-controller="Home" asp-action="Search" method="get">
                     <input class="form-control mr-sm-2" type="search" placeholder="Sök..." aria-label="Search" name="query">
                     <!-- Dropdown för filtrering -->
-@*                     <select name="filter">
-                        <option value="option1">Personer</option>
-                        <option value="option2">Projekt</option>
-                        <!-- Lägg till fler filtreralternativ här -->
-                    </select>
-                    <button class="btn btn-outline-primary my-2 my-sm-0" type="submit">Sök</button> *@
+
+                <select name="filter">
+                <option value="option1">Personer</option>
+                <option value="option2">Projekt</option>
+                <!-- Lägg till fler filtreralternativ här -->
+                </select>
+                <button class="btn btn-outline-primary my-2 my-sm-0" type="submit">Sök</button> *@
                 </form>
             }
 
@@ -49,14 +50,14 @@
                 {
                     <div class="nav-item dropdown align-content-center">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <!--Ändra till profilbild så småningom-->
-                            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-person-fill" viewBox="0 0 16 16">
-                                <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />
-                            </svg>
+                            
+                          <!--Ändra till profilbild så småningom-->
+                            <img class="img rounded-circle" style="width: 3rem;" src="~/lib/image/defaultprofileimg.jpg" alt="Profile Image">
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <a asp-action="Profile" asp-controller="Account" class="dropdown-item">Profil</a>
-                            <a asp-action="AccountSettings" asp-controller="Account" class="dropdown-item">Inställningar</a>
+                            <a asp-action="MyProfile" asp-controller="Account" class="dropdown-item">Profil</a>
+                            <a asp-action="EditUser" asp-controller="Account" class="dropdown-item">Inställningar</a>
+
                             <div class="dropdown-divider"></div>
                             <form method="post" asp-controller="Account" asp-action="Logout" class="text-center">
                                 <button type="submit" class="btn btn-danger">Logga ut</button>
