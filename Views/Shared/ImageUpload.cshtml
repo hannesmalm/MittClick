@@ -1,0 +1,13 @@
+﻿@model ImageUpload
+
+<h2> Ladda upp bild</h2>
+
+<form method="post" enctype="multipart/form-data">
+    <div class="form group">
+        <label for="Imagefile">Välj bild att ladda upp</label>
+        <input asp-for="ImageFile" type="file" class="form-control" accept="image/*">
+        <span asp-validation-for="ImageFile" class="text-danger">Fel pucko!</span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Ladda upp</button>
+</form>

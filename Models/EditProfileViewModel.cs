@@ -21,4 +21,6 @@ namespace MittClick.Models
 
         public string Resume { get; set; }
     }
+
+
 }

@@ -202,7 +202,23 @@ namespace MittClick.Controllers
         [HttpGet]
         public async Task<IActionResult> EditProfile()
         {
-            EditProfileViewModel editProfileViewModel = new EditProfileViewModel();
+            var currentUser = await userManager.GetUserAsync(User);
+
+            // Antag att du har en relation mellan ApplicationUser och Profile i databasen
+            var userProfile = dbContext.Profiles
+                .Include(p => p.User)
+                .FirstOrDefault(p => p.UserId == currentUser.Id);
+
+            EditProfileViewModel editProfileViewModel = new EditProfileViewModel()
+            {
+                FirstName = userProfile.FirstName,
+                LastName = userProfile.LastName,
+                PrivateProfile = userProfile.PrivateProfile,
+                Information = userProfile.Information,
+                ProfileImg = userProfile.ProfileImg,
+                Resume = userProfile.Resume
+            };
+
             return View(editProfileViewModel);
         }
 
