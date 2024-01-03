@@ -14,6 +14,6 @@ namespace MittClick.Models
 
         [Required]
         [ForeignKey(nameof(PId))]
-        public Project Project { get; set; }
+        public AddProjectViewModel Project { get; set; }
     }
 }

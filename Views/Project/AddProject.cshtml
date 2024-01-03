@@ -1,0 +1,45 @@
+﻿@model AddProjectViewModel
+
+<body>
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-9 col-lg-6">
+                <div class="card">
+                    <div class="card-header text-center">
+                        <h1>Lägg till nytt projekt</h1>
+                    </div>
+            <form asp-action="AddProject" asp-controller="Project" method="post">
+        <div class="form-group">
+            <label asp-for="Title"></label>
+            <input asp-for="Title" class="form-control" />
+            <span asp-validation-for="Title" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Summary"></label>
+            <input asp-for="Summary" class="form-control" />
+            <span asp-validation-for="Summary" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Description"></label>
+            <textarea asp-for="Description" class="form-control auto-expand"></textarea>
+            <span asp-validation-for="Description" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="ProjectImg"></label>
+            <input asp-for="ProjectImg" class="form-control" />
+            <!-- För bilder kan du använda en filinmatningstyp för att låta användaren välja en bildfil att ladda upp -->
+            <!-- <input asp-for="ProjectImg" type="file" class="form-control" /> -->
+            <span asp-validation-for="ProjectImg" class="text-danger"></span>
+        </div>
+        <div class="mt-3">
+            <button type="submit" class="btn btn-primary">Skicka</button>
+        </div>
+					</form>
+		        </div>
+            </div>
+        </div>
+	</div>
+</body>

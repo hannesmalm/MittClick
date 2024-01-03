@@ -1,0 +1,43 @@
+﻿@model AddProjectViewModel
+
+@{
+    ViewData["Project"] = "Project";
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <div class="card">
+                <img src="@Model.ProjectImg" alt="Projektbild" />
+            </div>
+            
+            <div>
+                <h2>@Model.Title</h2>
+            </div>
+
+            <div>
+                <p1>@Model.Summary</p1>
+            </div>
+           
+            <div>
+                <p2>@Model.Description</p2>
+            </div>
+
+            <div>
+                <style>
+             .edit-button 
+             {
+                 position: fixed;
+                 bottom: 20px; 
+                 right: 20px;
+                        /* z-index: 999;  Säkerställ att knappen visas över andra element */
+             }
+                </style>
+            @if (User.IsInRole("ProjectLeader"))
+            {
+               <a class="edit-button" asp-action="EditProject" asp-controller="Project">Redigera projekt</a>
+            }
+            </div>
+        </div>
+    </div>
+</div>
