@@ -103,6 +103,12 @@ namespace MittClick.Controllers
             return RedirectToAction("Index", "Home");
         }
 
+        public IActionResult Edit()
+        {
+            return View();
+        }
+
+
     }
 
 }
