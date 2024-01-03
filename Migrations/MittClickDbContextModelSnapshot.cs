@@ -190,6 +190,10 @@ namespace MittClick.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("UserName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("ProfileId");
 
                     b.HasIndex("UserId");
