@@ -8,7 +8,7 @@
                     <h4> Skapa profil </h4>
                 </div>
                 <div class="card-body">
-                    <form asp-action="CreateProfile" method="post" enctype="multipart/form-data">
+                    <form asp-action="Create" asp-controller="Profile" method="post" enctype="multipart/form-data">
                         <!--Förnamn-->
                         <div class="form-floating">
                             <input type="text" asp-for="FirstName" id="Firstname" class="form-control" placeholder="Input Firstname here" />
