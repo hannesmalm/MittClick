@@ -23,5 +23,7 @@ namespace MittClick.Models
         public string? ProfileImg { get; set; }
 
         public string? Resume { get; set; }
+        
+        public List<String> Skills { get; set; }
     }
 }

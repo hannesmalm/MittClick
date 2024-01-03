@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace MittClick.Migrations
 {
     /// <inheritdoc />
-    public partial class Klick : Migration
+    public partial class initialmigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -197,6 +197,26 @@ namespace MittClick.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Skills",
+                columns: table => new
+                {
+                    SkillId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ProfileId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Skills", x => x.SkillId);
+                    table.ForeignKey(
+                        name: "FK_Skills_Profiles_ProfileId",
+                        column: x => x.ProfileId,
+                        principalTable: "Profiles",
+                        principalColumn: "ProfileId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -240,6 +260,11 @@ namespace MittClick.Migrations
                 name: "IX_Profiles_UserId",
                 table: "Profiles",
                 column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Skills_ProfileId",
+                table: "Skills",
+                column: "ProfileId");
         }
 
         /// <inheritdoc />
@@ -261,13 +286,16 @@ namespace MittClick.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "Profiles");
-
-            migrationBuilder.DropTable(
                 name: "Projects");
 
             migrationBuilder.DropTable(
+                name: "Skills");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
+                name: "Profiles");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

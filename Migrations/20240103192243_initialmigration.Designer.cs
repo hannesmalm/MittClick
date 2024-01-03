@@ -12,8 +12,8 @@ using MittClick.Models;
 namespace MittClick.Migrations
 {
     [DbContext(typeof(MittClickDbContext))]
-    [Migration("20240103095342_Klick")]
-    partial class Klick
+    [Migration("20240103192243_initialmigration")]
+    partial class initialmigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -228,6 +228,28 @@ namespace MittClick.Migrations
                     b.ToTable("Projects");
                 });
 
+            modelBuilder.Entity("MittClick.Models.Skill", b =>
+                {
+                    b.Property<int>("SkillId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SkillId"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ProfileId")
+                        .HasColumnType("int");
+
+                    b.HasKey("SkillId");
+
+                    b.HasIndex("ProfileId");
+
+                    b.ToTable("Skills");
+                });
+
             modelBuilder.Entity("MittClick.Models.User", b =>
                 {
                     b.Property<string>("Id")
@@ -353,6 +375,17 @@ namespace MittClick.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("MittClick.Models.Skill", b =>
+                {
+                    b.HasOne("MittClick.Models.Profile", "Profile")
+                        .WithMany()
+                        .HasForeignKey("ProfileId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Profile");
                 });
 #pragma warning restore 612, 618
         }

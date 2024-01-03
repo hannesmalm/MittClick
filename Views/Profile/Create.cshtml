@@ -8,7 +8,7 @@
                     <h4> Skapa profil </h4>
                 </div>
                 <div class="card-body">
-                    <form asp-action="CreateProfile" method="post" enctype="multipart/form-data">
+					<form method="post" asp-action="Create">
                         <!--Förnamn-->
                         <div class="form-floating">
                             <input type="text" asp-for="FirstName" id="Firstname" class="form-control" placeholder="Input Firstname here" />
@@ -25,7 +25,7 @@
 
 
                         <!--Kontaktuppgifter-->
-                        <div class="form-floating mt-2">
+                       @*  <div class="form-floating mt-2">
                             <div class="input-group mt-3">
                                 <div class="dropdown">
                                     <button class="btn btn-outline-primary dropdown-toggle" type="button" id="contactDropDown" data-bs-toggle="dropdown" aria-expanded="false">
@@ -94,7 +94,7 @@
                                     item.remove();
                                 }
                             </script>
-                        </div>
+                        </div> *@
 
                         <!--Beskrivning-->
                         <div class="form-floating mt-2">
@@ -146,11 +146,12 @@
                             <div class="input-group mt-2">
                                 <input type="text" class="form-control" id="textInput" placeholder="Enter skill">
                                 <div class="input-group-append">
-                                    <button class="btn btn-outline-primary" id="addSkillButton">Lägg till</button>
+                                    <button type="button" class="btn btn-outline-primary" id="addSkillButton">Lägg till</button>
                                 </div>
                             </div>
-
-                            <ul class="list-group list-group-flush" id="skillslist"></ul>
+                            <ul class="list-group list-group-flush" id="skillslist">
+                                <input type="hidden" name="Skills" id="hiddenSkills" />
+                            </ul> 
                             <script>
                                 var addButton = document.getElementById('addSkillButton');
                                 var inputField = document.getElementById('textInput');
@@ -177,14 +178,28 @@
                                         listItem.appendChild(removeButton);
                                         skillsList.appendChild(listItem);
                                         inputField.value = '';
+                                        
+                                        document.getElementById("hiddenSkills").value = JSON.stringify(skills);
                                     }
                                 });
                                 function RemoveSkill(item) {
                                     // Lägg till riktig funktionalitet för att ta bort en färdighet
                                     item.remove();
+                                    document.getElementById("hiddenSkills").value = JSON.stringify(getSkills());
+
+                                }
+                                function getSkills() {
+                                    var skills = [];
+                                    var listItems = document.querySelectorAll('#skillslist li');
+
+                                    listItems.forEach(function (item) {
+                                        skills.push(item.textContent.trim());
+                                    });
+
+                                    return skills;
                                 }
                             </script>
-                        </div>
+						</div>
 
 
 
@@ -199,7 +214,7 @@
                         <div class="form-group text-center ">
                             <button type="submit" class="btn btn-primary btn-block mt-2">Skapa</button>
                         </div>
-                    </form>
+                   </form>
                 </div>
             </div>
         </div>

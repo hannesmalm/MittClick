@@ -89,7 +89,10 @@ namespace MittClick.Controllers
                     Information = createProfileViewModel.Information,
                     ProfileImg = createProfileViewModel.ProfileImg,
                     Resume = createProfileViewModel.Resume,
+                    
                 };
+
+
 
                 //Testgrejer ---------------------------------------
                 Console.WriteLine($"User ID: {currentUser.Id}");
@@ -101,6 +104,19 @@ namespace MittClick.Controllers
 
                 dbContext.Profiles.Add(newProfile);
                 dbContext.SaveChanges();
+
+                foreach (string skillName in createProfileViewModel.Skills)
+                {
+                    Console.WriteLine($"Processing skill: {skillName}");
+                    Skill newSkill = new Skill
+                    {
+                        Name = skillName,
+                        ProfileId = newProfile.ProfileId // Koppla färdigheten till den nya profilen
+                    };
+
+                    dbContext.Skills.Add(newSkill);
+                    Console.WriteLine($"Added skill to context: {newSkill.Name}");
+                }
 
                 return RedirectToAction("Index", "Home");
             }
