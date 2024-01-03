@@ -23,7 +23,7 @@
         <div class="container">
             <a class="navbar-brand" href="/">Mitt Click</a>
 
-            @if (!(routeController == "Home" && routeAction == "Index"))
+            @if (!(routeController == "Home" && routeAction == "Index") && !(routeController == "Search" && routeAction == "Result") && !(routeController == "Profile" && routeAction == "Create"))
             {
                 <form asp-controller="Search" asp-action="Result" method="get">
                     <div class="input-group">

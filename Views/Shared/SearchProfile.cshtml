@@ -1,0 +1,16 @@
+﻿@model IEnumerable<Profile> 
+
+@foreach (var profile in Model)
+{
+    <div class="col-md-4 mb-4">
+        <div class="card">
+            <img class="card-img-top" src="@profile." alt="Profilbild">
+            <div class="card-body">
+                <h5 class="card-title">@profile.FirstName</h5>
+                <h5 class="card-title">@profile.LastName</h5>
+                <p class="card-text">@profile.Information</p>
+                <a href="@Url.Action("Profile", "Profile", new { userId = profile.UserId })" class="btn btn-primary">Visa Profil</a>
+            </div>
+        </div>
+    </div>
+}

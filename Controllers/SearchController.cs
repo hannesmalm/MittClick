@@ -11,12 +11,29 @@ namespace MittClick.Controllers
         {
             profiles = service;
         }
+
         public IActionResult Result()
         {
             var profileList = from profile in profiles.Profiles
                            select profile;
             return View(profileList.ToList());
         }
+
+        public IActionResult SearchEmpty()
+        {
+            var profileList = profiles.Profiles.ToList();
+            return PartialView("SearchProfile", profileList);
+        }
+
+        public ActionResult SearchProfiles(string searchTerm)
+        {
+            var filteredProfiles = profiles.Profiles
+                                           .Where(p => p.FirstName.Contains(searchTerm) || p.LastName.Contains(searchTerm))
+                                           .ToList();
+
+            return PartialView("SearchProfile", filteredProfiles);
+        }
+
         public IActionResult Index()
         {
             return View();

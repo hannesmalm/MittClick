@@ -3,25 +3,28 @@
 <div class="container">
     <div class="row my-4">
         <div class="col">
-            <input type="text" class="form-control" placeholder="Sök...">
+            <input type="text" id="searchBox" placeholder="Sök profiler" onkeyup="searchProfiles()" />
         </div>
     </div>
 
-    <!-- Sökresultaten -->
-    <div class="row">
-        @foreach (var profile in Model)
-        {
-            <div class="col-md-4 mb-4">
-                <div class="card">
-                    <img class="card-img-top" src="@profile." alt="Profilbild">
-                    <div class="card-body">
-                        <h5 class="card-title">@profile.FirstName</h5>
-                        <h5 class="card-title">@profile.LastName</h5>
-                        <p class="card-text">@profile.Information</p>
-                        <a href="@Url.Action("Profile", "Profile", new { userId = profile.UserId })" class="btn btn-primary">Visa Profil</a>
-                    </div>
-                </div>
-            </div>
+    <script>
+function searchProfiles() {
+    var searchValue = $('#searchBox').val();
+    $.ajax({
+        url: searchValue ? '@Url.Action("SearchProfiles", "Search")' : '@Url.Action("SearchEmpty", "Search")',
+        type: 'GET',
+        data: { searchTerm: searchValue },
+        success: function (data) {
+            if (data) {
+                $('#profilesList').html(data);
+            } else {
+                $('#profilesList').empty(); // Rensar innehållet om inga data finns
+            }
         }
+    });
+}
+    </script>
+
+    <div id="profilesList">
+        @Html.Partial("SearchProfile", Model)
     </div>
-</div>
