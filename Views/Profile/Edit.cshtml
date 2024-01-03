@@ -14,7 +14,7 @@
 
                 <a href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#imageUpload">Byt profilbild</a>
 
-                @* <!-- modal med partialvyn ImageUpload -->
+                <!-- modal med partialvyn ImageUpload -->
                 <div class="modal" tabindex="-1" role="dialog" id="imageUpload">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
@@ -23,11 +23,11 @@
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" data-bs-target="#imageUpload" aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
-                                <partial name="ImageUpload" model="new MittClick.Models.ImageUpload { UserId = Model.UserId }"></partial>
+                                @* < partial name="ImageUpload" model="new MittClick.Models.ImageUpload { UserId = Model.UserId }"></partial> *@
                             </div>
                         </div>
                     </div>
-                </div> *@
+                </div>
 
                 <!--  Den riktiga profilbilden goes here -->
 

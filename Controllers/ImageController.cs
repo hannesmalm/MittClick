@@ -19,6 +19,5 @@ namespace MittClick.Controllers
         {
             return View();
         }
-
     }
 }
