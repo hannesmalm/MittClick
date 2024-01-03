@@ -1,0 +1,30 @@
+﻿@model List<Profile>
+
+<div class="container">
+    <div class="row my-4">
+        <div class="col">
+            <input type="text" id="searchBox" placeholder="Sök profiler" onkeyup="searchProfiles()" />
+        </div>
+    </div>
+
+    <script>
+function searchProfiles() {
+    var searchValue = $('#searchBox').val();
+    $.ajax({
+        url: searchValue ? '@Url.Action("SearchProfiles", "Search")' : '@Url.Action("SearchEmpty", "Search")',
+        type: 'GET',
+        data: { searchTerm: searchValue },
+        success: function (data) {
+            if (data) {
+                $('#profilesList').html(data);
+            } else {
+                $('#profilesList').empty(); // Rensar innehållet om inga data finns
+            }
+        }
+    });
+}
+    </script>
+
+    <div id="profilesList">
+        @Html.Partial("SearchProfile", Model)
+    </div>
