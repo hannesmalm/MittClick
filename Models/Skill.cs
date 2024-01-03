@@ -4,10 +4,11 @@ namespace MittClick.Models
 {
     public class Skill
     {
-        public int SkillId { get; set; }
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int Id { get; set; }
         public string Name { get; set; }
-        // Foreign Key för att hålla reda på vilken Profile färdigheten tillhör
+        [ForeignKey(nameof(ProfileId))]
         public int ProfileId { get; set; }
-        public virtual Profile Profile { get; set; }
+        public virtual Profile? Profile { get; set; }
     }
 }

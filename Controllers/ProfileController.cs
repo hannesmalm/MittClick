@@ -77,7 +77,7 @@ namespace MittClick.Controllers
             {
                 //Testgrejer ------------------------------------------
                 Console.WriteLine("Modelstate är Valid");
-                //Testgrejer ------------------------------------------
+                //Testgrejer 
 
                 Profile newProfile = new Profile
                 {
@@ -102,14 +102,20 @@ namespace MittClick.Controllers
                 Console.WriteLine($"LastName: {createProfileViewModel.LastName}");
                 //Testgrejer ---------------------------------------
 
-
                 dbContext.Profiles.Add(newProfile);
                 dbContext.SaveChanges();
+
+                if (createProfileViewModel.Skills == null)
+                {
+                    createProfileViewModel.Skills = new List<Skill>();
+                }
 
                 foreach (var skill in createProfileViewModel.Skills)
                 {
                     newProfile.Skills.Add(new Skill { Name = skill.Name, ProfileId = newProfile.ProfileId });
                 }
+
+                dbContext.SaveChanges();
 
                 return RedirectToAction("Index", "Home");
             }
@@ -174,6 +180,7 @@ namespace MittClick.Controllers
                     userProfile.Information = editProfileViewModel.Information;
                     userProfile.ProfileImg = editProfileViewModel.ProfileImg;
                     userProfile.Resume = editProfileViewModel.Resume;
+                    userProfile.Skills = editProfileViewModel.Skills;
 
                     dbContext.SaveChanges();
                 }

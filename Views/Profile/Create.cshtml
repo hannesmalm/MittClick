@@ -149,57 +149,46 @@
                                     <button type="button" class="btn btn-outline-primary" id="addSkillButton">Lägg till</button>
                                 </div>
                             </div>
-                            <ul class="list-group list-group-flush" id="skillslist">
-                                <input type="hidden" name="Skills" id="hiddenSkills" />
-                            </ul> 
-                            <script>
-                                var addButton = document.getElementById('addSkillButton');
-                                var inputField = document.getElementById('textInput');
-                                var skillsList = document.getElementById('skillslist');
+                            <ul class="list-group  list-group-flush" id="skillslist">
+                            </ul>
+                        </div>
+                        <script>
+                            var addButton = document.getElementById('addSkillButton');
+                            var inputField = document.getElementById('textInput');
+                            var skillsList = document.getElementById('skillslist');
+                            var skillIndex = 0;
 
-                                addButton.addEventListener('click', function (event) {
-                                    event.preventDefault();
-                                    var inputValue = inputField.value;
+                            addButton.addEventListener('click', function (event) {
+                                event.preventDefault();
+                                var inputValue = inputField.value;
 
-                                    if (inputValue.trim() !== '') {
-                                        // Lägg till listelementet i DOM:en
-                                        var listItem = document.createElement('li');
-                                        listItem.className = 'list-group-item list-group-item-light';
-                                        listItem.textContent = inputValue;
+                                if (inputValue.trim() !== '') {
+                                    // Lägg till listelementet i DOM:en
+                                    var listItem = document.createElement('li');
+                                    listItem.className = 'list-group-item list-group-item-light';
+                                    listItem.textContent = inputValue;
 
-                                        var removeButton = document.createElement('button');
-                                        removeButton.textContent = 'Ta bort';
-                                        removeButton.className = 'btn btn-outline-danger btn-sm float-end';
+                                    var hiddenInput = document.createElement('input');
+                                    hiddenInput.type = 'hidden';
+                                    hiddenInput.name = 'Skills[' + skillIndex + '].Name';
+                                    hiddenInput.value = inputValue;
+                                    listItem.appendChild(hiddenInput);
 
-                                        removeButton.addEventListener('click', function () {
-                                            RemoveSkill(listItem); // Anropa RemoveSkill med aktuell färdighet
-                                        });
-
-                                        listItem.appendChild(removeButton);
-                                        skillsList.appendChild(listItem);
-                                        inputField.value = '';
-                                        
-                                        document.getElementById("hiddenSkills").value = JSON.stringify(skills);
-                                    }
-                                });
-                                function RemoveSkill(item) {
-                                    // Lägg till riktig funktionalitet för att ta bort en färdighet
-                                    item.remove();
-                                    document.getElementById("hiddenSkills").value = JSON.stringify(getSkills());
-
-                                }
-                                function getSkills() {
-                                    var skills = [];
-                                    var listItems = document.querySelectorAll('#skillslist li');
-
-                                    listItems.forEach(function (item) {
-                                        skills.push(item.textContent.trim());
+                                    var removeButton = document.createElement('button');
+                                    removeButton.textContent = 'Ta bort';
+                                    removeButton.className = 'btn btn-outline-danger btn-sm float-end';
+                                    removeButton.addEventListener('click', function () {
+                                        listItem.remove();
                                     });
 
-                                    return skills;
+                                    listItem.appendChild(removeButton);
+                                    skillsList.appendChild(listItem);
+                                    inputField.value = '';
+                                    skillIndex++;
                                 }
-                            </script>
-						</div>
+                            });
+                        </script>
+
 
 
 
