@@ -24,6 +24,6 @@ namespace MittClick.Models
 
         public string? Resume { get; set; }
         
-        public List<String> Skills { get; set; }
+        public virtual ICollection<Skill> Skills { get; set; }
     }
 }

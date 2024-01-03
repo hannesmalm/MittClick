@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
 using MittClick.Models;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace MittClick.Controllers
 {
@@ -105,17 +106,9 @@ namespace MittClick.Controllers
                 dbContext.Profiles.Add(newProfile);
                 dbContext.SaveChanges();
 
-                foreach (string skillName in createProfileViewModel.Skills)
+                foreach (var skill in createProfileViewModel.Skills)
                 {
-                    Console.WriteLine($"Processing skill: {skillName}");
-                    Skill newSkill = new Skill
-                    {
-                        Name = skillName,
-                        ProfileId = newProfile.ProfileId // Koppla färdigheten till den nya profilen
-                    };
-
-                    dbContext.Skills.Add(newSkill);
-                    Console.WriteLine($"Added skill to context: {newSkill.Name}");
+                    newProfile.Skills.Add(new Skill { Name = skill.Name, ProfileId = newProfile.ProfileId });
                 }
 
                 return RedirectToAction("Index", "Home");
