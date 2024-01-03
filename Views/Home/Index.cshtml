@@ -28,7 +28,7 @@
                     <td>
                         @if (userProfile.HasProfile)
                         {
-                            <a href="@Url.Action("Profile", "Account", new { userId = userProfile.UserId })">View Profile</a>
+                            <a href="@Url.Action("Profile", "Profile", new { userId = userProfile.UserId })">View Profile</a>
                         }
                         else
                         {

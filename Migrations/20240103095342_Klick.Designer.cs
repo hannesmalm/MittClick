@@ -12,8 +12,8 @@ using MittClick.Models;
 namespace MittClick.Migrations
 {
     [DbContext(typeof(MittClickDbContext))]
-    [Migration("20231231153735_Maybe")]
-    partial class Maybe
+    [Migration("20240103095342_Klick")]
+    partial class Klick
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -192,6 +192,10 @@ namespace MittClick.Migrations
                     b.Property<string>("UserId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("UserName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("ProfileId");
 
