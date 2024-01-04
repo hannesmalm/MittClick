@@ -87,7 +87,7 @@ namespace MittClick.Controllers
                     LastName = createProfileViewModel.LastName,
                     PrivateProfile = createProfileViewModel.PrivateProfile,
                     Information = createProfileViewModel.Information,
-                    ProfileImg = createProfileViewModel.ProfileImg,
+                    ProfileImage = createProfileViewModel.ProfileImage,
                     Resume = createProfileViewModel.Resume,
                 };
 
@@ -124,11 +124,10 @@ namespace MittClick.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> EditProfile()
+        public async Task<IActionResult> Edit()
         {
             var currentUser = await userManager.GetUserAsync(User);
 
-            // Antag att du har en relation mellan ApplicationUser och Profile i databasen
             var userProfile = dbContext.Profiles
                 .Include(p => p.User)
                 .FirstOrDefault(p => p.UserId == currentUser.Id);
@@ -139,7 +138,7 @@ namespace MittClick.Controllers
                 LastName = userProfile.LastName,
                 PrivateProfile = userProfile.PrivateProfile,
                 Information = userProfile.Information,
-                ProfileImg = userProfile.ProfileImg,
+                ProfileImage = userProfile.ProfileImage,
                 Resume = userProfile.Resume
             };
 
@@ -147,7 +146,7 @@ namespace MittClick.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> EditProfile(EditProfileViewModel editProfileViewModel)
+        public async Task<IActionResult> Edit(EditProfileViewModel editProfileViewModel)
         {
             if (ModelState.IsValid)
             {
@@ -163,7 +162,7 @@ namespace MittClick.Controllers
                     userProfile.LastName = editProfileViewModel.LastName;
                     userProfile.PrivateProfile = editProfileViewModel.PrivateProfile;
                     userProfile.Information = editProfileViewModel.Information;
-                    userProfile.ProfileImg = editProfileViewModel.ProfileImg;
+                    userProfile.ProfileImage = editProfileViewModel.ProfileImage;
                     userProfile.Resume = editProfileViewModel.Resume;
 
                     dbContext.SaveChanges();

@@ -4,14 +4,14 @@
     ViewData["Title"] = "Profile";
 }
 
-<a asp-action="EditProfile" asp-controller="Profile" class="btn btn-primary mt-3">Redigera profil</a>
+<a asp-action="Edit" asp-controller="Profile" class="btn btn-primary mt-3">Redigera profil</a>
 
 <div class="container mt-4">
     <div class="row">
 
         <div class="col-md-4">
             <div class="card mb-3">
-                @if (@Model.ProfileImg == null)
+                @if (@Model.ProfileImage == null)
                 {
                     <img class="img rounded-circle m-5" src="~/lib/image/defaultprofileimg.jpg" alt="Profile Image">
                 }

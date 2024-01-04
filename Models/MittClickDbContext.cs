@@ -9,12 +9,16 @@ namespace MittClick.Models
 
         public DbSet<Profile> Profiles { get; set; }
         public DbSet<Project> Projects { get; set; }
+        public DbSet<Image> Images { get; set; }
+
+
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            base.OnConfiguring(optionsBuilder);
-
-            optionsBuilder.UseLazyLoadingProxies();
+            if (!optionsBuilder.IsConfigured)
+            {
+                optionsBuilder.UseSqlServer("ApplicationDbContext");
+            }
         }
     }
 }

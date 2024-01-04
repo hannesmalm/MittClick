@@ -17,7 +17,7 @@ namespace MittClick.Models
 
         public string Information { get; set; }
 
-        public string ProfileImg { get; set; }
+        public string ProfileImage { get; set; }
 
         public string Resume { get; set; }
     }

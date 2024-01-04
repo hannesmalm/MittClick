@@ -1,33 +1,19 @@
 ﻿@model MittClick.Models.EditProfileViewModel
 
-<a asp-action="EditProfile" asp-controller="Profile" class="btn btn-primary mt-3">Redigera profil</a>
+<a asp-action="Edit" asp-controller="Profile" class="btn btn-primary mt-3">Redigera profil</a>
 
 <div class="container mt-4">
     <div class="row">
 
         <div class="col-md-4">
             <div class="card mb-3">
-                @if (@Model.ProfileImg == null)
+                @if (@Model.ProfileImage == null)
                 {
                     <img class="img rounded-circle m-5" src="~/lib/image/defaultprofileimg.jpg" alt="Profile Image">
                 }
 
                 <a href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#imageUpload">Byt profilbild</a>
 
-                <!-- modal med partialvyn ImageUpload -->
-                <div class="modal" tabindex="-1" role="dialog" id="imageUpload">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title">Byt Profilbild</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" data-bs-target="#imageUpload" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                @* < partial name="ImageUpload" model="new MittClick.Models.ImageUpload { UserId = Model.UserId }"></partial> *@
-                            </div>
-                        </div>
-                    </div>
-                </div>
 
                 <!--  Den riktiga profilbilden goes here -->
 
