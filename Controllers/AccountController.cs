@@ -36,24 +36,28 @@ namespace MittClick.Controllers
                     isPersistent: loginViewModel.RememberMe,
                     lockoutOnFailure: false);
 
-                var currentUser = userManager.GetUserAsync(User).Result;
-                string currentUserId = currentUser.Id.ToString();
-                var currentUserProfile = dbContext.Profiles.FirstOrDefault(p => p.UserId == currentUserId);
-
-                if (currentUserProfile != null)
+                if (result.Succeeded)
                 {
-                    if (result.Succeeded)
+                    // Flytta logiken för att hämta användaren och användarprofilen här
+                    var currentUser = await userManager.FindByNameAsync(loginViewModel.UserName);
+                    if (currentUser != null)
                     {
-                        return RedirectToAction("MyProfile", "Profile");
-                    }
-                    else
-                    {
-                        ModelState.AddModelError("", "Fel användarnamn/lösenord");
+                        string currentUserId = currentUser.Id.ToString();
+                        var currentUserProfile = dbContext.Profiles.FirstOrDefault(p => p.UserId == currentUserId);
+
+                        if (currentUserProfile != null)
+                        {
+                            return RedirectToAction("MyProfile", "Profile");
+                        }
+                        else
+                        {
+                            return RedirectToAction("Create", "Profile");
+                        }
                     }
                 }
                 else
                 {
-                    return RedirectToAction("Create", "Profile");
+                    ModelState.AddModelError("", "Fel användarnamn/lösenord");
                 }
             }
             return View(loginViewModel);
@@ -96,18 +100,47 @@ namespace MittClick.Controllers
             return View(registerViewModel);
         }
 
+        public IActionResult ChangePassword()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await userManager.GetUserAsync(User);
+                if (user == null)
+                {
+                    // Hantera fallet när användaren inte hittas
+                    return RedirectToAction("Login", "Account");
+                }
+
+                var changePasswordResult = await userManager.ChangePasswordAsync(user, model.CurrentPassword, model.NewPassword);
+                if (!changePasswordResult.Succeeded)
+                {
+                    foreach (var error in changePasswordResult.Errors)
+                    {
+                        ModelState.AddModelError(string.Empty, error.Description);
+                    }
+                    return View();
+                }
+
+                await signInManager.RefreshSignInAsync(user);
+                return RedirectToAction("Index", "Home");
+            }
+            return View(model);
+        }
+
+
+
         [HttpPost]
         public async Task<IActionResult> LogOut()
         {
             await signInManager.SignOutAsync();
             return RedirectToAction("Index", "Home");
         }
-
-        public IActionResult Edit()
-        {
-            return View();
-        }
-
 
     }
 
