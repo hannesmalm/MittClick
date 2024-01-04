@@ -156,37 +156,60 @@
                             var addButton = document.getElementById('addSkillButton');
                             var inputField = document.getElementById('textInput');
                             var skillsList = document.getElementById('skillslist');
-                            var skillIndex = 0;
 
                             addButton.addEventListener('click', function (event) {
                                 event.preventDefault();
                                 var inputValue = inputField.value;
 
                                 if (inputValue.trim() !== '') {
-                                    // Lägg till listelementet i DOM:en
-                                    var listItem = document.createElement('li');
-                                    listItem.className = 'list-group-item list-group-item-light';
-                                    listItem.textContent = inputValue;
-
-                                    var hiddenInput = document.createElement('input');
-                                    hiddenInput.type = 'hidden';
-                                    hiddenInput.name = 'Skills[' + skillIndex + '].Name';
-                                    hiddenInput.value = inputValue;
-                                    listItem.appendChild(hiddenInput);
-
-                                    var removeButton = document.createElement('button');
-                                    removeButton.textContent = 'Ta bort';
-                                    removeButton.className = 'btn btn-outline-danger btn-sm float-end';
-                                    removeButton.addEventListener('click', function () {
-                                        listItem.remove();
-                                    });
-
-                                    listItem.appendChild(removeButton);
-                                    skillsList.appendChild(listItem);
+                                    addSkill(inputValue);
                                     inputField.value = '';
-                                    skillIndex++;
                                 }
                             });
+
+                            function addSkill(skillName) {
+                                var listItem = document.createElement('li');
+                                listItem.className = 'list-group-item list-group-item-light';
+                                listItem.textContent = skillName;
+
+                                var hiddenInput = createHiddenInput(skillName);
+                                listItem.appendChild(hiddenInput);
+
+                                var removeButton = createRemoveButton();
+                                listItem.appendChild(removeButton);
+
+                                skillsList.appendChild(listItem);
+                                updateSkillIndexes();
+                            }
+
+                            function createHiddenInput(value) {
+                                var hiddenInput = document.createElement('input');
+                                hiddenInput.type = 'hidden';
+                                hiddenInput.value = value;
+                                return hiddenInput;
+                            }
+
+                            function createRemoveButton() {
+                                var button = document.createElement('button');
+                                button.textContent = 'Ta bort';
+                                button.className = 'btn btn-outline-danger btn-sm float-end';
+                                button.addEventListener('click', function () {
+                                    this.parentElement.remove();
+                                    updateSkillIndexes();
+                                });
+                                return button;
+                            }
+
+                            function updateSkillIndexes() {
+                                var allSkills = skillsList.querySelectorAll('li');
+                                allSkills.forEach(function (item, index) {
+                                    var input = item.querySelector('input[type="hidden"]');
+                                    if (input) {
+                                        input.name = 'Skills[' + index + '].Name';
+                                    }
+                                });
+                            }
+
                         </script>
 
 
