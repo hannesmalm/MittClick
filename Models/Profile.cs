@@ -22,7 +22,7 @@ namespace MittClick.Models
         public string? Information { get; set; }
 
         [ForeignKey("Image")]
-        public string? ProfileImage { get; set; }
+        public byte[]? ProfileImage { get; set; }
 
         public string? Resume { get; set; }
 

@@ -5,27 +5,35 @@
 }
 
 <a asp-action="Edit" asp-controller="Profile" class="btn btn-primary mt-3">Redigera profil</a>
-
 <div class="container mt-4">
     <div class="row">
 
-        <div class="col-md-4">
-            <div class="card mb-3">
-                @if (@Model.ProfileImage == null)
-                {
-                    <img class="img rounded-circle m-5" src="~/lib/image/defaultprofileimg.jpg" alt="Profile Image">
-                }
-                <!--  Den riktiga profilbilden  -->
 
-                <div class="card-body">
-                    <h5 class="card-title">@Model.FirstName @Model.LastName</h5>
-                    <p style="color: gray;">@Model.UserName</p>
-                    <p class="card-text">@Model.Information</p>
-                    <div class="text-center">
-                    </div>
-                </div>
+
+<div class="col-md-4">
+    <div class="card mb-3">
+        @if (Model.ProfileImage != null)
+        {
+            var imageBase64 = Convert.ToBase64String(Model.ProfileImage);
+            var imageSrc = $"data:image/png;base64,{imageBase64}";
+            <img class="img rounded-circle m-3" src="@imageSrc" alt="Profile Image">
+        }
+        else
+        {
+            <img class="img rounded-circle m-5" src="~/lib/image/defaultprofileimg.jpg" alt="Default Profile Image">
+        }
+
+        <div class="card-body">
+            <h5 class="card-title">@Model.FirstName @Model.LastName</h5>
+            <p style="color: gray;">@Model.UserName</p>
+            <p class="card-text">@Model.Information</p>
+            <div class="text-center">
+                <a href="#" class="btn btn-primary">Skicka meddelande</a>
             </div>
         </div>
+    </div>
+</div>
+
 
         <div class="col-md-8">
             <div class="card">

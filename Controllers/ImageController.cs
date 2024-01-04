@@ -37,8 +37,7 @@ namespace MittClick.Controllers
 			return View(model);
 		}
 
-
-		private byte[] ConvertToByteArray(IFormFile file)
+		public byte[] ConvertToByteArray(IFormFile file)
         {
             using (var memoryStream = new MemoryStream())
             {

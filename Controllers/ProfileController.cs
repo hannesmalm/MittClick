@@ -10,11 +10,13 @@ namespace MittClick.Controllers
     {
         private UserManager<User> userManager;
         private readonly MittClickDbContext dbContext;
+        private readonly IImageService imageService;
 
-        public ProfileController(UserManager<User> userManager, MittClickDbContext dbContext)
+        public ProfileController(UserManager<User> userManager, MittClickDbContext dbContext, IImageService imageService)
         {
             this.userManager = userManager;
             this.dbContext = dbContext;
+            this.imageService = imageService;
         }
 
         public async Task<IActionResult> MyProfile()
@@ -66,17 +68,10 @@ namespace MittClick.Controllers
         [HttpPost]
         public IActionResult Create(CreateProfileViewModel createProfileViewModel)
         {
-            //Testgrejer -------------------------------------------
-            Console.WriteLine("Början på metod");
             var currentUser = userManager.GetUserAsync(User).Result;
-            Console.WriteLine($"User ID: {currentUser.Id}");
-            //Testgrejer -------------------------------------------
 
             if (ModelState.IsValid)
             {
-                //Testgrejer ------------------------------------------
-                Console.WriteLine("Modelstate är Valid");
-                //Testgrejer ------------------------------------------
 
                 Profile newProfile = new Profile
                 {
@@ -87,17 +82,22 @@ namespace MittClick.Controllers
                     LastName = createProfileViewModel.LastName,
                     PrivateProfile = createProfileViewModel.PrivateProfile,
                     Information = createProfileViewModel.Information,
-                    ProfileImage = createProfileViewModel.ProfileImage,
                     Resume = createProfileViewModel.Resume,
                 };
 
-                //Testgrejer ---------------------------------------
-                Console.WriteLine($"User ID: {currentUser.Id}");
-                Console.WriteLine($"User ID: {currentUser.UserName}");
-                Console.WriteLine($"FirstName: {createProfileViewModel.FirstName}");
-                Console.WriteLine($"LastName: {createProfileViewModel.LastName}");
-                //Testgrejer ---------------------------------------
+                // Profilbild
+                if (createProfileViewModel.ProfileImage != null && createProfileViewModel.ProfileImage.Length > 0)
+                {
+                    var image = new Image
+                    {
+                        Data = imageService.ConvertToByteArray(createProfileViewModel.ProfileImage)
+                    };
 
+                    dbContext.Images.Add(image);
+                    dbContext.SaveChanges();
+
+                    newProfile.ProfileImage = image.Data;
+                }
 
                 dbContext.Profiles.Add(newProfile);
                 dbContext.SaveChanges();
@@ -106,19 +106,6 @@ namespace MittClick.Controllers
             }
             else
             {
-                //Testgrejer ---------------------------------------
-                foreach (var modelStateKey in ModelState.Keys)
-                {
-                    var modelStateVal = ModelState[modelStateKey];
-                    foreach (ModelError error in modelStateVal.Errors)
-                    {
-                        Console.WriteLine($"Key: {modelStateKey}, Error: {error.ErrorMessage}");
-                    }
-                }
-
-                Console.WriteLine("Modelstate är inte Valid");
-                //Testgrejer ---------------------------------------
-
                 return View(createProfileViewModel);
             }
         }
@@ -138,8 +125,8 @@ namespace MittClick.Controllers
                 LastName = userProfile.LastName,
                 PrivateProfile = userProfile.PrivateProfile,
                 Information = userProfile.Information,
-                ProfileImage = userProfile.ProfileImage,
                 Resume = userProfile.Resume
+                // Lämna ProfileImage tomt för att undvika överföring av bilddata till klienten
             };
 
             return View(editProfileViewModel);
@@ -150,35 +137,60 @@ namespace MittClick.Controllers
         {
             if (ModelState.IsValid)
             {
-                var currentUser = await userManager.GetUserAsync(User);
-
-                var userProfile = dbContext.Profiles
-                    .Include(p => p.User)
-                    .FirstOrDefault(p => p.UserId == currentUser.Id);
-
-                if (userProfile != null)
+                try
                 {
-                    userProfile.FirstName = editProfileViewModel.FirstName;
-                    userProfile.LastName = editProfileViewModel.LastName;
-                    userProfile.PrivateProfile = editProfileViewModel.PrivateProfile;
-                    userProfile.Information = editProfileViewModel.Information;
-                    userProfile.ProfileImage = editProfileViewModel.ProfileImage;
-                    userProfile.Resume = editProfileViewModel.Resume;
+                    var currentUser = await userManager.GetUserAsync(User);
 
-                    dbContext.SaveChanges();
+                    var userProfile = dbContext.Profiles
+                        .Include(p => p.User)
+                        .FirstOrDefault(p => p.UserId == currentUser.Id);
+
+                    if (userProfile != null)
+                    {
+                        userProfile.FirstName = editProfileViewModel.FirstName;
+                        userProfile.LastName = editProfileViewModel.LastName;
+                        userProfile.PrivateProfile = editProfileViewModel.PrivateProfile;
+                        userProfile.Information = editProfileViewModel.Information;
+                        userProfile.Resume = editProfileViewModel.Resume;
+
+                        // Profilbildsuppdatering endast om en ny bild laddas upp
+                        if (editProfileViewModel.ProfileImage != null && editProfileViewModel.ProfileImage.Length > 0)
+                        {
+                            var image = new Image
+                            {
+                                Data = imageService.ConvertToByteArray(editProfileViewModel.ProfileImage)
+                            };
+
+                            dbContext.Images.Add(image);
+                            dbContext.SaveChanges();
+
+                            userProfile.ProfileImage = image.Data;
+                        }
+
+                        dbContext.SaveChanges();
+                        Console.WriteLine("Profilen uppdaterades framgångsrikt.");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Användaren har ingen profil.");
+                        return NotFound();
+                    }
+
+                    return RedirectToAction("MyProfile", "Profile");
                 }
-                else
+                catch (Exception ex)
                 {
-                    return NotFound();
+                    Console.WriteLine($"Ett fel uppstod: {ex.Message}");
+                    return RedirectToAction("Error", "Home"); // Redirect till en sida som visar felmeddelandet för användaren
                 }
-
-                return RedirectToAction("MyProfile", "Account");
             }
             else
             {
+                Console.WriteLine("ModelState är inte giltig.");
                 return View(editProfileViewModel);
             }
         }
+
 
 
         public IActionResult Index()
