@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis;
 using MittClick.Models;
 
 namespace MittClick.Controllers
@@ -16,19 +17,40 @@ namespace MittClick.Controllers
             this.signInManager = signInManager;
             this.dbContext = dbContext;
         }
+
         public IActionResult Index()
         {
             return View();
         }
 
-        public IActionResult AddProject()
+        [HttpGet]
+        public IActionResult Add()
         {
             AddProjectViewModel apvm = new AddProjectViewModel();
             return View(apvm);
         }
 
+        public IActionResult Project(int projectId)
+        {
+			var project = dbContext.Projects.FirstOrDefault(p => p.ProjectId == projectId);
+
+			if (project == null)
+			{
+				return RedirectToAction("Index");
+			}
+
+            var projectLeaderFullName = dbContext.Users
+            .Where(u => u.Id == project.ProjectLeader)
+            .Select(u => u.Profile.FirstName + " " + u.Profile.LastName)
+            .FirstOrDefault();
+
+            ViewData["ProjectLeaderFullName"] = projectLeaderFullName;
+
+            return View("Project", project);
+		}
+
         [HttpPost]
-        public IActionResult AddProject(AddProjectViewModel addProjectViewModel)
+        public IActionResult Add(AddProjectViewModel addProjectViewModel)
         {
             var currentUser = userManager.GetUserAsync(User).Result;
 
@@ -37,7 +59,7 @@ namespace MittClick.Controllers
                 if (currentUser != null)
                 {
                     // Konvertera från AddProjectViewModel till Project
-                    var newProject = new Project
+                    var newProject = new Models.Project
                     {
                         Title = addProjectViewModel.Title,
                         Summary = addProjectViewModel.Summary,
@@ -51,7 +73,7 @@ namespace MittClick.Controllers
                     // Spara till din databas, antingen via en DbContext eller annan datahanteringsmetod
                     dbContext.Add(newProject);
                     dbContext.SaveChanges();
-                    return RedirectToAction("Profile", "Account");
+                    return RedirectToAction("Profile", "Profile", new { userId = currentUser.Id });
 
                 }
                 else
@@ -64,6 +86,38 @@ namespace MittClick.Controllers
 
             // Om ModelState inte är giltig, hantera fel eller visa vyn igen med felmeddelanden
             return View(addProjectViewModel);
+        }
+
+        [HttpGet]
+        public IActionResult AddUserToProject()
+        {
+            PartOfProject partOfProject = new PartOfProject();
+            return View(partOfProject);
+        }
+
+        [HttpPost]
+        public IActionResult AddUserToProject(int projectId, string userId)
+        {
+            var existingParticipation = dbContext.PartOfProjects
+        .FirstOrDefault(pp => pp.PId == projectId && pp.UId == userId);
+
+            if (existingParticipation != null)
+            {
+                // Användaren är redan kopplad till projektet, hantera scenariot här
+                // Kanske visa ett meddelande eller utför inget om det inte är önskat
+                return RedirectToAction("Project", new { projectId });
+            }
+
+            var partOfProject = new PartOfProject
+            {
+                UId = userId,
+                PId = projectId
+            };
+
+            dbContext.PartOfProjects.Add(partOfProject);
+            dbContext.SaveChanges();
+
+            return RedirectToAction("Project", new { projectId });
         }
     }
 }

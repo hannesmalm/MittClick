@@ -16,21 +16,26 @@ namespace MittClick.Controllers
             this.dbContext = dbContext;
         }
 
-        public IActionResult Index(string id)
+        //public IActionResult Index(string id)
+        //{
+        //    var userProfileList = dbContext.Profiles.Include(p => p.User)
+        //                                            .Where(p => string.IsNullOrEmpty(id) || p.User.UserName == id)
+        //                                            .Select(p => new UserProfileViewModel
+        //                                            {
+        //                                                UserId = p.UserId,
+        //                                                UserName = p.User.UserName,
+        //                                                HasProfile = true
+        //                                            })
+        //                                            .ToList();
+
+        //    return View(userProfileList);
+        //}
+
+        public IActionResult Index(int projectId)
         {
-            var userProfileList = dbContext.Profiles.Include(p => p.User)
-                                                    .Where(p => string.IsNullOrEmpty(id) || p.User.UserName == id)
-                                                    .Select(p => new UserProfileViewModel
-                                                    {
-                                                        UserId = p.UserId,
-                                                        UserName = p.User.UserName,
-                                                        HasProfile = true
-                                                    })
-                                                    .ToList();
-
-            return View(userProfileList);
+            var projectList = dbContext.Projects.ToList();
+            return View(projectList);
         }
-
 
         public IActionResult Privacy()
         {

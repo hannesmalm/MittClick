@@ -1,43 +1,85 @@
-﻿@model AddProjectViewModel
+﻿@model MittClick.Models.Project
 
 @{
-    ViewData["Project"] = "Project";
+    ViewData["Title"] = "Project";
 }
 
-<div class="container">
+<div class="container mt-4">
     <div class="row">
-        <div class="col">
+        <div class="col-md-12">
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h1 class="card-title">@Model.Title</h1>
+                    <p style="color: darkgray;">Projektledare: @ViewData["ProjectLeaderFullName"]</p>
+                    <p class="card-text">@Model.Summary</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12 mb-4">
             <div class="card">
-                <img src="@Model.ProjectImg" alt="Projektbild" />
+                <div class="card-header">
+                    <h5 class="card-title">Beskrivning</h5>
+                </div>
+                <div class="card-body">
+                    <dl class="row">
+                        <dt class="col-sm-3">@Model.Description</dt>
+                    </dl>
+                </div>
             </div>
-            
-            <div>
-                <h2>@Model.Title</h2>
-            </div>
+        </div>
+    </div>
 
-            <div>
-                <p1>@Model.Summary</p1>
-            </div>
-           
-            <div>
-                <p2>@Model.Description</p2>
-            </div>
-
-            <div>
-                <style>
-             .edit-button 
-             {
-                 position: fixed;
-                 bottom: 20px; 
-                 right: 20px;
-                        /* z-index: 999;  Säkerställ att knappen visas över andra element */
-             }
-                </style>
-            @if (User.IsInRole("ProjectLeader"))
-            {
-               <a class="edit-button" asp-action="EditProject" asp-controller="Project">Redigera projekt</a>
-            }
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title">Medverkande</h5>
+                </div>
+                <div>
+                    <form method="post" asp-action="AddUserToProject" asp-controller="Project">
+                        <input type="hidden" name="projectId" value="@Model.ProjectId" />
+                        <input type="hidden" name="userId" value="@User.Identity.Name" />
+                        <button type="submit" class="btn btn-primary">Gå med i projekt</button>
+                    </form>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <div class="card">
+                                <div class="card-body d-flex flex-column align-items-center justify-content-center">
+                                    <dt class="col-sm-3 mb-auto text-center">@ViewData["ProjectLeaderFullName"]</dt>
+                                    <img class="img rounded-circle m-3" src="~/lib/image/defaultprofileimg.jpg" alt="Profile Image">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            @foreach (var userInProject in Model.Users)
+                            {
+                                <div class="col-md-4 mb-3">
+                                    <div class="card">
+                                        <div class="card-body d-flex flex-column align-items-center justify-content-center">
+                                            <dt class="col-sm-3 mb-auto text-center">@userInProject.Profile.FirstName @userInProject.Profile.LastName</dt>
+                                            <img class="img rounded-circle m-3" src="~/lib/image/defaultprofileimg.jpg" alt="Profile Image">
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="card">
+                                <div class="card-body d-flex flex-column align-items-center justify-content-center">
+                                    <dt class="col-sm-3 mb-auto text-center">skittest</dt>
+                                    <img class="img rounded-circle m-3" src="~/lib/image/defaultprofileimg.jpg" alt="Profile Image">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </div>
+

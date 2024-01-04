@@ -12,8 +12,8 @@ using MittClick.Models;
 namespace MittClick.Migrations
 {
     [DbContext(typeof(MittClickDbContext))]
-    [Migration("20240103095342_Klick")]
-    partial class Klick
+    [Migration("20240103141937_test")]
+    partial class test
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -206,24 +206,39 @@ namespace MittClick.Migrations
 
             modelBuilder.Entity("MittClick.Models.Project", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("ProjectId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ProjectId"));
 
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("ProjectLeader")
-                        .HasColumnType("int");
+                    b.Property<string>("ProjectImg")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ProjectLeader")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Summary")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Id");
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("ProjectId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Projects");
                 });
@@ -345,6 +360,17 @@ namespace MittClick.Migrations
                 });
 
             modelBuilder.Entity("MittClick.Models.Profile", b =>
+                {
+                    b.HasOne("MittClick.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("MittClick.Models.Project", b =>
                 {
                     b.HasOne("MittClick.Models.User", "User")
                         .WithMany()

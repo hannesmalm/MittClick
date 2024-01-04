@@ -13,7 +13,6 @@ namespace MittClick.Models
         public string Title { get; set; }
 
         [Required]
-
         public string Summary { get; set; }
 
         [Required(ErrorMessage = "Var god fyll i beskrivning")]
@@ -27,5 +26,7 @@ namespace MittClick.Models
 
         [Required]
         public virtual required User User { get; set; }
+
+        public virtual ICollection<User> Users { get; set; }
     }
 }

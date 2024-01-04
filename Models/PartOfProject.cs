@@ -5,15 +5,16 @@ namespace MittClick.Models
 {
     public class PartOfProject
     {
-        public int UId { get; set; }
-        public int PId { get; set; }
-        
         [Required]
         [ForeignKey(nameof(UId))]
-        public User User { get; set; }
-
+        public string UId { get; set; }
+       
         [Required]
         [ForeignKey(nameof(PId))]
-        public AddProjectViewModel Project { get; set; }
+        public int PId { get; set; }
+        
+        public virtual User? User { get; set; }
+ 
+        public virtual Project? Project { get; set; }
     }
 }
