@@ -44,6 +44,11 @@ namespace MittClick.Controllers
                 return RedirectToAction("Index");
             }
 
+            var currentUser = userManager.GetUserAsync(User).Result;
+            var isCurrentUserPartOfProject = project.PartOfProjects.Any(pp => pp.UId == currentUser?.Id);
+
+            ViewData["IsCurrentUserPartOfProject"] = isCurrentUserPartOfProject;
+
             var projectLeaderFullName = project.PartOfProjects
                 .FirstOrDefault(pp => pp.UId == project.ProjectLeader)?
                 .User.Profile.FirstName + " " + project.PartOfProjects
@@ -74,12 +79,21 @@ namespace MittClick.Controllers
                         ProjectImg = addProjectViewModel.ProjectImg,
                         ProjectLeader = currentUser.Id,
                         User = currentUser
-                        // Fortsätt att fylla i egenskaper här baserat på din modell
                     };
 
                     // Spara till din databas, antingen via en DbContext eller annan datahanteringsmetod
                     dbContext.Add(newProject);
                     dbContext.SaveChanges();
+
+                    var partOfProject = new PartOfProject
+                    {
+                        UId = currentUser.Id,
+                        PId = newProject.ProjectId,
+                    };
+
+                    dbContext.PartOfProjects.Add(partOfProject);
+                    dbContext.SaveChanges();
+
                     return RedirectToAction("Profile", "Profile", new { userId = currentUser.Id });
 
                 }
@@ -103,24 +117,23 @@ namespace MittClick.Controllers
         }
 
         [HttpPost]
-        public IActionResult AddUserToProject(int projectId, string userId)
+        public async Task<IActionResult> AddUserToProject(int projectId)
         {
-            var userExists = dbContext.Users.Any(u => u.Id == userId);
+            var currentUser = await userManager.GetUserAsync(User);
+            Console.WriteLine(currentUser);
 
-            if (!userExists)
-            {
-                // Användaren finns inte, hantera scenariot här
-                TempData["Message"] = "Användaren finns inte i systemet.";
-                return RedirectToAction("Project", new { projectId });
-            }
+            string userId = currentUser.Id.ToString();
 
             var existingParticipation = dbContext.PartOfProjects
                 .FirstOrDefault(pp => pp.PId == projectId && pp.UId == userId);
 
+            Console.WriteLine("user id: " + userId);
+            Console.WriteLine("existingParticipation: " + existingParticipation);
+
             if (existingParticipation != null)
             {
                 // Användaren är redan kopplad till projektet, hantera scenariot här
-                TempData["Message"] = "Personen är redan med i projektet.";
+                TempData["Message"] = "Du är redan med i detta projekt";
                 return RedirectToAction("Project", new { projectId });
             }
 

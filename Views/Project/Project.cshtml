@@ -5,6 +5,15 @@
 }
 
 <div class="container mt-4">
+
+    @if (TempData["Message"] != null)
+    {
+        <div class="alert alert-warning" role="alert">
+            @TempData["Message"]
+        </div>
+    }
+
+<div class="container mt-4">
     <div class="row">
         <div class="col-md-12">
             <div class="card mb-3">
@@ -38,10 +47,11 @@
                 <div class="card-header">
                     <h5 class="card-title">Medverkande</h5>
                 </div>
+
+                <!--  Knapp för användare för att gå med i aktuellt projekt  -->
                 <div>
                     <form method="post" asp-action="AddUserToProject" asp-controller="Project">
-                        <input type="hidden" name="projectId" value="@Model.ProjectId" />
-                        <input type="hidden" name="userId" value="@User.Identity.Name" />
+                        <input type="hidden" name="projectId" value="@Model.ProjectId"/>
                         <button type="submit" class="btn btn-primary">Gå med i projekt</button>
                     </form>
                 </div>
