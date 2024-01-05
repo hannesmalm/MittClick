@@ -47,7 +47,7 @@ namespace MittClick.Controllers
 
                         if (currentUserProfile != null)
                         {
-                            return RedirectToAction("MyProfile", "Profile");
+                            return RedirectToAction("Profile", "Profile");
                         }
                         else
                         {

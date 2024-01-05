@@ -19,31 +19,9 @@ namespace MittClick.Controllers
             this.imageService = imageService;
         }
 
-        public async Task<IActionResult> MyProfile()
-        {
-            var currentUser = await userManager.GetUserAsync(User);
-
-            if (currentUser != null)
-            {
-                string currentUserId = currentUser.Id.ToString();
-                var currentUserProfile = await dbContext.Profiles.FirstOrDefaultAsync(p => p.UserId == currentUserId);
-
-                if (currentUserProfile != null) // om användaren har en profil
-                {
-                    return View(currentUserProfile);
-                }
-
-                else // om användaren inte har en profil, skapa den
-                {
-                    return RedirectToAction("Create");
-                }
-            }
-            return RedirectToAction("Index", "Home");
-        }
-
-
         public IActionResult Profile(string userId)
         {
+
             var userProfile = dbContext.Profiles.Include(p => p.User)
                                                 .Where(p => p.UserId == userId)
                                                 .FirstOrDefault();
@@ -54,7 +32,7 @@ namespace MittClick.Controllers
             }
             else
             {
-                return NotFound();
+                return View("EmptyProfile");
             }
         }
 
@@ -176,7 +154,7 @@ namespace MittClick.Controllers
                         return NotFound();
                     }
 
-                    return RedirectToAction("MyProfile", "Profile");
+                    return RedirectToAction("Profile", "Profile");
                 }
                 catch (Exception ex)
                 {

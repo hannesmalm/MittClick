@@ -5,20 +5,10 @@
 }
 
 <div class="text-center">
-    <h1>God jul @User.Identity.Name!</h1>
-
-    <!-- ... övrigt innehåll ... -->
-
-    <h2>User Profiles</h2>
-    <table class="table">
-        <!-- ... övrigt innehåll ... -->
-    </table>
+    <h1>@User.Identity.Name</h1>
 
     <br />
     <br />
-
-    <!-- Inkludera ImageUploadPartial och skicka en instans av ImageUploadViewModel som modell -->
-    @await Html.PartialAsync("~/Views/Image/UploadImagePartial.cshtml", new MittClick.Models.ImageUploadViewModel())
 
     <h1 class="display-4">Välkommen till din nya click!</h1>
     <p>
