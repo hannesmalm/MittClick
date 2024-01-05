@@ -16,10 +16,40 @@
 
     <br />
     <br />
+    -------------------- ! Lista med användare här för testing ! --------------------
+
+    <h2>User Profiles</h2>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>UserName</th>
+                <th>Profile Link</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var userProfile in Model)
+            {
+                <tr>
+                    <td>@userProfile.UserName</td>
+                    <td>
+                        @if (userProfile.HasProfile)
+                        {
+                            <a href="@Url.Action("Profile", "Profile", new { userId = userProfile.UserId })">View Profile</a>
+                        }
+                        else
+                        {
+                            <span>No Profile</span>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
 
     <!-- Inkludera ImageUploadPartial och skicka en instans av ImageUploadViewModel som modell -->
-    @await Html.PartialAsync("~/Views/Image/UploadImagePartial.cshtml", new MittClick.Models.ImageUploadViewModel())
-
+@*     @await Html.PartialAsync("~/Views/Image/UploadImagePartial.cshtml", new MittClick.Models.ImageUploadViewModel())
+ *@
     <h1 class="display-4">Välkommen till din nya click!</h1>
     <p>
         "Lorem ipsum dolor sit amet, consectetur adipiscing elit,

@@ -4,30 +4,32 @@
     ViewData["Title"] = "Profile";
 }
 
-<div class="col-md-4">
-    <div class="card mb-3">
-        @if (Model.ProfileImage != null)
-        {
-            var imageBase64 = Convert.ToBase64String(Model.ProfileImage);
-            var imageSrc = $"data:image/png;base64,{imageBase64}";
-            <img class="img rounded-circle m-5" style="aspect-ratio: 1/1; object-fit: cover;" src="@imageSrc" alt="Profile Image">
-        }
-        else
-        {
-            <img class="img rounded-circle m-5" style="aspect-ratio: 1/1; object-fit: cover;" src="~/lib/image/defaultprofileimg.jpg" alt="Default Profile Image">
-        }
+<div class="container mt-4">
+    <div class="row">
 
-        <div class="card-body">
-            <h5 class="card-title">@Model.FirstName @Model.LastName</h5>
-            <p style="color: gray;">@Model.UserName</p>
-            <p class="card-text">@Model.Information</p>
-            <div class="text-center">
-                <a href="#" class="btn btn-primary">Skicka meddelande</a>
+        <div class="col-md-4">
+            <div class="card mb-3">
+                @if (Model.ProfileImage != null)
+                {
+                    var imageBase64 = Convert.ToBase64String(Model.ProfileImage);
+                    var imageSrc = $"data:image/png;base64,{imageBase64}";
+                    <img class="img rounded-circle m-2" style="aspect-ratio: 1/1; object-fit: cover;" src="@imageSrc" alt="Profile Image">
+                }
+                else
+                {
+                    <img class="img rounded-circle m-5" style="aspect-ratio: 1/1; object-fit: cover;" src="~/lib/image/defaultprofileimg.jpg" alt="Default Profile Image">
+                }
+
+                <div class="card-body">
+                    <h5 class="card-title">@Model.FirstName @Model.LastName</h5>
+                    <p style="color: gray;">@Model.UserName</p>
+                    <p class="card-text">@Model.Information</p>
+                    <div class="text-center">
+                        <a href="#" class="btn btn-primary">Skicka meddelande</a>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
-</div>
-
 
         <div class="col-md-8">
             <div class="card">
@@ -39,17 +41,20 @@
                         <dt class="col-sm-3">Namn:</dt>
                         <dd class="col-sm-9">@Model.FirstName @Model.LastName</dd>
 
-                        <dt class="col-sm-3">Email:</dt>
-                        <dd class="col-sm-9">------------</dd>
-
-                        <dt class="col-sm-3">Tel:</dt>
-                        <dd class="col-sm-9">------------</dd>
-
-                        <dt class="col-sm-3">Adress:</dt>
-                        <dd class="col-sm-9">------------</dd>
-
-                        <!-- Vi kan loopa genom en lista med kontaktinfo sen för att slippa tomma fält -->
-
+                        <thead>
+                            <tr>
+                                <th>Kontakt</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var contactItem in Model.ContactInfos)
+                            {
+                                <tr>
+                                    <td>@contactItem.Type</td>
+                                    <td>@contactItem.Info</td>
+                                </tr>
+                            }
+                        </tbody>
                     </dl>
                 </div>
             </div>
@@ -59,43 +64,9 @@
                     <h5 class="card-title">Projekt</h5>
                 </div>
                 <div class="card-body d-flex flex-wrap justify-content-center">
-
-					<div class="card m-2" style="width: 15rem;">
-                        <img class="img mx-4" src="~/lib/image/groupimg.png" alt="Card image cap">
-                        <div class="card-body">
-                            <h5 class="card-title">Projekttitel</h5>
-                            <p class="card-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsa ratione magnam delectus! Est nam nihil libero neque esse delectus labore facilis doloremque, pariatur assumenda, perferendis vitae iste dicta debitis quaerat.</p>
-                            <p class="card-text"><small class="text-muted">3 deltagare</small></p>
-                            <div class="text-center">
-                                <button class="btn btn-primary">Se projektdetaljer</button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="card m-2" style="width: 15rem;">
-                        <img class="img mx-4" src="~/lib/image/groupimg.png" alt="Card image cap">
-                        <div class="card-body">
-                            <h5 class="card-title">Projekttitel</h5>
-                            <p class="card-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsa ratione magnam delectus! Est nam nihil libero neque esse delectus labore facilis doloremque, pariatur assumenda, perferendis vitae iste dicta debitis quaerat.</p>
-                            <p class="card-text"><small class="text-muted">3 deltagare</small></p>
-                            <div class="text-center">
-                                <button class="btn btn-primary">Se projektdetaljer</button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="card m-2" style="width: 15rem;">
-                        <img class="img mx-4" src="~/lib/image/groupimg.png" alt="Card image cap">
-                        <div class="card-body">
-                            <h5 class="card-title">Projekttitel</h5>
-                            <p class="card-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsa ratione magnam delectus! Est nam nihil libero neque esse delectus labore facilis doloremque, pariatur assumenda, perferendis vitae iste dicta debitis quaerat.</p>
-                            <p class="card-text"><small class="text-muted">3 deltagare</small></p>
-                            <div class="text-center">
-                                <button class="btn btn-primary">Se projektdetaljer</button>
-                            </div>
-                        </div>
-                    </div>
-
+                    <!-- Projektinformation här -->
                 </div>
             </div>
         </div>
+    </div>
+</div>
