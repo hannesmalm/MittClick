@@ -1,7 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
 using MittClick.Models;
 
 namespace MittClick.Controllers
@@ -15,9 +12,44 @@ namespace MittClick.Controllers
             this.dbContext = dbContext;
         }
 
-        public IActionResult Index()
+        [HttpGet]
+        public IActionResult Upload()
         {
             return View();
+        }
+
+		[HttpPost]
+		public IActionResult Upload(ImageUploadViewModel model)
+		{
+			if (ModelState.IsValid)
+			{
+				var image = new Image
+				{
+					Data = ConvertToByteArray(model.ImageFile)
+				};
+
+				dbContext.Images.Add(image);
+				dbContext.SaveChanges();
+
+				return RedirectToAction("Index", "Home");
+			}
+
+			return View(model);
+		}
+
+		public byte[] ConvertToByteArray(IFormFile file)
+        {
+            using (var memoryStream = new MemoryStream())
+            {
+                file.CopyTo(memoryStream);
+                return memoryStream.ToArray();
+            }
+        }
+
+        public IActionResult DisplayImages()
+        {
+            var images = dbContext.Images.ToList();
+            return View("DisplayImages", images);
         }
     }
 }

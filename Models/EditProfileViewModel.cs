@@ -15,12 +15,10 @@ namespace MittClick.Models
         [Required]
         public bool PrivateProfile { get; set; }
 
-        public string Information { get; set; }
+        public string? Information { get; set; }
 
-        public string ProfileImg { get; set; }
+        public IFormFile? ProfileImage { get; set; }
 
-        public string Resume { get; set; }
+        public string? Resume { get; set; }
     }
-
-
 }
