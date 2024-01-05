@@ -1,0 +1,11 @@
+﻿@model MittClick.Models.ImageUploadViewModel
+
+<form method="post" enctype="multipart/form-data" asp-controller="Image" asp-action="Upload">
+    <div class="form-group">
+        <label asp-for="ImageFile" class="control-label"></label>
+        <input asp-for="ImageFile" type="file" class="form-control" />
+        <span asp-validation-for="ImageFile" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-outline-primary">Upload</button>
+</form>

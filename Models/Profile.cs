@@ -21,7 +21,8 @@ namespace MittClick.Models
 
         public string? Information { get; set; }
 
-        public string? ProfileImg { get; set; }
+        [ForeignKey("Image")]
+        public byte[]? ProfileImage { get; set; }
 
         public string? Resume { get; set; }
 
