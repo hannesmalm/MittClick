@@ -10,11 +10,11 @@
         {
             var imageBase64 = Convert.ToBase64String(Model.ProfileImage);
             var imageSrc = $"data:image/png;base64,{imageBase64}";
-            <img class="img rounded-circle m-5" src="@imageSrc" alt="Profile Image">
+            <img class="img rounded-circle m-5" style="aspect-ratio: 1/1; object-fit: cover;" src="@imageSrc" alt="Profile Image">
         }
         else
         {
-            <img class="img rounded-circle m-5" src="~/lib/image/defaultprofileimg.jpg" alt="Default Profile Image">
+            <img class="img rounded-circle m-5" style="aspect-ratio: 1/1; object-fit: cover;" src="~/lib/image/defaultprofileimg.jpg" alt="Default Profile Image">
         }
 
         <div class="card-body">
