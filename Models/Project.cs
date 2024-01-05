@@ -1,5 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MittClick.Models
 {
@@ -8,6 +9,7 @@ namespace MittClick.Models
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ProjectId { get; set; }
+
 
         [Required(ErrorMessage = "Var god fyll i titel")]
         public string Title { get; set; }
@@ -25,8 +27,8 @@ namespace MittClick.Models
         public string ProjectLeader { get; set; }
 
         [Required]
-        public virtual required User User { get; set; }
+        public virtual User User { get; set; }
+        public virtual ICollection<PartOfProject> PartOfProjects { get; set; }
 
-        public virtual ICollection<User> Users { get; set; }
     }
 }

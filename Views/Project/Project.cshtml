@@ -56,7 +56,7 @@
                             </div>
                         </div>
                         <div class="row">
-                            @foreach (var userInProject in Model.Users)
+                            @foreach (var userInProject in Model.PartOfProjects.Select(pp => pp.User))
                             {
                                 <div class="col-md-4 mb-3">
                                     <div class="card">
@@ -67,6 +67,7 @@
                                     </div>
                                 </div>
                             }
+
                         </div>
                         <div class="col-md-4 mb-3">
                             <div class="card">

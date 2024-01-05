@@ -12,8 +12,8 @@ using MittClick.Models;
 namespace MittClick.Migrations
 {
     [DbContext(typeof(MittClickDbContext))]
-    [Migration("20240103141937_test")]
-    partial class test
+    [Migration("20240105121714_hej")]
+    partial class hej
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -107,22 +107,19 @@ namespace MittClick.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.Property<string>("LoginProvider")
+                    b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("ProviderKey")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<string>("LoginProvider")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ProviderDisplayName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<string>("ProviderKey")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("LoginProvider", "ProviderKey");
-
-                    b.HasIndex("UserId");
+                    b.HasKey("UserId");
 
                     b.ToTable("AspNetUserLogins", (string)null);
                 });
@@ -159,6 +156,21 @@ namespace MittClick.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
+                });
+
+            modelBuilder.Entity("MittClick.Models.PartOfProject", b =>
+                {
+                    b.Property<string>("UId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("PId")
+                        .HasColumnType("int");
+
+                    b.HasKey("UId", "PId");
+
+                    b.HasIndex("PId");
+
+                    b.ToTable("PartOfProjects");
                 });
 
             modelBuilder.Entity("MittClick.Models.Profile", b =>
@@ -199,7 +211,8 @@ namespace MittClick.Migrations
 
                     b.HasKey("ProfileId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("UserId")
+                        .IsUnique();
 
                     b.ToTable("Profiles");
                 });
@@ -359,11 +372,30 @@ namespace MittClick.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("MittClick.Models.PartOfProject", b =>
+                {
+                    b.HasOne("MittClick.Models.Project", "Project")
+                        .WithMany("PartOfProjects")
+                        .HasForeignKey("PId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("MittClick.Models.User", "User")
+                        .WithMany("PartOfProjects")
+                        .HasForeignKey("UId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Project");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("MittClick.Models.Profile", b =>
                 {
                     b.HasOne("MittClick.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
+                        .WithOne("Profile")
+                        .HasForeignKey("MittClick.Models.Profile", "UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -379,6 +411,19 @@ namespace MittClick.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("MittClick.Models.Project", b =>
+                {
+                    b.Navigation("PartOfProjects");
+                });
+
+            modelBuilder.Entity("MittClick.Models.User", b =>
+                {
+                    b.Navigation("PartOfProjects");
+
+                    b.Navigation("Profile")
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

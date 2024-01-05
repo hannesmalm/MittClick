@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis;
+using Microsoft.EntityFrameworkCore;
 using MittClick.Models;
 
 namespace MittClick.Controllers
@@ -32,22 +33,28 @@ namespace MittClick.Controllers
 
         public IActionResult Project(int projectId)
         {
-			var project = dbContext.Projects.FirstOrDefault(p => p.ProjectId == projectId);
+            var project = dbContext.Projects
+                .Include(p => p.PartOfProjects)
+                    .ThenInclude(pp => pp.User)
+                        .ThenInclude(u => u.Profile)
+                .FirstOrDefault(p => p.ProjectId == projectId);
 
-			if (project == null)
-			{
-				return RedirectToAction("Index");
-			}
+            if (project == null)
+            {
+                return RedirectToAction("Index");
+            }
 
-            var projectLeaderFullName = dbContext.Users
-            .Where(u => u.Id == project.ProjectLeader)
-            .Select(u => u.Profile.FirstName + " " + u.Profile.LastName)
-            .FirstOrDefault();
+            var projectLeaderFullName = project.PartOfProjects
+                .FirstOrDefault(pp => pp.UId == project.ProjectLeader)?
+                .User.Profile.FirstName + " " + project.PartOfProjects
+                    .FirstOrDefault(pp => pp.UId == project.ProjectLeader)?
+                    .User.Profile.LastName;
 
             ViewData["ProjectLeaderFullName"] = projectLeaderFullName;
 
             return View("Project", project);
-		}
+        }
+
 
         [HttpPost]
         public IActionResult Add(AddProjectViewModel addProjectViewModel)
@@ -98,13 +105,22 @@ namespace MittClick.Controllers
         [HttpPost]
         public IActionResult AddUserToProject(int projectId, string userId)
         {
+            var userExists = dbContext.Users.Any(u => u.Id == userId);
+
+            if (!userExists)
+            {
+                // Användaren finns inte, hantera scenariot här
+                TempData["Message"] = "Användaren finns inte i systemet.";
+                return RedirectToAction("Project", new { projectId });
+            }
+
             var existingParticipation = dbContext.PartOfProjects
-        .FirstOrDefault(pp => pp.PId == projectId && pp.UId == userId);
+                .FirstOrDefault(pp => pp.PId == projectId && pp.UId == userId);
 
             if (existingParticipation != null)
             {
                 // Användaren är redan kopplad till projektet, hantera scenariot här
-                // Kanske visa ett meddelande eller utför inget om det inte är önskat
+                TempData["Message"] = "Personen är redan med i projektet.";
                 return RedirectToAction("Project", new { projectId });
             }
 
