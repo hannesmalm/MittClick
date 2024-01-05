@@ -17,7 +17,7 @@ namespace MittClick.Models
 
         public string Information { get; set; }
 
-        public string ProfileImg { get; set; }
+        public IFormFile? ProfileImage { get; set; }
 
         public string Resume { get; set; }
         public virtual ICollection<Skill> Skills { get; set; }

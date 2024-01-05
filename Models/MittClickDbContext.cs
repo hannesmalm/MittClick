@@ -11,6 +11,7 @@ namespace MittClick.Models
         public DbSet<Project> Projects { get; set; }
         public DbSet<Skill>Skills { get; set; }
         public DbSet<ContactInfo> Contacts { get; set; }
+        public DbSet<Image>Images { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
