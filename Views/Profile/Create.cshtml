@@ -100,14 +100,14 @@
 
                         <!--Beskrivning-->
                         <div class="form-floating mt-2">
-                            <textarea asp-for="Information" class="form-control" placeholder="Input description here"></textarea>
+                            <textarea asp-for="Information" class="form-control" placeholder="Input description here" style="resize: none;height: 150px;"></textarea>
                             <label asp-for="Information" class="form-label">Kort beskrivning om dig:</label>
                             <span asp-validation-for="Information" class="text-danger"></span>
                         </div>
 
                         <!--CV-->
                         <div class="form-floating mt-2">
-                            <textarea asp-for="Resume" class="form-control" placeholder="Input resume here"></textarea>
+                            <textarea asp-for="Resume" class="form-control" placeholder="Input resume here" style="resize: none;height: 150px;"></textarea>
                             <label asp-for="Resume" class="form-label">CV:</label>
                             <span asp-validation-for="Resume" class="text-danger"></span>
                         </div>
