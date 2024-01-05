@@ -25,7 +25,7 @@
 
 
                         <!--Kontaktuppgifter-->
-                       @*  <div class="form-floating mt-2">
+                        <div class="form-floating mt-2">
                             <div class="input-group mt-3">
                                 <div class="dropdown">
                                     <button class="btn btn-outline-primary dropdown-toggle" type="button" id="contactDropDown" data-bs-toggle="dropdown" aria-expanded="false">
@@ -43,58 +43,96 @@
                                 </div>
                             </div>
                             <ul class="list-group mt-2" id="contactinfo">
+                                <div id="hiddenContactInputs"></div>
                             </ul>
                             <script>
-                                var addCButton = document.getElementById('addCButton');
-                                var cInputField = document.getElementById('contactInput');
-                                var contactinfo = document.getElementById('contactinfo');
-                                var contactDropDown = document.getElementById('contactDropDown');
+                                document.addEventListener('DOMContentLoaded', function () {
+                                    var contactIndex = 0;
+                                    var addCButton = document.getElementById('addCButton');
+                                    var cInputField = document.getElementById('contactInput');
+                                    var contactinfo = document.getElementById('contactinfo');
+                                    var contactDropDown = document.getElementById('contactDropDown');
+                                    var hiddenContactInputs = document.getElementById('hiddenContactInputs');
 
-                                var selectedContactType = ''; // Variabel för att hålla reda på det valda kontakttypen
+                                    var selectedContactType = ''; // Variabel för att hålla reda på det valda kontakttypen
 
-                                // Lyssna på klickhändelser på dropdown-alternativen
-                                var dropdownItems = document.querySelectorAll('.dropdown-item');
-
-                                dropdownItems.forEach(function (item) {
-                                    item.addEventListener('click', function () {
-                                        console.log('Button clicked!');
-                                        selectedContactType = item.getAttribute('data-value');
-                                        contactDropDown.textContent = selectedContactType;
+                                    // Lyssna på klickhändelser på dropdown-alternativen
+                                    var dropdownItems = document.querySelectorAll('.dropdown-item');
+                                    dropdownItems.forEach(function (item) {
+                                        item.addEventListener('click', function () {
+                                            selectedContactType = item.getAttribute('data-value');
+                                            contactDropDown.textContent = selectedContactType;
+                                        });
                                     });
-                                });
 
-                                addCButton.addEventListener('click', function (event) {
-                                    event.preventDefault();
-                                    var inputValue = cInputField.value;
+                                    addCButton.addEventListener('click', function (event) {
+                                        event.preventDefault();
+                                        var inputValue = cInputField.value;
 
-                                    if (inputValue.trim() !== '') {
+                                        if (inputValue.trim() !== '' && selectedContactType !== '') {
+                                            addContactInfo(selectedContactType, inputValue);
+                                            cInputField.value = '';
+                                            selectedContactType = ''; // Återställ det valda kontakttypen efter att ha lagt till
+                                            contactDropDown.textContent = 'Välj kontakttyp';
+                                        }
+                                    });
+
+                                    function addContactInfo(type, info) {
                                         // Lägg till listelementet i DOM:en
-
                                         var listItem = document.createElement('li');
                                         listItem.className = 'list-group-item list-group-item-primary';
-                                        listItem.textContent = selectedContactType + ": " + inputValue;
+                                        listItem.textContent = type + ": " + info;
 
+                                        // Skapa dolda input-fält
+                                        var hiddenTypeInput = createHiddenInput(type, 'Type');
+                                        var hiddenInfoInput = createHiddenInput(info, 'Info');
+                                        listItem.appendChild(hiddenTypeInput);
+                                        listItem.appendChild(hiddenInfoInput);
+
+                                        // Lägg till ta-bort-knapp
+                                        var removeButton = createRemoveButton(listItem);
+                                        listItem.appendChild(removeButton);
+
+                                        contactinfo.appendChild(listItem);
+
+                                        // Uppdatera index för kontaktuppgifter
+                                        updateContactIndexes();
+                                    }
+
+                                    function createHiddenInput(value, name) {
+                                        var hiddenInput = document.createElement('input');
+                                        hiddenInput.type = 'hidden';
+                                        hiddenInput.value = value;
+                                        hiddenInput.name = `ContactInfos[${contactIndex}].${name}`;
+                                        return hiddenInput;
+                                    }
+
+                                    function createRemoveButton(item) {
                                         var removeButton = document.createElement('button');
                                         removeButton.textContent = 'Ta bort';
                                         removeButton.className = 'btn btn-outline-danger btn-sm float-end';
-
                                         removeButton.addEventListener('click', function () {
-                                            RemoveSkill(listItem); // Anropa RemoveSkill med aktuell färdighet
+                                            item.remove();
+                                            updateContactIndexes();
                                         });
+                                        return removeButton;
+                                    }
 
-                                        listItem.appendChild(removeButton);
-                                        contactinfo.appendChild(listItem);
-                                        cInputField.value = '';
-                                        selectedContactType = ''; // Återställ det valda kontakttypen efter att ha lagt till
-                                        contactDropDown.textContent = 'Välj kontakttyp';
+                                    function updateContactIndexes() {
+                                        contactIndex++;
+                                        var allContacts = contactinfo.querySelectorAll('li');
+                                        allContacts.forEach(function (item, index) {
+                                            var typeInput = item.querySelector('input[name*=".Type"]');
+                                            var infoInput = item.querySelector('input[name*=".Info"]');
+                                            if (typeInput && infoInput) {
+                                                typeInput.name = `ContactInfos[${index}].Type`;
+                                                infoInput.name = `ContactInfos[${index}].Info`;
+                                            }
+                                        });
                                     }
                                 });
-                                function RemoveSkill(item) {
-                                    // Lägg till riktig funktionalitet för att ta bort en färdighet
-                                    item.remove();
-                                }
                             </script>
-                        </div> *@
+                        </div> 
 
                         <!--Beskrivning-->
                         <div class="form-floating mt-2">

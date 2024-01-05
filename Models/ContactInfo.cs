@@ -9,9 +9,8 @@ namespace MittClick.Models
 
         public string Type { get; set; }
         public string Info { get; set; }
-
-        public string ProfileId { get; set; }
         [ForeignKey(nameof(ProfileId))]
-        public virtual User? User { get; set; }
+        public int ProfileId { get; set; }
+        public virtual Profile? Profile { get; set; }
     }
 }

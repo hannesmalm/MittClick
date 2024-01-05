@@ -114,6 +114,16 @@ namespace MittClick.Controllers
                 {
                     newProfile.Skills.Add(new Skill { Name = skill.Name, ProfileId = newProfile.ProfileId });
                 }
+                //Vet inte om detta funkar meeeeen vi får seeee
+                if (createProfileViewModel.ContactInfos == null)
+                {
+                    createProfileViewModel.ContactInfos = new List<ContactInfo>();
+                }
+
+                foreach(var contact in createProfileViewModel.ContactInfos)
+                {
+                    newProfile.ContactInfos.Add(new ContactInfo {  Type = contact.Type, Info = contact.Info, ProfileId = newProfile.ProfileId});
+                }
 
                 dbContext.SaveChanges();
 
@@ -181,6 +191,7 @@ namespace MittClick.Controllers
                     userProfile.ProfileImg = editProfileViewModel.ProfileImg;
                     userProfile.Resume = editProfileViewModel.Resume;
                     userProfile.Skills = editProfileViewModel.Skills;
+                    userProfile.ContactInfos = editProfileViewModel.Contacts;
 
                     dbContext.SaveChanges();
                 }

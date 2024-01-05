@@ -33,9 +33,13 @@ namespace MittClick.Models
         public virtual User User { get; set; }
         
         public virtual ICollection<Skill> Skills { get; set; }
+        public virtual ICollection<ContactInfo> ContactInfos { get; set; }
         public Profile()
         {
             Skills = new HashSet<Skill>();
+            ContactInfos = new HashSet<ContactInfo>();
         }
+        
+
     }
 }
