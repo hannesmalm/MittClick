@@ -20,6 +20,12 @@
 
                 <!-- Lägg till submit-knapp här -->
                 <button type="submit" class="btn btn-primary">Spara ändringar</button>
+                @if (TempData.ContainsKey("SuccessMessage"))
+                {
+                    <div class="alert alert-success">
+                        @TempData["SuccessMessage"]
+                    </div>
+                }
             </div>
         </div>
     </div>

@@ -146,6 +146,8 @@ namespace MittClick.Controllers
                         }
 
                         dbContext.SaveChanges();
+                        return RedirectToAction("Profile", "Profile", new { userId = currentUser.Id });
+
                         Console.WriteLine("Profilen uppdaterades framgångsrikt.");
                     }
                     else

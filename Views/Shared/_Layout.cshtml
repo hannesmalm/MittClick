@@ -60,7 +60,7 @@
                             @{
                                 string CurrentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
                             }
-                            <a href="@Url.Action("Profile", "Profile", new { userId = CurrentUserId })" class="btn btn-primary">Visa Profil</a>
+                            <a href="@Url.Action("Profile", "Profile", new { userId = CurrentUserId })" class="dropdown-item" style="color: black; ">Min Profil</a>
 
                             <a asp-action="ChangePassword" asp-controller="Account" class="dropdown-item">Byt Lösenord</a>
 
