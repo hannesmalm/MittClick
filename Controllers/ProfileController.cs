@@ -100,8 +100,28 @@ namespace MittClick.Controllers
                 }
 
                 dbContext.Profiles.Add(newProfile);
-                dbContext.SaveChanges();
+                
 
+                // Skills
+                if (createProfileViewModel.Skills == null)
+                {
+                    createProfileViewModel.Skills = new List<Skill>();
+                }
+                foreach (var skill in createProfileViewModel.Skills)
+                {
+                    newProfile.Skills.Add(new Skill { Name = skill.Name, ProfileId = newProfile.ProfileId });
+                }
+
+                // Kontaktinfo
+                if (createProfileViewModel.ContactInfos == null)
+                {
+                    createProfileViewModel.ContactInfos = new List<ContactInfo>();
+                }
+                foreach (var contact in createProfileViewModel.ContactInfos)
+                {
+                    newProfile.ContactInfos.Add(new ContactInfo { Type = contact.Type, Info = contact.Info, ProfileId = newProfile.ProfileId });
+                }
+                dbContext.SaveChanges();
                 return RedirectToAction("Index", "Home");
             }
             else
