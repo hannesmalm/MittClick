@@ -21,7 +21,7 @@ namespace MittClick.Models
 
         public string Resume { get; set; }
         public virtual ICollection<Skill> Skills { get; set; }
-        public virtual ICollection<Contact> Contacts { get; set; }
+        public virtual ICollection<ContactInfo> ContactInfos { get; set; }
 
     }
 

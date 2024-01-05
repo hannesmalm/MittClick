@@ -191,7 +191,7 @@ namespace MittClick.Controllers
                     userProfile.ProfileImg = editProfileViewModel.ProfileImg;
                     userProfile.Resume = editProfileViewModel.Resume;
                     userProfile.Skills = editProfileViewModel.Skills;
-                    userProfile.ContactInfos = editProfileViewModel.Contacts;
+                    userProfile.ContactInfos = editProfileViewModel.ContactInfos;
 
                     dbContext.SaveChanges();
                 }
