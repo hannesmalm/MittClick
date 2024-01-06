@@ -6,5 +6,7 @@ namespace MittClick.Models
 {
     public class User : IdentityUser
     {
+        public virtual ICollection<PartOfProject> PartOfProjects { get; set; }
+
     }
 }

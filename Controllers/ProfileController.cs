@@ -21,14 +21,28 @@ namespace MittClick.Controllers
 
         public IActionResult Profile(string userId)
         {
-
-            var userProfile = dbContext.Profiles.Include(p => p.User)
-                                                .Where(p => p.UserId == userId)
-                                                .FirstOrDefault();
-
-            if (userProfile != null)
+            var profileEntity = dbContext.Profiles
+                                         .Include(p => p.User)
+                                         .FirstOrDefault(p => p.UserId == userId);
+            if (profileEntity != null)
             {
-                return View(userProfile);
+                var userProjects = GetUserProjects(userId);
+                var userProfileViewModel = new UserProfileViewModel
+                {
+                    UserName = profileEntity.User.UserName,
+                    UserId = profileEntity.UserId,
+                    HasProfile = true,
+                    ProfileId = profileEntity.ProfileId,
+                    FirstName = profileEntity.FirstName,
+                    LastName = profileEntity.LastName,
+                    PrivateProfile = profileEntity.PrivateProfile,
+                    Information = profileEntity.Information,
+                    ProfileImage = profileEntity.ProfileImage,
+                    Resume = profileEntity.Resume,
+                    UserProjects = userProjects
+                };
+
+                return View("Profile", userProfileViewModel);
             }
             else
             {
@@ -169,6 +183,14 @@ namespace MittClick.Controllers
             }
         }
 
+        private List<Project> GetUserProjects(string userId)
+        {
+            return dbContext.PartOfProjects
+                           .Where(pop => pop.UId == userId)
+                           .Include(pop => pop.Project)
+                           .Select(pop => pop.Project)
+                           .ToList();
+        }
 
 
         public IActionResult Index()
