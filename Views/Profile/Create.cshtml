@@ -141,12 +141,248 @@
                             <span asp-validation-for="Information" class="text-danger"></span>
                         </div>
 
-                        <!--CV-->
-                        <div class="form-floating mt-2">
-                            <textarea asp-for="Resume" class="form-control" placeholder="Input resume here"></textarea>
-                            <label asp-for="Resume" class="form-label">CV:</label>
-                            <span asp-validation-for="Resume" class="text-danger"></span>
+                        <!--Utbildning-->
+
+						<div class="form-floating mt-2">
+							<h5>Utbildning</h5>
+                            <div class="input-group">
+                                <div class="form-floating w-50">
+                                    <input type="text" class="form-control" id="schoolInput" placeholder="Skola/Universitet">
+                                    <label for="schoolInput" class="form-label">Skola/Universitet</label>
+								</div>
+                                <div class="form-floating w-50">
+                                    <input type="text" class="form-control" id="typeInput" placeholder="Typ av utbildning">
+									<label for="typeInput" class="form-label">Typ av utbildning</label>
+                                </div>
+                            </div>
+                            <div class="input-group">
+                                <input type="number" class="form-control" id="fromInput" placeholder="Från">
+                                <input type="number" class="form-control" id="toInput" placeholder="Till">
+                                <button class="btn btn-outline-primary" id="addSchoolButton">Lägg till</button>
+                            </div>
+                            <ul class ="list-group mt-2" id="schoolList"></ul>
                         </div>
+                        <script>
+                            document.addEventListener('DOMContentLoaded', function () {
+                                var educationIndex = 0;
+                                var addSchoolButton = document.getElementById('addSchoolButton');
+                                var schoolInput = document.getElementById('schoolInput');
+                                var typeInput = document.getElementById('typeInput');
+                                var fromInput = document.getElementById('fromInput');
+                                var toInput = document.getElementById('toInput');
+                                var schoolList = document.getElementById('schoolList');
+
+                                addSchoolButton.addEventListener('click', function (event) {
+                                    event.preventDefault();
+
+                                    var schoolValue = schoolInput.value;
+                                    var typeValue = typeInput.value;
+                                    var fromValue = parseInt(fromInput.value);
+                                    var toValue = toInput.value ? parseInt(toInput.value) : null;
+
+                                    if (schoolValue.trim() !== '' && typeValue.trim() !== '' && !isNaN(fromValue) && !isNaN(toValue)) {
+                                        addEducationInfo(schoolValue, typeValue, fromValue, toValue);
+                                        resetInputFields();
+                                    }
+                                });
+
+                                function addEducationInfo(school, type, from, to) {
+                                    var listItem = document.createElement('li');
+                                    listItem.className = 'list-group-item list-group-item-primary';
+
+                                    var textContent = document.createElement('div');
+                                    textContent.innerHTML = `<div>${school}</div><div>${type}</div><div>${from} - ${to}</div>`;
+
+                                    listItem.appendChild(textContent);
+
+                                    // Create hidden input fields
+                                    var hiddenSchoolInput = createHiddenInput(school, 'School');
+                                    var hiddenTypeInput = createHiddenInput(type, 'Type');
+                                    var hiddenFromInput = createHiddenInput(from, 'From');
+                                    var hiddenToInput = createHiddenInput(to, 'To');
+
+                                    listItem.appendChild(hiddenSchoolInput);
+                                    listItem.appendChild(hiddenTypeInput);
+                                    listItem.appendChild(hiddenFromInput);
+                                    listItem.appendChild(hiddenToInput);
+
+                                    // Add Remove button
+                                    var removeButton = createRemoveButton(listItem);
+                                    listItem.appendChild(removeButton);
+
+                                    schoolList.appendChild(listItem);
+
+                                    // Update index for education
+                                    updateEducationIndexes();
+                                }
+
+                                function createHiddenInput(value, name) {
+                                    var hiddenInput = document.createElement('input');
+                                    hiddenInput.type = 'hidden';
+                                    hiddenInput.value = value;
+                                    hiddenInput.name = `Educations[${educationIndex}].${name}`;
+                                    return hiddenInput;
+                                }
+
+                                function createRemoveButton(item) {
+                                    var removeButton = document.createElement('button');
+                                    removeButton.textContent = 'Ta bort';
+                                    removeButton.className = 'btn btn-outline-danger btn-sm float-end';
+                                    removeButton.addEventListener('click', function () {
+                                        item.remove();
+                                        updateEducationIndexes();
+                                    });
+                                    return removeButton;
+                                }
+
+                                function resetInputFields() {
+                                    schoolInput.value = '';
+                                    typeInput.value = '';
+                                    fromInput.value = '';
+                                    toInput.value = '';
+                                }
+
+                                function updateEducationIndexes() {
+                                    educationIndex++;
+                                    var allEducations = schoolList.querySelectorAll('li');
+                                    allEducations.forEach(function (item, index) {
+                                        var schoolInput = item.querySelector('input[name*=".School"]');
+                                        var typeInput = item.querySelector('input[name*=".Type"]');
+                                        var fromInput = item.querySelector('input[name*=".From"]');
+                                        var toInput = item.querySelector('input[name*=".To"]');
+                                        if (schoolInput && typeInput && fromInput && toInput) {
+                                            schoolInput.name = `Educations[${index}].School`;
+                                            typeInput.name = `Educations[${index}].Type`;
+                                            fromInput.name = `Educations[${index}].From`;
+                                            toInput.name = `Educations[${index}].To`;
+                                        }
+                                    });
+                                }
+                            });
+
+                        </script>                                                           
+
+
+
+                        <!--Arbetserfarenheter-->
+                        <div class="form-floating mt-2">
+                            <div class="input-group">
+                                <div class="form-floating w-50">
+                                    <input type="text" class="form-control" id="workplaceInput" placeholder="Arbetsgivare">
+                                    <label for="workplaceInput" class="form-label">Arbetsgivare</label>
+                                </div>
+                                <div class="form-floating w-50">
+                                    <input type="text" class="form-control" id="roleInput" placeholder="Arbetsroll">
+                                    <label for="roleInput" class="form-label">Arbetsroll</label>
+                                </div>
+                            </div>
+                            <div class="input-group">
+                                    <input type="number" class="form-control" id="startInput" placeholder="Från">
+                                    <input type="number" class="form-control" id="endInput" placeholder="Till">
+                                    <button class="btn btn-outline-primary" id="addWorkButton">Lägg till</button></div>
+                            <ul class="list-group mt-2" id="workList"></ul>
+                        </div>
+                        <script>
+                            document.addEventListener('DOMContentLoaded', function () {
+                                var workIndex = 0;
+                                var addWorkButton = document.getElementById('addWorkButton');
+                                var workplaceInput = document.getElementById('workplaceInput');
+                                var roleInput = document.getElementById('roleInput');
+                                var startInput = document.getElementById('startInput');
+                                var endInput = document.getElementById('endInput');
+                                var workList = document.getElementById('workList');
+
+                                addWorkButton.addEventListener('click', function (event) {
+                                    event.preventDefault();
+
+                                    var workValue = workplaceInput.value;
+                                    var roleValue = roleInput.value;
+                                    var fromValue = parseInt(startInput.value);
+                                    var toValue = endInput.value ? parseInt(endInput.value) : null;
+
+                                    if (workValue.trim() !== '' && roleValue.trim() !== '' && !isNaN(fromValue) && !isNaN(toValue)) {
+                                        addWorkInfo(workValue, roleValue, fromValue, toValue);
+                                        resetInputFields();
+                                    }
+                                });
+
+                                function addWorkInfo(work, role, from, to) {
+                                    var listItem = document.createElement('li');
+                                    listItem.className = 'list-group-item list-group-item-primary';
+
+                                    var textContent = document.createElement('div');
+                                    textContent.innerHTML = `<div>${work}</div><div>${role}</div><div>${from} - ${to}</div>`;
+
+                                    listItem.appendChild(textContent);
+
+                                    // Create hidden input fields
+                                    var hiddenWorkInput = createHiddenInput(work, 'Workplace');
+                                    var hiddenRoleInput = createHiddenInput(role, 'Role');
+                                    var hiddenFromInput = createHiddenInput(from, 'From');
+                                    var hiddenToInput = createHiddenInput(to, 'To');
+
+                                    listItem.appendChild(hiddenWorkInput);
+                                    listItem.appendChild(hiddenRoleInput);
+                                    listItem.appendChild(hiddenFromInput);
+                                    listItem.appendChild(hiddenToInput);
+
+                                    // Add Remove button
+                                    var removeButton = createRemoveButton(listItem);
+                                    listItem.appendChild(removeButton);
+
+                                    workList.appendChild(listItem);
+
+                                    // Update index for work
+                                    updateWorkIndexes();
+                                }
+
+                                function createHiddenInput(value, name) {
+                                    var hiddenInput = document.createElement('input');
+                                    hiddenInput.type = 'hidden';
+                                    hiddenInput.value = value;
+                                    hiddenInput.name = `WorkExperiences[${workIndex}].${name}`;
+                                    return hiddenInput;
+                                }
+
+                                function createRemoveButton(item) {
+                                    var removeButton = document.createElement('button');
+                                    removeButton.textContent = 'Ta bort';
+                                    removeButton.className = 'btn btn-outline-danger btn-sm float-end';
+                                    removeButton.addEventListener('click', function () {
+                                        item.remove();
+                                        updateWorkIndexes();
+                                    });
+                                    return removeButton;
+                                }
+
+                                function resetInputFields() {
+                                    workplaceInput.value = '';
+                                    roleInput.value = '';
+                                    startInput.value = '';
+                                    endInput.value = '';
+                                }
+
+                                function updateWorkIndexes() {
+                                    workIndex++;
+                                    var allWorkExperiences = workList.querySelectorAll('li');
+                                    allWorkExperiences.forEach(function (item, index) {
+                                        var workInput = item.querySelector('input[name*=".Workplace"]');
+                                        var roleInput = item.querySelector('input[name*=".Role"]');
+                                        var fromInput = item.querySelector('input[name*=".From"]');
+                                        var toInput = item.querySelector('input[name*=".To"]');
+                                        if (workInput && roleInput && fromInput && toInput) {
+                                            workInput.name = `WorkExperiences[${index}].Workplace`;
+                                            roleInput.name = `WorkExperiences[${index}].Role`;
+                                            fromInput.name = `WorkExperiences[${index}].From`;
+                                            toInput.name = `WorkExperiences[${index}].To`;
+                                        }
+                                    });
+                                }
+                            });
+
+                        </script>
+
+
 
                         <!-- Bilduppladdning -->
                         <div class="form-group mt-2">

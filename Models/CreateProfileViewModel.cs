@@ -22,9 +22,10 @@ namespace MittClick.Models
 
         public IFormFile? ProfileImage { get; set; }
 
-        public string? Resume { get; set; }
-        
-        public virtual ICollection<Skill>? Skills { get; set; }
+		public virtual ICollection<Education> Educations { get; set; }
+		public virtual ICollection<WorkExperience> WorkExperiences { get; set; }
+
+		public virtual ICollection<Skill>? Skills { get; set; }
 
         public virtual ICollection<ContactInfo>? ContactInfos { get; set; }
     }
