@@ -28,7 +28,7 @@ namespace MittClick.Controllers
         public ActionResult SearchProfiles(string searchTerm)
         {
             var filteredProfiles = profiles.Profiles
-                                           .Where(p => p.FirstName.Contains(searchTerm) || p.LastName.Contains(searchTerm))
+                                           .Where(p => p.FirstName.Contains(searchTerm) || p.LastName.Contains(searchTerm)) // Lägg till skills när de finns på main
                                            .ToList();
 
             return PartialView("SearchProfile", filteredProfiles);

@@ -1,25 +1,33 @@
 ﻿@model IEnumerable<Profile> 
 
-@foreach (var profile in Model)
-{
-    <div class="col-md-4 mb-4">
-        <div class="card">
-            @if (profile.ProfileImage != null)
-            {
-                var imageBase64 = Convert.ToBase64String(profile.ProfileImage);
-                var imageSrc = $"data:image/png;base64,{imageBase64}";
-                <img class="img rounded-circle m-2" style="aspect-ratio: 1/1; object-fit: cover;" src="@imageSrc" alt="Profile Image">
-            }
-            else
-            {
-                <img class="img rounded-circle m-5" style="aspect-ratio: 1/1; object-fit: cover;" src="~/lib/image/defaultprofileimg.jpg" alt="Default Profile Image">
-            }
-            <div class="card-body">
-                <h5 class="card-title">@profile.FirstName</h5>
-                <h5 class="card-title">@profile.LastName</h5>
-                <p class="card-text">@profile.Information</p>
-                <a href="@Url.Action("Profile", "Profile", new { userId = profile.UserId })" class="btn btn-primary">Visa Profil</a>
+<div id="profilesList" class="row">
+    @foreach (var profile in Model)
+    {
+        <div class="col-4">
+
+            <div class="card my-3">
+
+                @if (profile.ProfileImage != null)
+                {
+                    var imageBase64 = Convert.ToBase64String(profile.ProfileImage);
+                    var imageSrc = $"data:image/png;base64,{imageBase64}";
+                    <img class="img rounded-circle m-4" style="aspect-ratio: 1/1; object-fit: cover;" src="@imageSrc" alt="Profile Image">
+                }
+                else
+                {
+                    <img class="img rounded-circle m-4" style="aspect-ratio: 1/1; object-fit: cover;" src="~/lib/image/defaultprofileimg.jpg" alt="Default Profile Image">
+                }
+
+                <div class="card-body text-center">
+                    <h5 class="card-title">@profile.FirstName @profile.LastName</h5>
+                    <p class="card-text">
+                        <!-- Additional profile information can be added here -->
+                    </p>
+                        <a href="#" class="btn btn-success">Skicka meddelande</a>
+                        <a href="@Url.Action("Profile", "Profile", new { userId = profile.UserId })" class="btn btn-primary">Visa Profil</a>
+                </div>
             </div>
+
         </div>
-    </div>
-}
+    }
+</div>
