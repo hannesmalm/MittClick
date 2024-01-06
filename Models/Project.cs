@@ -19,11 +19,13 @@ namespace MittClick.Models
         [Required(ErrorMessage = "Var god fyll i beskrivning")]
         public string Description { get; set; }
 
-        public string ProjectImage { get; set; }
+        [ForeignKey("Image")]
+        public byte[]? ProjectImage { get; set; }
 
         [Required(ErrorMessage = "Projektet måste ha en projektledare")]
-        [ForeignKey("UserId")]
-        public virtual User ProjectLeader { get; set; }
+        [ForeignKey("User")]
+        public string UserId { get; set; }
+        public virtual User? User { get; set; }
 
         public virtual ICollection<PartOfProject> PartOfProjects { get; set; }
     }

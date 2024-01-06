@@ -24,13 +24,13 @@ namespace MittClick.Models
                 .HasOne(pp => pp.User)
                 .WithMany(u => u.PartOfProjects)
                 .HasForeignKey(pp => pp.UId)
-                .OnDelete(DeleteBehavior.Restrict); // Ändra denna beroende på dina behov
+                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<PartOfProject>()
                 .HasOne(pp => pp.Project)
                 .WithMany(p => p.PartOfProjects)
                 .HasForeignKey(pp => pp.PId)
-                .OnDelete(DeleteBehavior.Restrict); // Ändra denna beroende på dina behov
+                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<IdentityUserLogin<string>>().HasKey(p => p.UserId);
         }
