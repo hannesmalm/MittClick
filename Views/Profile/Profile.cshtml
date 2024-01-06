@@ -5,21 +5,16 @@
     var currentUserName = User.Identity.Name;
 }
 
-@if (currentUserName == Model.UserName)
-{
-    <a asp-action="Edit" asp-controller="Profile" class="btn btn-primary mt-3 mb-3">Redigera profil</a>
-}
-
 <div class="container mt-4">
     <div class="row">
 
-        <div class="col-md-4">
+        <div class="col-md-3">
             <div class="card mb-3">
                 @if (Model.ProfileImage != null)
                 {
                     var imageBase64 = Convert.ToBase64String(Model.ProfileImage);
                     var imageSrc = $"data:image/png;base64,{imageBase64}";
-                    <img class="img rounded-circle m-5" style="aspect-ratio: 1/1; object-fit: cover;" src="@imageSrc" alt="Profile Image">
+                    <img class="img rounded-circle m-4" style="aspect-ratio: 1/1; object-fit: cover;" src="@imageSrc" alt="Profile Image">
                 }
                 else
                 {
@@ -34,7 +29,12 @@
 
                         @if (currentUserName != Model.UserName)
                         {
-                            <a href="#" class="btn btn-primary">Skicka meddelande</a>
+                            <a href="#" class="btn btn-success">Skicka meddelande</a>
+                        }
+
+                        @if (currentUserName == Model.UserName)
+                        {
+                            <a asp-action="Edit" asp-controller="Profile" class="btn btn-primary mt-3 mb-3">Redigera profil</a>
                         }
 
                     </div>
@@ -112,5 +112,3 @@
                 </div>
             </div>
         </div>
-
-<input type="text" class="search">
