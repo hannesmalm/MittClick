@@ -2,12 +2,16 @@
 
 <div class="container">
     <div class="row my-4">
-        <div class="col">
+        <div class="col-lg-8 mx-auto">
             @{
                 // Tar söksträngen från URLen
                 var searchQuery = Context.Request.Query["query"];
             }
-            <input value="@searchQuery" type="text" id="searchBox" placeholder="Sök profiler" onkeyup="searchProfiles()" />
+
+            <form class="form-inline my-2 my-lg-0">
+                <input class="form-control mr-sm-2" value="@searchQuery" type="search" placeholder="Sök..." onkeyup="searchProfiles()" aria-label="Search">
+            </form>
+
         </div>
     </div>
 
