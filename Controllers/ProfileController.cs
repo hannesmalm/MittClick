@@ -104,7 +104,6 @@ namespace MittClick.Controllers
                 PrivateProfile = userProfile.PrivateProfile,
                 Information = userProfile.Information,
                 Resume = userProfile.Resume
-                // Lämna ProfileImage tomt för att undvika överföring av bilddata till klienten
             };
 
             return View(editProfileViewModel);

@@ -10,8 +10,7 @@ namespace MittClick.Models
         public DbSet<Profile> Profiles { get; set; }
         public DbSet<Project> Projects { get; set; }
         public DbSet<Image> Images { get; set; }
-
-
+        public DbSet<Message> Messages { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
