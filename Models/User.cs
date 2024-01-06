@@ -6,5 +6,8 @@ namespace MittClick.Models
 {
     public class User : IdentityUser
     {
+        public virtual List<Message> ReceivedMessages { get; set; }
+
+        public virtual List<Message> SentMessages { get; set; }
     }
 }

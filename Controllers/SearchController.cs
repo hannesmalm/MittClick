@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Razor.Language;
 using MittClick.Models;
 
@@ -7,9 +8,11 @@ namespace MittClick.Controllers
     public class SearchController : Controller
     {
         private MittClickDbContext profiles;
-        public SearchController(MittClickDbContext service)
+        private UserManager<User> userManager;
+        public SearchController(MittClickDbContext service, UserManager<User> userManager)
         {
-            profiles = service;
+            this.profiles = service;
+            this.userManager = userManager;
         }
 
         public IActionResult Result()
@@ -47,14 +50,14 @@ namespace MittClick.Controllers
                 return PartialView("SearchProfile", new List<Profile>());
             }
 
-            int seed = (int)DateTime.Now.Ticks; // Use current time in ticks as the seed
+            int seed = (int)DateTime.Now.Ticks; //Uppdateras varje millisekund
 
             Random randomId = new Random(seed);
 
             var randomProfiles = allProfiles
                 .Where(p => validProfileIds.Contains(p.ProfileId))
-                .ToList()  // Fetch the data from the database
-                .OrderBy(p => randomId.Next()) // Use random order
+                .ToList()
+                .OrderBy(p => randomId.Next())
                 .Take(5)
                 .ToList();
 
