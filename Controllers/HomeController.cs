@@ -18,17 +18,16 @@ namespace MittClick.Controllers
 
         public IActionResult Index(string id)
         {
-            var userProfileList = dbContext.Profiles.Include(p => p.User)
+            var profileList = dbContext.Profiles.Include(p => p.User)
                                                     .Where(p => string.IsNullOrEmpty(id) || p.User.UserName == id)
-                                                    .Select(p => new UserProfileViewModel
+                                                    .Select(p => new Profile
                                                     {
                                                         UserId = p.UserId,
-                                                        UserName = p.User.UserName,
-                                                        HasProfile = true
+                                                        // Map other properties as needed
                                                     })
                                                     .ToList();
 
-            return View(userProfileList);
+            return View(profileList);
         }
 
 

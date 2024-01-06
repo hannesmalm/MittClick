@@ -34,6 +34,35 @@ namespace MittClick.Controllers
             return PartialView("SearchProfile", filteredProfiles);
         }
 
+        public ActionResult SearchRandom()
+        {
+            var allProfiles = profiles.Profiles;
+
+            var validProfileIds = allProfiles
+                .Select(p => p.ProfileId)
+                .ToList();
+
+            if (validProfileIds.Count == 0)
+            {
+                return PartialView("SearchProfile", new List<Profile>());
+            }
+
+            int seed = (int)DateTime.Now.Ticks; // Use current time in ticks as the seed
+
+            Random randomId = new Random(seed);
+
+            var randomProfiles = allProfiles
+                .Where(p => validProfileIds.Contains(p.ProfileId))
+                .ToList()  // Fetch the data from the database
+                .OrderBy(p => randomId.Next()) // Use random order
+                .Take(5)
+                .ToList();
+
+            return PartialView("SearchProfile", randomProfiles);
+        }
+
+
+
         public IActionResult Index()
         {
             return View();
