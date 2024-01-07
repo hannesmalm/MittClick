@@ -74,7 +74,7 @@ namespace MittClick.Controllers
                     LastName = createProfileViewModel.LastName,
                     PrivateProfile = createProfileViewModel.PrivateProfile,
                     Information = createProfileViewModel.Information,
-                    Resume = createProfileViewModel.Resume,
+                    
                 };
 
                 // Profilbild
@@ -92,8 +92,50 @@ namespace MittClick.Controllers
                 }
 
                 dbContext.Profiles.Add(newProfile);
-                dbContext.SaveChanges();
+                
 
+                // Skills
+                if (createProfileViewModel.Skills == null)
+                {
+                    createProfileViewModel.Skills = new List<Skill>();
+                }
+                foreach (var skill in createProfileViewModel.Skills)
+                {
+                    newProfile.Skills.Add(new Skill { Name = skill.Name, ProfileId = newProfile.ProfileId });
+                }
+
+                // Kontaktinfo
+                if (createProfileViewModel.ContactInfos == null)
+                {
+                    createProfileViewModel.ContactInfos = new List<ContactInfo>();
+                }
+                foreach (var contact in createProfileViewModel.ContactInfos)
+                {
+                    newProfile.ContactInfos.Add(new ContactInfo { Type = contact.Type, Info = contact.Info, ProfileId = newProfile.ProfileId });
+                }
+
+				// Utbildning
+				if (createProfileViewModel.Educations == null)
+				{
+					createProfileViewModel.Educations = new List<Education>();
+				}
+				foreach (var education in createProfileViewModel.Educations)
+				{
+					newProfile.Educations.Add(new Education { School = education.School, Type = education.Type, From = education.From, To = education.To, ProfileId = newProfile.ProfileId });
+				}
+
+                //Arbetserfarenheter
+
+                if (createProfileViewModel.WorkExperiences == null)
+                {
+                    createProfileViewModel.WorkExperiences = new List<WorkExperience>();
+                }
+                foreach (var workexperience in createProfileViewModel.WorkExperiences)
+                {
+                    newProfile.WorkExperiences.Add(new WorkExperience { Workplace = workexperience.Workplace, Role = workexperience.Role, From = workexperience.From, To = workexperience.To, ProfileId = newProfile.ProfileId });
+                }
+
+                dbContext.SaveChanges();
                 return RedirectToAction("Index", "Home");
             }
             else
@@ -117,7 +159,7 @@ namespace MittClick.Controllers
                 LastName = userProfile.LastName,
                 PrivateProfile = userProfile.PrivateProfile,
                 Information = userProfile.Information,
-                Resume = userProfile.Resume
+
                 // Lämna ProfileImage tomt för att undvika överföring av bilddata till klienten
             };
 
@@ -143,7 +185,7 @@ namespace MittClick.Controllers
                         userProfile.LastName = editProfileViewModel.LastName;
                         userProfile.PrivateProfile = editProfileViewModel.PrivateProfile;
                         userProfile.Information = editProfileViewModel.Information;
-                        userProfile.Resume = editProfileViewModel.Resume;
+                       
 
                         // Profilbildsuppdatering endast om en ny bild laddas upp
                         if (editProfileViewModel.ProfileImage != null && editProfileViewModel.ProfileImage.Length > 0)
