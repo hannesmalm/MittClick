@@ -13,28 +13,28 @@
 
 </head>
 <body>
-
+    @using System.Security.Claims
     @{
         var routeController = ViewContext.RouteData.Values["controller"].ToString();
         var routeAction = ViewContext.RouteData.Values["action"].ToString();
+        string CurrentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
     }
 
     <header class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container">
             <a class="navbar-brand" href="/">Mitt Click</a>
 
-            @if (!(routeController == "Home" && routeAction == "Index"))
+            @if (!(routeController == "Home" && routeAction == "Index") && !(routeController == "Search" && routeAction == "Result") && !(routeController == "Profile" && routeAction == "Create"))
             {
-                <form asp-controller="Home" asp-action="Search" method="get">
-                    <input class="form-control mr-sm-2" type="search" placeholder="Sök..." aria-label="Search" name="query">
-                    <!-- Dropdown för filtrering -->
-
-@*                     <select name="filter">
-                    <option value="option1">Personer</option>
-                    <option value="option2">Projekt</option>
-                    <!-- Lägg till fler filtreralternativ här -->
-                    </select> *@
-                    <button class="btn btn-outline-primary my-2 my-sm-0" type="submit">Sök</button>
+                <form asp-controller="Search" asp-action="Result" method="get">
+                    <div class="input-group">
+                        <input class="form-control mr-sm-2" type="search" placeholder="Sök..." aria-label="Search" name="query">
+                        <button class="btn btn-outline-primary my-3 my-sm-0" type="submit">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0" />
+                            </svg>
+                        </button>
+                    </div>
                 </form>
             }
 
@@ -47,15 +47,26 @@
 
                 @if (User.Identity.IsAuthenticated)
                 {
+
+
                     <div class="nav-item dropdown align-content-center">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            
-                          <!--Ändra till profilbild så småningom-->
-                            <img class="img rounded-circle" style="width: 3rem;" src="~/lib/image/defaultprofileimg.jpg" alt="Profile Image">
+                            @if (ViewBag.ProfileImage != null)
+                            {
+                                var imageBase64 = Convert.ToBase64String(ViewBag.ProfileImage);
+                                var imageSrc = $"data:image/png;base64,{imageBase64}";
+                                <img class="rounded-circle" style="width: 3rem; height: 3rem; object-fit: cover;" src="@imageSrc" alt="Profile Image">
+                            }
+                            else
+                            {
+                                <img class="rounded-circle" style="width: 3rem; height: 3rem; object-fit: cover;" src="~/lib/image/defaultprofileimg.jpg" alt="Default Image">
+                            }
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <a asp-action="MyProfile" asp-controller="Profile" class="dropdown-item">Profil</a>
-                            <a asp-action="Edit" asp-controller="Account" class="dropdown-item">Inställningar</a>
+
+                            <a href="@Url.Action("Profile", "Profile", new { userId = CurrentUserId })" class="dropdown-item" style="color: black; ">Min Profil</a>
+
+                            <a asp-action="ChangePassword" asp-controller="Account" class="dropdown-item">Byt Lösenord</a>
 
                             <div class="dropdown-divider"></div>
                             <form method="post" asp-controller="Account" asp-action="Logout" class="text-center">

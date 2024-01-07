@@ -19,42 +19,34 @@ namespace MittClick.Controllers
             this.imageService = imageService;
         }
 
-        public async Task<IActionResult> MyProfile()
-        {
-            var currentUser = await userManager.GetUserAsync(User);
-
-            if (currentUser != null)
-            {
-                string currentUserId = currentUser.Id.ToString();
-                var currentUserProfile = await dbContext.Profiles.FirstOrDefaultAsync(p => p.UserId == currentUserId);
-
-                if (currentUserProfile != null) // om användaren har en profil
-                {
-                    return View(currentUserProfile);
-                }
-
-                else // om användaren inte har en profil, skapa den
-                {
-                    return RedirectToAction("Create");
-                }
-            }
-            return RedirectToAction("Index", "Home");
-        }
-
-
         public IActionResult Profile(string userId)
         {
-            var userProfile = dbContext.Profiles.Include(p => p.User)
-                                                .Where(p => p.UserId == userId)
-                                                .FirstOrDefault();
-
-            if (userProfile != null)
+            var profileEntity = dbContext.Profiles
+                                         .Include(p => p.User)
+                                         .FirstOrDefault(p => p.UserId == userId);
+            if (profileEntity != null)
             {
-                return View(userProfile);
+                var userProjects = GetUserProjects(userId);
+                var userProfileViewModel = new UserProfileViewModel
+                {
+                    UserName = profileEntity.User.UserName,
+                    UserId = profileEntity.UserId,
+                    HasProfile = true,
+                    ProfileId = profileEntity.ProfileId,
+                    FirstName = profileEntity.FirstName,
+                    LastName = profileEntity.LastName,
+                    PrivateProfile = profileEntity.PrivateProfile,
+                    Information = profileEntity.Information,
+                    ProfileImage = profileEntity.ProfileImage,
+                    Resume = profileEntity.Resume,
+                    UserProjects = userProjects
+                };
+
+                return View("Profile", userProfileViewModel);
             }
             else
             {
-                return NotFound();
+                return View("EmptyProfile");
             }
         }
 
@@ -210,7 +202,7 @@ namespace MittClick.Controllers
                         }
 
                         dbContext.SaveChanges();
-                        Console.WriteLine("Profilen uppdaterades framgångsrikt.");
+                        return RedirectToAction("Profile", "Profile", new { userId = currentUser.Id });
                     }
                     else
                     {
@@ -218,7 +210,7 @@ namespace MittClick.Controllers
                         return NotFound();
                     }
 
-                    return RedirectToAction("MyProfile", "Profile");
+                    return RedirectToAction("Profile", "Profile");
                 }
                 catch (Exception ex)
                 {
@@ -233,6 +225,14 @@ namespace MittClick.Controllers
             }
         }
 
+        private List<Project> GetUserProjects(string userId)
+        {
+            return dbContext.PartOfProjects
+                           .Where(pop => pop.UId == userId)
+                           .Include(pop => pop.Project)
+                           .Select(pop => pop.Project)
+                           .ToList();
+        }
 
 
         public IActionResult Index()

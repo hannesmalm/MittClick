@@ -1,0 +1,44 @@
+﻿@using System.Security.Claims
+@model IEnumerable<Profile>
+
+
+<div id="profilesList" class="row">
+    @foreach (var profile in Model)
+    {
+        <div class="col">
+
+            <div class="card mx-auto mb-4" style="width: 240px;">
+
+                @if (profile.ProfileImage != null)
+                {
+                    var imageBase64 = Convert.ToBase64String(profile.ProfileImage);
+                    var imageSrc = $"data:image/png;base64,{imageBase64}";
+                    <img class="img rounded-circle m-4" style="aspect-ratio: 1/1; object-fit: cover;" src="@imageSrc" alt="Profile Image">
+                }
+                else
+                {
+                    <img class="img rounded-circle m-4" style="aspect-ratio: 1/1; object-fit: cover;" src="~/lib/image/defaultprofileimg.jpg" alt="Default Profile Image">
+                }
+
+                <div class="card-body text-center">
+                    <h5 class="card-title">@profile.FirstName @profile.LastName</h5>
+                    <p class="card-text">
+                        <!-- Additional profile information can be added here -->
+                    </p>
+@*                         <a href="@Url.Action("SendMessage", "Message", new { userId = profile.UserId })" class="btn btn-success mb-2">Skicka meddelande</a>
+ *@
+                    @{
+                        var currentUserId = User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                    }
+
+
+                    <a href="@Url.Action("SendMessage", "Message", new { reciever = profile.UserId, sender = currentUserId })" class="btn btn-success mb-2">Skicka meddelande</a>
+
+                        
+                        <a href="@Url.Action("Profile", "Profile", new { userId = profile.UserId })" class="btn btn-primary mb-2">Visa Profil</a>
+                </div>
+            </div>
+
+        </div>
+    }
+</div>

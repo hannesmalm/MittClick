@@ -1,0 +1,46 @@
+﻿@model List<Profile>
+
+<div class="container">
+    <div class="row my-4">
+        <div class="col-lg-8 mx-auto">
+            @{
+                // Tar söksträngen från URLen
+                var searchQuery = Context.Request.Query["query"];
+            }
+
+            <form class="form-inline my-2 my-lg-0">
+                <input class="form-control mr-sm-2" id="searchBox" value="@searchQuery" type="search" placeholder="Sök..." onkeyup="searchProfiles()" aria-label="Search">
+            </form>
+
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            onPageLoad();
+        });
+
+        function onPageLoad() {
+            searchProfiles();
+        }
+
+        function searchProfiles() {
+            var searchValue = $('#searchBox').val();
+            $.ajax({
+                url: searchValue ? '@Url.Action("SearchProfiles", "Search")' : '@Url.Action("SearchEmpty", "Search")',
+                type: 'GET',
+                data: { searchTerm: searchValue },
+                success: function (data) {
+                    if (data) {
+                        $('#profilesList').html(data);
+                    } else {
+                        $('#profilesList').empty();
+                    }
+                }
+            });
+        }
+    </script>
+
+    <div id="profilesList">
+		@Html.Partial("SearchProfile", Model)
+    </div>
