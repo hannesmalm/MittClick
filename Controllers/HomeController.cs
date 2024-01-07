@@ -29,19 +29,25 @@ namespace MittClick.Controllers
         public async Task<IActionResult> IndexAsync(string id)
         {
             ViewBag.ProfileImage = await GetUserProfileImageAsync();
-            var profileList = dbContext.Profiles.Include(p => p.User)
-                                                    .Where(p => string.IsNullOrEmpty(id) || p.User.UserName == id)
-                                                    .Select(p => new Profile
-                                                    {
-                                                        UserId = p.UserId,
-                                                        // Map other properties as needed
-                                                    })
-                                                    .ToList();
 
-            return View(profileList);
+            var viewModel = new IndexViewModel();
+
+            var profiles = await dbContext.Profiles
+                .Where(p => string.IsNullOrEmpty(id) || p.User.UserName == id)
+                .ToListAsync();
+
+            foreach (var profile in profiles)
+            {
+                viewModel.Add(profile);
+            }
+
+            viewModel.Projects = await dbContext.Projects.ToListAsync();
+
+            return View(viewModel);
         }
 
-       
+
+
 
         public IActionResult Privacy()
         {
