@@ -38,7 +38,6 @@ namespace MittClick.Controllers
                     PrivateProfile = profileEntity.PrivateProfile,
                     Information = profileEntity.Information,
                     ProfileImage = profileEntity.ProfileImage,
-                    Resume = profileEntity.Resume,
                     UserProjects = userProjects
                 };
 

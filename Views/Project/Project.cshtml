@@ -45,7 +45,7 @@
                         </div>
                     </div>
 
-                    <!-- Redigeringsikon och knapp -->
+                    <!-- Redigera projektknapp -->
                     @if (Model.UserId == currentUserId)
                     {
                         <div class="card-footer bg-white d-flex justify-content-end">
@@ -126,9 +126,7 @@
 
                                     <div class="card-body text-center">
                                         <h5 class="card-title">@userInProject.Profile.FirstName @userInProject.Profile.LastName</h5>
-                                        <p class="card-text">
-                                            <!-- Additional profile information can be added here -->
-                                        </p>
+                                        <p class="card-text"></p>
                                         <a href="#" class="btn btn-success mb-2">Skicka meddelande</a>
                                         <a href="@Url.Action("Profile", "Profile", new { userId = userInProject.Profile.UserId })" class="btn btn-primary mb-2">Visa Profil</a>
                                     </div>
