@@ -12,6 +12,10 @@ namespace MittClick.Models
         public string? Information { get; set; }
         public byte[]? ProfileImage { get; set; }
         public string? Resume { get; set;}
+        public ICollection<ContactInfo> ContactInfos { get; set; }
+        public ICollection<Education> Educations { get; set; }
+        public ICollection<WorkExperience> WorkExperiences { get; set; }
+        public ICollection<Skill> Skills { get; set; }
 
         public List<Project> UserProjects { get; set; }
 
