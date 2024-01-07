@@ -21,8 +21,9 @@
     @{
         var routeController = ViewContext.RouteData.Values["controller"].ToString();
         var routeAction = ViewContext.RouteData.Values["action"].ToString();
-        var CurrentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        var unreadMessagesCount = dbContext.Messages.Count(m => m.ReceiverId == CurrentUserId && m.IsRead == false);
+        var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var unreadMessagesCount = dbContext.Messages.Count(m => m.ReceiverId == currentUserId && m.IsRead == false);
+        var profileImage = dbContext.Profiles.Where(p => p.UserId == currentUserId).Select(p => p.ProfileImage).FirstOrDefault();
     }
 
     <header class="navbar navbar-expand-lg navbar-light bg-light">
@@ -67,14 +68,23 @@
                     <div class="nav-item dropdown align-content-center">
 
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            
-                          <!--Ändra till profilbild så småningom-->
-                            <img class="img rounded-circle" style="width: 3rem;" src="~/lib/image/defaultprofileimg.jpg" alt="Profile Image">
+
+                            @if (profileImage != null)
+                            {
+                                var imageBase64 = Convert.ToBase64String(profileImage);
+                                var imageSrc = $"data:image/png;base64,{imageBase64}";
+                                <img class="img rounded-circle" style="width: 3rem; aspect-ratio: 1/1; object-fit: cover;" src="@imageSrc" alt="Profile Image">
+                            }
+                            else
+                            {
+                                <img class="img rounded-circle" style="width: 3rem; aspect-ratio: 1/1; object-fit: cover;" src="~/lib/image/defaultprofileimg.jpg" alt="Default Profile Image">
+                            }
+
                         </a>
 
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
 
-                            <a href="@Url.Action("Profile", "Profile", new { userId = CurrentUserId })" class="dropdown-item" style="color: black; ">Min Profil</a>
+                            <a href="@Url.Action("Profile", "Profile", new { userId = currentUserId })" class="dropdown-item" style="color: black; ">Min Profil</a>
 
                             <a asp-action="ChangePassword" asp-controller="Account" class="dropdown-item">Byt Lösenord</a>
 
