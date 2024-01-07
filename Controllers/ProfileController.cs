@@ -147,23 +147,44 @@ namespace MittClick.Controllers
         public async Task<IActionResult> Edit()
         {
             var currentUser = await userManager.GetUserAsync(User);
-
+            
             var userProfile = dbContext.Profiles
                 .Include(p => p.User)
+                .Include(p => p.ContactInfos)
+                .Include(p => p.Skills)
+                .Include(p => p.Educations)
+                .Include(p => p.WorkExperiences)
                 .FirstOrDefault(p => p.UserId == currentUser.Id);
 
-            EditProfileViewModel editProfileViewModel = new EditProfileViewModel()
+            if (userProfile != null)
             {
-                FirstName = userProfile.FirstName,
-                LastName = userProfile.LastName,
-                PrivateProfile = userProfile.PrivateProfile,
-                Information = userProfile.Information,
+                EditProfileViewModel editProfileViewModel = new EditProfileViewModel()
+                {
+                    FirstName = userProfile.FirstName,
+                    LastName = userProfile.LastName,
+                    PrivateProfile = userProfile.PrivateProfile,
+                    Information = userProfile.Information,
+                    // Populate additional collections
+                    ContactInfos = userProfile.ContactInfos.Select(ci => new ContactInfo { Type = ci.Type, Info = ci.Info }).ToList(),
+                    Skills = userProfile.Skills.Select(s => new Skill { Name = s.Name }).ToList(),
+                    Educations = userProfile.Educations.Select(e => new Education { School = e.School, Type = e.Type, From = e.From, To = e.To }).ToList(),
+                    WorkExperiences = userProfile.WorkExperiences.Select(we => new WorkExperience { Workplace = we.Workplace, Role = we.Role, From = we.From, To = we.To }).ToList()
+                };
+                ViewBag.ContactInfos = editProfileViewModel.ContactInfos;
+                ViewBag.Skills = editProfileViewModel.Skills;
+                ViewBag.Educations = editProfileViewModel.Educations;
+                ViewBag.WorkExperiences = editProfileViewModel.WorkExperiences;
 
-                // Lämna ProfileImage tomt för att undvika överföring av bilddata till klienten
-            };
 
-            return View(editProfileViewModel);
+                return View(editProfileViewModel);
+            }
+            else
+            {
+                Console.WriteLine("Användaren har ingen profil.");
+                return NotFound();
+            }
         }
+
 
         [HttpPost]
         public async Task<IActionResult> Edit(EditProfileViewModel editProfileViewModel)
@@ -176,6 +197,10 @@ namespace MittClick.Controllers
 
                     var userProfile = dbContext.Profiles
                         .Include(p => p.User)
+                        .Include(p => p.ContactInfos)
+                        .Include(p => p.Skills)
+                        .Include(p => p.Educations)
+                        .Include(p => p.WorkExperiences)
                         .FirstOrDefault(p => p.UserId == currentUser.Id);
 
                     if (userProfile != null)
@@ -184,9 +209,8 @@ namespace MittClick.Controllers
                         userProfile.LastName = editProfileViewModel.LastName;
                         userProfile.PrivateProfile = editProfileViewModel.PrivateProfile;
                         userProfile.Information = editProfileViewModel.Information;
-                       
 
-                        // Profilbildsuppdatering endast om en ny bild laddas upp
+                        // Update ProfileImage if a new image is uploaded
                         if (editProfileViewModel.ProfileImage != null && editProfileViewModel.ProfileImage.Length > 0)
                         {
                             var image = new Image
@@ -200,7 +224,70 @@ namespace MittClick.Controllers
                             userProfile.ProfileImage = image.Data;
                         }
 
+                        // Update ContactInfos
+                        userProfile.ContactInfos.Clear();
+                        if (editProfileViewModel.ContactInfos != null)
+                        {
+                            foreach (var contactInfo in editProfileViewModel.ContactInfos)
+                            {
+                                userProfile.ContactInfos.Add(new ContactInfo
+                                {
+                                    Type = contactInfo.Type,
+                                    Info = contactInfo.Info,
+                                    ProfileId = userProfile.ProfileId
+                                });
+                            }
+                        }
+
+                        // Update Skills
+                        userProfile.Skills.Clear();
+                        if (editProfileViewModel.Skills != null)
+                        {
+                            foreach (var skill in editProfileViewModel.Skills)
+                            {
+                                userProfile.Skills.Add(new Skill { Name = skill.Name, ProfileId = userProfile.ProfileId });
+                            }
+                        }
+
+                        // Update Educations
+                        userProfile.Educations.Clear();
+                        if (editProfileViewModel.Educations != null)
+                        {
+                            foreach (var education in editProfileViewModel.Educations)
+                            {
+                                userProfile.Educations.Add(new Education
+                                {
+                                    School = education.School,
+                                    Type = education.Type,
+                                    From = education.From,
+                                    To = education.To,
+                                    ProfileId = userProfile.ProfileId
+                                });
+                            }
+                        }
+
+                        // Update WorkExperiences
+                        userProfile.WorkExperiences.Clear();
+                        if (editProfileViewModel.WorkExperiences != null)
+                        {
+                            foreach (var workExperience in editProfileViewModel.WorkExperiences)
+                            {
+                                userProfile.WorkExperiences.Add(new WorkExperience
+                                {
+                                    Workplace = workExperience.Workplace,
+                                    Role = workExperience.Role,
+                                    From = workExperience.From,
+                                    To = workExperience.To,
+                                    ProfileId = userProfile.ProfileId
+                                });
+                            }
+                        }
+
                         dbContext.SaveChanges();
+                        ViewBag.ContactInfos = userProfile.ContactInfos;
+                        ViewBag.Skills = userProfile.Skills;
+                        ViewBag.Educations = userProfile.Educations;
+                        ViewBag.WorkExperiences = userProfile.WorkExperiences;
                         return RedirectToAction("Profile", "Profile", new { userId = currentUser.Id });
                     }
                     else
@@ -208,21 +295,21 @@ namespace MittClick.Controllers
                         Console.WriteLine("Användaren har ingen profil.");
                         return NotFound();
                     }
-
-                    return RedirectToAction("Profile", "Profile");
                 }
                 catch (Exception ex)
                 {
                     Console.WriteLine($"Ett fel uppstod: {ex.Message}");
-                    return RedirectToAction("Error", "Home"); // Redirect till en sida som visar felmeddelandet för användaren
+                    return RedirectToAction("Error", "Home");
                 }
             }
             else
             {
-                Console.WriteLine("ModelState är inte giltig.");
+                Console.WriteLine("hehehehhehehehe");
+                
                 return View(editProfileViewModel);
             }
         }
+
 
         private List<Project> GetUserProjects(string userId)
         {

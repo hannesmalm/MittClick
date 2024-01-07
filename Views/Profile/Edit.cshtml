@@ -46,16 +46,15 @@
                                 </div>
                             </div>
                             <ul class="list-group mt-2" id="contactinfo">
-                                @if (ViewBag.ContactInfos != null)
+                                @if (Model.ContactInfos != null && Model.ContactInfos.Any())
                                 {
-                                    @foreach (var contactInfo in ViewBag.ContactInfos)
+                                    @foreach (var contactInfo in Model.ContactInfos)
                                     {
                                         <li class="list-group-item list-group-item-primary">
                                             @contactInfo.Type: @contactInfo.Info
                                             <button class="btn btn-outline-danger btn-sm float-end" onclick="removeContact(this)">Ta bort</button>
                                         </li>
                                     }
-
                                 }
                             </ul>
                             <script>
@@ -177,9 +176,9 @@
                             <div id="educationErrorMessage" class="text-danger"></div>
                             <div id="educationFormatErrorMessage" class="text-danger"></div>
                             <ul class="list-group mt-2" id="schoolList">
-                                @if (ViewBag.Educations != null)
+                                @if (Model.Educations != null && Model.Educations.Any())
                                 {
-                                    @foreach (var education in ViewBag.Educations)
+                                    @foreach (var education in Model.Educations)
                                     {
                                         <li class="list-group-item list-group-item-primary">
                                             <div>
@@ -194,7 +193,6 @@
                                             <button class="btn btn-outline-danger btn-sm float-end" onclick="removeEducation(this)">Ta bort</button>
                                         </li>
                                     }
-
                                 }
                             </ul>
 
@@ -360,9 +358,9 @@
                         <div id="workErrorMessage" class="text-danger"></div>
                         <div id="formatErrorMessage" class="text-danger"></div>
                         <ul class="list-group mt-2" id="workList">
-                            @if (ViewBag.WorkExperiences != null)
+                            @if (Model.WorkExperiences != null && Model.WorkExperiences.Any())
                             {
-                                @foreach (var workExperience in ViewBag.WorkExperiences)
+                                @foreach (var workExperience in Model.WorkExperiences)
                                 {
                                     <li class="list-group-item list-group-item-primary">
                                         <div>@workExperience.Workplace</div>
@@ -371,7 +369,6 @@
                                         <button class="btn btn-outline-danger btn-sm float-end" onclick="removeWork(this)">Ta bort</button>
                                     </li>
                                 }
-
                             }
                         </ul>
 
@@ -566,16 +563,15 @@
                                 </div>
                             </div>
                             <ul class="list-group  list-group-flush" id="skillslist">
-                                @if (ViewBag.Skills != null)
+                                @if (Model.Skills != null && Model.Skills.Any())
                                 {
-                                    @foreach (var skill in ViewBag.Skills)
+                                    @foreach (var skill in Model.Skills)
                                     {
                                         <li class="list-group-item list-group-item-primary">
                                             @skill.Name
                                             <button class="btn btn-outline-danger btn-sm float-end" onclick="removeSkill(this)">Ta bort</button>
                                         </li>
                                     }
-
                                 }
                             </ul>
                         </div>

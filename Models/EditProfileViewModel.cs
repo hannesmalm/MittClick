@@ -18,8 +18,8 @@ namespace MittClick.Models
         public string Information { get; set; }
 
         public IFormFile? ProfileImage { get; set; }
-        public virtual ICollection<Skill> Skills { get; set; }
-        public virtual ICollection<ContactInfo> ContactInfos { get; set; }
+        public virtual ICollection<Skill>? Skills { get; set; }
+        public virtual ICollection<ContactInfo>? ContactInfos { get; set; }
         public virtual ICollection<Education>? Educations { get; set; }
         public virtual ICollection<WorkExperience>? WorkExperiences { get; set; }
 
