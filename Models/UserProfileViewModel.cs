@@ -1,4 +1,4 @@
-﻿namespace MittClick.Models
+namespace MittClick.Models
 {
     public class UserProfileViewModel
     {
@@ -19,6 +19,5 @@
         {
             UserProjects = new List<Project>();
         }
-
     }
 }

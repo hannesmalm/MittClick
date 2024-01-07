@@ -42,17 +42,7 @@ namespace MittClick.Controllers
                     var currentUser = await userManager.FindByNameAsync(loginViewModel.UserName);
                     if (currentUser != null)
                     {
-                        string currentUserId = currentUser.Id.ToString();
-                        var currentUserProfile = dbContext.Profiles.FirstOrDefault(p => p.UserId == currentUserId);
-
-                        if (currentUserProfile != null)
-                        {
-                            return RedirectToAction("Profile", "Profile");
-                        }
-                        else
-                        {
-                            return RedirectToAction("Create", "Profile");
-                        }
+                        return RedirectToAction("Index", "Home");
                     }
                 }
                 else
@@ -132,8 +122,6 @@ namespace MittClick.Controllers
             }
             return View(model);
         }
-
-
 
         [HttpPost]
         public async Task<IActionResult> LogOut()
