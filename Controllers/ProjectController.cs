@@ -196,7 +196,7 @@ namespace MittClick.Controllers
         }
 
         [HttpGet]
-        public IActionResult EditProject(int projectId)
+        public IActionResult Edit(int projectId)
         {
             var project = dbContext.Projects.FirstOrDefault(p => p.ProjectId == projectId);
 
@@ -207,35 +207,62 @@ namespace MittClick.Controllers
 
             var editProjectViewModel = new EditProjectViewModel
             {
-                ProjectId = project.ProjectId,
+                ProjectId = projectId,
                 Title = project.Title,
                 Summary = project.Summary,
                 Description = project.Description,
             };
 
-            return View("EditProject", editProjectViewModel);
+            return View("Edit", editProjectViewModel);
         }
 
         [HttpPost]
-        public IActionResult EditProject(EditProjectViewModel editedProject)
+        public IActionResult Edit(EditProjectViewModel editedProject)
         {
+            Console.WriteLine(editedProject.ProjectId);
+            Console.WriteLine(editedProject.Title);
+            Console.WriteLine(editedProject.Summary);
+            Console.WriteLine(editedProject.Description);
+
+
             if (ModelState.IsValid)
             {
-                var existingProject = dbContext.Projects.FirstOrDefault(p => p.ProjectId == editedProject.ProjectId);
-
-                if (existingProject != null)
+                try
                 {
-                    existingProject.Title = editedProject.Title;
-                    existingProject.Summary = editedProject.Summary;
-                    existingProject.Description = editedProject.Description;
+                    var existingProject = dbContext.Projects.FirstOrDefault(p => p.ProjectId == editedProject.ProjectId);
 
-                    dbContext.SaveChanges();
+                    if (existingProject != null)
+                    {
+                        existingProject.Title = editedProject.Title;
+                        existingProject.Summary = editedProject.Summary;
+                        existingProject.Description = editedProject.Description;
 
-                    return RedirectToAction("Project", new { projectId = existingProject.ProjectId });
+                        if (editedProject.ProjectImage != null && editedProject.ProjectImage.Length > 0)
+                        {
+                            var image = new Image
+                            {
+                                Data = imageService.ConvertToByteArray(editedProject.ProjectImage)
+                            };
+
+                            dbContext.Images.Add(image);
+                            dbContext.SaveChanges();
+
+                            existingProject.ProjectImage = image.Data;
+                        }
+
+                        dbContext.SaveChanges();
+
+                        return RedirectToAction("Project", "Project", new { projectId = existingProject.ProjectId });
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Ett fel uppstod: {ex.Message}");
+                    return RedirectToAction("Error", "Home"); // Redirect till en sida som visar felmeddelandet för användaren
                 }
             }
 
-            return View("EditProject", editedProject);
+            return View("Edit", editedProject);
         }
     }
 }

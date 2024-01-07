@@ -6,7 +6,6 @@ namespace MittClick.Models
     public class EditProjectViewModel
     {
         [Required]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ProjectId { get; set; }
 
         [Required(ErrorMessage = "Var god fyll i titel")]
