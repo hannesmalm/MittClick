@@ -95,6 +95,7 @@ namespace MittClick.Controllers
             return (message);
         }
 
+        [HttpGet]
         public IActionResult Inbox()
         {
             var currentUserId = userManager.GetUserId(User);
@@ -105,7 +106,6 @@ namespace MittClick.Controllers
             return View(messages);
         }
 
-        [HttpPost]
         public IActionResult MarkAsRead(int messageId)
         {
             var message = dbContext.Messages.Find(messageId);
@@ -118,5 +118,6 @@ namespace MittClick.Controllers
 
             return RedirectToAction("Inbox");
         }
+
     }
 }
