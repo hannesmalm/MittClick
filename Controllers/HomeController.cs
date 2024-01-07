@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MittClick.Models;
 using System.Diagnostics;
+using System.Security.Claims;
 
 namespace MittClick.Controllers
 {
@@ -14,10 +15,20 @@ namespace MittClick.Controllers
         {
             _logger = logger;
             this.dbContext = dbContext;
+        } 
+        
+        private async Task<byte[]> GetUserProfileImageAsync()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId)) return null;
+
+            var profile = await dbContext.Profiles.FirstOrDefaultAsync(p => p.UserId == userId);
+            return profile?.ProfileImage;
         }
 
-        public IActionResult Index(string id)
+        public async Task<IActionResult> IndexAsync(string id)
         {
+            ViewBag.ProfileImage = await GetUserProfileImageAsync();
             var profileList = dbContext.Profiles.Include(p => p.User)
                                                     .Where(p => string.IsNullOrEmpty(id) || p.User.UserName == id)
                                                     .Select(p => new Profile
@@ -30,6 +41,7 @@ namespace MittClick.Controllers
             return View(profileList);
         }
 
+       
 
         public IActionResult Privacy()
         {

@@ -123,8 +123,6 @@ namespace MittClick.Controllers
             return View(model);
         }
 
-
-
         [HttpPost]
         public async Task<IActionResult> LogOut()
         {

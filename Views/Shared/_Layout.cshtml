@@ -17,7 +17,7 @@
     @{
         var routeController = ViewContext.RouteData.Values["controller"].ToString();
         var routeAction = ViewContext.RouteData.Values["action"].ToString();
-        
+        string CurrentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
     }
 
     <header class="navbar navbar-expand-lg navbar-light bg-light">
@@ -47,19 +47,23 @@
 
                 @if (User.Identity.IsAuthenticated)
                 {
-                    
+
 
                     <div class="nav-item dropdown align-content-center">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            
-                          <!--Ändra till profilbild så småningom-->
-                            <img class="img rounded-circle" style="width: 3rem;" src="~/lib/image/defaultprofileimg.jpg" alt="Profile Image">
+                            @if (ViewBag.ProfileImage != null)
+                            {
+                                var imageBase64 = Convert.ToBase64String(ViewBag.ProfileImage);
+                                var imageSrc = $"data:image/png;base64,{imageBase64}";
+                                <img class="rounded-circle" style="width: 3rem; height: 3rem; object-fit: cover;" src="@imageSrc" alt="Profile Image">
+                            }
+                            else
+                            {
+                                <img class="rounded-circle" style="width: 3rem; height: 3rem; object-fit: cover;" src="~/lib/image/defaultprofileimg.jpg" alt="Default Image">
+                            }
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
 
-                            @{
-                                string CurrentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-                            }
                             <a href="@Url.Action("Profile", "Profile", new { userId = CurrentUserId })" class="dropdown-item" style="color: black; ">Min Profil</a>
 
                             <a asp-action="ChangePassword" asp-controller="Account" class="dropdown-item">Byt Lösenord</a>
