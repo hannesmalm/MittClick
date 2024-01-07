@@ -38,8 +38,12 @@ namespace MittClick.Controllers
                     PrivateProfile = profileEntity.PrivateProfile,
                     Information = profileEntity.Information,
                     ProfileImage = profileEntity.ProfileImage,
-                    UserProjects = userProjects
-                };
+                    UserProjects = userProjects,
+                    ContactInfos = profileEntity.ContactInfos.ToList(),
+                    Educations = profileEntity.Educations.ToList(),
+                    WorkExperiences = profileEntity.WorkExperiences.ToList(),
+                    Skills = profileEntity.Skills.ToList()
+            };
 
                 return View("Profile", userProfileViewModel);
             }
