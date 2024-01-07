@@ -89,6 +89,10 @@
                 <div class="card">
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <h5 class="card-title">Medverkande</h5>
+
+                        <!--Gå med i projekt-knapp om användare är inloggad-->
+                    @if (User.Identity.IsAuthenticated)
+                    {
                         <form method="post" asp-action="AddUserToProject" asp-controller="Project">
                             <input type="hidden" name="projectId" value="@Model.ProjectId" />
                             <button type="submit" class="btn btn-outline-success">
@@ -99,7 +103,8 @@
                                 </svg>
                             </button>
                         </form>
-                    </div>
+                    }
+                </div>
 
                     <div id="profilesList" class="row">
                         @foreach (var userInProject in Model.PartOfProjects.Select(pp => pp.User))
