@@ -24,7 +24,14 @@ namespace MittClick.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            var allProjects = dbContext.Projects.ToList(); // Hämta alla projekt från databasen
+            return View(allProjects); // Skicka med alla projekt till vyn för att visa dem
+        }
+
+        public IActionResult All()
+        {
+            var allProjects = dbContext.Projects.ToList(); // Hämta alla projekt från databasen
+            return View(allProjects);
         }
 
 
