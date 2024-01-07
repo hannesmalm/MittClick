@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MittClick.Models;
 using System.Diagnostics;
+using System.Security.Claims;
 
 namespace MittClick.Controllers
 {
@@ -14,21 +15,38 @@ namespace MittClick.Controllers
         {
             _logger = logger;
             this.dbContext = dbContext;
-        }
-
-        public IActionResult Index(string id)
+        } 
+        
+        private async Task<byte[]> GetUserProfileImageAsync()
         {
-            var profileList = dbContext.Profiles.Include(p => p.User)
-                                                    .Where(p => string.IsNullOrEmpty(id) || p.User.UserName == id)
-                                                    .Select(p => new Profile
-                                                    {
-                                                        UserId = p.UserId,
-                                                        // Map other properties as needed
-                                                    })
-                                                    .ToList();
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId)) return null;
 
-            return View(profileList);
+            var profile = await dbContext.Profiles.FirstOrDefaultAsync(p => p.UserId == userId);
+            return profile?.ProfileImage;
         }
+
+        public async Task<IActionResult> IndexAsync(string id)
+        {
+            ViewBag.ProfileImage = await GetUserProfileImageAsync();
+
+            var viewModel = new IndexViewModel();
+
+            var profiles = await dbContext.Profiles
+                .Where(p => string.IsNullOrEmpty(id) || p.User.UserName == id)
+                .ToListAsync();
+
+            foreach (var profile in profiles)
+            {
+                viewModel.Add(profile);
+            }
+
+            viewModel.Projects = await dbContext.Projects.ToListAsync();
+
+            return View(viewModel);
+        }
+
+
 
 
         public IActionResult Privacy()

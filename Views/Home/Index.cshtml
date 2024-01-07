@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Profile>
+@model MittClick.Models.IndexViewModel
 
 @{
     ViewData["Title"] = "Home Page";
@@ -20,8 +20,15 @@
     <br />
 
     <h1 class="display-4">Välkommen!</h1>
+    <p>
+        "Mitt Click" erbjuder en smidig plattform för att strukturera din professionella identitet online.
+        Med fokus på enkelhet låter vår webbapplikation dig uppdatera ditt CV dynamiskt, lägga till kompetenser
+        och hantera tidigare erfarenheter på ett ställe. Genom att välja privat eller delad profil kan du
+        kontrollera din integritet medan du skapar och hanterar projekt, skickar meddelanden och använder
+        sökfunktionen för att hitta andra användare.
+    </p>
     <h4> Hitta din nya click</h4>
-    
+
     <div class="col-lg-6 mx-auto">
         <form asp-controller="Search" asp-action="Result" method="get" class="form-inline my-2 my-lg-0">
 			<div class="input-group w-100">
@@ -33,8 +40,10 @@
 				</button>
 			</div>
 		</form>
+
     </div>
-    
+
+
     <br />
 
     <div class="mb-3">
@@ -44,16 +53,6 @@
     <div id="profilesList">
         @Html.Partial("SearchProfile", Model)
     </div>
-
-    <p>
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-        sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-        Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris
-        nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
-        reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-        pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-        culpa qui officia deserunt mollit anim id est laborum."
-    </p>
 
     <script>
         $(document).ready(function () {
@@ -73,4 +72,57 @@
             });
         }
     </script>
+
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div class="row align-items-center">
+                            <h1>Senaste projektet:</h1>
+                            @if (Model.Projects.Any())
+                            {
+                                var latestProject = Model.Projects.OrderByDescending(p => p.ProjectId).First();
+
+                                <div class="card mb-4 project-card">
+                                    <div class="row no-gutters">
+                                        <!-- Projektbild -->
+                                        <div class="col-md-4">
+                                            @if (latestProject.ProjectImage != null)
+                                            {
+                                                var imageBase64 = Convert.ToBase64String(latestProject.ProjectImage);
+                                                var imageSrc = $"data:image/png;base64,{imageBase64}";
+                                                <img src="@imageSrc" class="card-img" alt="Project Image">
+                                            }
+                                        </div>
+
+                                        <!-- Projektdetaljer -->
+                                        <div class="col-md-8">
+                                            <div class="card-body">
+                                                <h5 class="card-title">@latestProject.Title</h5>
+                                                <p class="card-text">@latestProject.Summary</p>
+                                                <form asp-controller="Project" asp-action="Project" method="get">
+                                                    <input type="hidden" name="projectId" value="@latestProject.ProjectId" />
+                                                    <button type="submit" class="btn btn-primary">Läs Mer</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="card text-center mt-4">
+                                    <div class="card-body">
+                                        <p>Inga projekt tillgängliga för närvarande.</p>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                        <a asp-controller="Project" asp-action="All" class="btn btn-primary">Visa alla projekt</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

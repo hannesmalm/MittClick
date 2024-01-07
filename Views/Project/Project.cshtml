@@ -1,0 +1,138 @@
+﻿@using System.Security.Claims
+@model Project
+
+@{
+    ViewData["Title"] = "Project";
+    var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+}
+
+<!--  POP UP FÖR MEDDELANDE  -->
+<div class="container mt-4">
+
+    @if (TempData["Message"] != null)
+    {
+        <div class="alert alert-warning" role="alert">
+            @TempData["Message"]
+        </div>
+    }
+
+
+    <!--  INFO OM PROJEKT  -->
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div class="row align-items-center">
+                            <!-- Mindre projektbild -->
+                            <div class="col-md-2">
+                                @if (Model.ProjectImage != null)
+                                {
+                                    var imageBase64 = Convert.ToBase64String(Model.ProjectImage);
+                                    var imageSrc = $"data:image/png;base64,{imageBase64}";
+                                    <img class="card-img-top" src="@imageSrc" alt="Project Image">
+                                }
+                            </div>
+
+                            <!-- Projekttitel, Projektledare och Beskrivning -->
+                            <div class="col-md-10">
+                                <h3 class="card-title">@Model.Title</h3>
+                                <div class="border-bottom mb-2">
+                                    <h6 class="text-muted">Projektledare: @ViewData["ProjectLeaderFullName"]</h6>
+                                </div>
+                                <p class="card-text">@Model.Summary</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Redigera projektknapp -->
+                    @if (Model.UserId == currentUserId)
+                    {
+                        <div class="card-footer bg-white d-flex justify-content-end">
+                            <a href="@Url.Action("Edit", "Project", new { projectId = Model.ProjectId })" class="btn btn-outline-secondary btn-sm" data-bs-toggle="tooltip" data-bs-placement="top" title="Redigera projekt">
+                                Redigera
+                                <!--Ikon-->
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16">
+                                    <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l.11-.168zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l5.5-5.5z" />
+                                </svg>
+                            </a>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div class="row">
+        <div class="col-md-12 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title">Beskrivning</h5>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">@Model.Description</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+        <!--  MEDVERKANDE ANVÄNDARE  -->
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="card-title">Medverkande</h5>
+
+                        <!--Gå med i projekt-knapp om användare är inloggad-->
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <form method="post" asp-action="AddUserToProject" asp-controller="Project">
+                            <input type="hidden" name="projectId" value="@Model.ProjectId" />
+                            <button type="submit" class="btn btn-outline-success">
+                                Gå med i projekt
+                                <!--Ikon-->
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle-fill" viewBox="0 0 16 16">
+                                    <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3z" />
+                                </svg>
+                            </button>
+                        </form>
+                    }
+                </div>
+
+                    <div id="profilesList" class="row">
+                        @foreach (var userInProject in Model.PartOfProjects.Select(pp => pp.User))
+                        {
+                            <div class="col">
+
+                                <div class="card mx-auto mb-4" style="width: 300px;">
+
+                                    @if (userInProject.Profile.ProfileImage != null)
+                                    {
+                                        var imageBase64 = Convert.ToBase64String(userInProject.Profile.ProfileImage);
+                                        var imageSrc = $"data:image/png;base64,{imageBase64}";
+                                        <img class="img rounded-circle m-4" style="aspect-ratio: 1/1; object-fit: cover;" src="@imageSrc" alt="Profile Image">
+                                    }
+                                    else
+                                    {
+                                        <img class="img rounded-circle m-4" style="aspect-ratio: 1/1; object-fit: cover;" src="~/lib/image/defaultprofileimg.jpg" alt="Default Profile Image">
+                                    }
+
+                                    <div class="card-body text-center">
+                                        <h5 class="card-title">@userInProject.Profile.FirstName @userInProject.Profile.LastName</h5>
+                                        <p class="card-text"></p>
+                                        <a href="#" class="btn btn-success mb-2">Skicka meddelande</a>
+                                        <a href="@Url.Action("Profile", "Profile", new { userId = userInProject.Profile.UserId })" class="btn btn-primary mb-2">Visa Profil</a>
+                                    </div>
+                                </div>
+
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
