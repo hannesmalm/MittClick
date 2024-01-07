@@ -1,5 +1,6 @@
-﻿@using System.Security.Claims
-@model MittClick.Models.Profile
+@using System.Security.Claims
+@model UserProfileViewModel
+
 
 @{
     ViewData["Title"] = "Profile";
@@ -71,47 +72,47 @@
             </div>
 
             <div class="card mt-3">
-                <div class="card-header">
-                    <h5 class="card-title">Projekt</h5>
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="card-title mb-0">Projekt</h5>
+                    <a asp-action="Add" asp-controller="Project" class="icon-link" data-bs-toggle="tooltip" data-bs-placement="top" title="Lägg till nytt projekt">
+                        <!-- Ikon -->
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="green" class="bi bi-plus-circle" viewBox="0 0 16 16">
+                            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
+                            <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4" />
+                        </svg>
+                    </a>
                 </div>
+
                 <div class="card-body d-flex flex-wrap justify-content-center">
+                    <div class="container">
+                        <div class="row">
 
-                    <div class="card m-2" style="width: 15rem;">
-                        <img class="img mx-4" src="~/lib/image/groupImg.png" alt="Card image cap">
-                        <div class="card-body">
-                            <h5 class="card-title">Projekttitel</h5>
-                            <p class="card-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsa ratione magnam delectus! Est nam nihil libero neque esse delectus labore facilis doloremque, pariatur assumenda, perferendis vitae iste dicta debitis quaerat.</p>
-                            <p class="card-text"><small class="text-muted">3 deltagare</small></p>
-                            <div class="text-center">
-                                <button class="btn btn-primary">Se projektdetaljer</button>
-                            </div>
+                            <!--Loopa igenom projekt-->
+                            @foreach (var project in Model.UserProjects)
+                            {
+                                <div class="col-md-4 col-sm-6">
+                                    <div class="card">
+                                        @if (project.ProjectImage != null)
+                                        {
+                                            var imageBase64 = Convert.ToBase64String(project.ProjectImage);
+                                            var imageSrc = $"data:image/png;base64,{imageBase64}";
+                                            <img class="card-img-top" src="@imageSrc" alt="Project Image">
+                                        }
+                                        <div class="card-body">
+                                            <h5 class="card-title text-center">@project.Title</h5>
+                                            <p class="card-text">@project.Summary</p>
+                                            <div class="d-flex justify-content-center">
+                                                <form asp-controller="Project" asp-action="Project" method="get">
+                                                    <input type="hidden" name="projectId" value="@project.ProjectId" />
+                                                    <button type="submit" class="btn btn-primary">Läs Mer</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
                         </div>
                     </div>
-
-                    <div class="card m-2" style="width: 15rem;">
-                        <img class="img mx-4" src="~/lib/image/groupImg.png" alt="Card image cap">
-                        <div class="card-body">
-                            <h5 class="card-title">Projekttitel</h5>
-                            <p class="card-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsa ratione magnam delectus! Est nam nihil libero neque esse delectus labore facilis doloremque, pariatur assumenda, perferendis vitae iste dicta debitis quaerat.</p>
-                            <p class="card-text"><small class="text-muted">3 deltagare</small></p>
-                            <div class="text-center">
-                                <button class="btn btn-primary">Se projektdetaljer</button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="card m-2" style="width: 15rem;">
-                        <img class="img mx-4" src="~/lib/image/groupImg.png" alt="Card image cap">
-                        <div class="card-body">
-                            <h5 class="card-title">Projekttitel</h5>
-                            <p class="card-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsa ratione magnam delectus! Est nam nihil libero neque esse delectus labore facilis doloremque, pariatur assumenda, perferendis vitae iste dicta debitis quaerat.</p>
-                            <p class="card-text"><small class="text-muted">3 deltagare</small></p>
-                            <div class="text-center">
-                                <button class="btn btn-primary">Se projektdetaljer</button>
-                            </div>
-                        </div>
-                    </div>
-
                 </div>
             </div>
         </div>
