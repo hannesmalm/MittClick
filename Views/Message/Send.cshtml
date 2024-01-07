@@ -1,38 +1,43 @@
 ﻿@model MittClick.Models.SendMessageViewModel
 
-@{
-    ViewData["Title"] = "Skicka Meddelande";
-}
 
-<div class="container mt-4">
-    <h2>Skicka Meddelande</h2>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-9 col-lg-6">
+            <div class="card">
+                <div class="card-header text-center">
+                    <h4> Meddelande </h4>
+                </div>
+                <div class="card-body">
 
-    <form method="post" asp-action="Send">
+                    <form asp-action="Send" asp-controller="Message" method="post" enctype="multipart/form-data">
 
-        <input type="hidden" asp-for="ReceiverId" value="@Model.ReceiverId" />
+                        <input type="hidden" asp-for="ReceiverId" value="@Model.ReceiverId" />
 
-        <div class="form-group">
-            <label asp-for="SenderName"></label>
-            <input asp-for="SenderName" class="form-control" />
-            <span asp-validation-for="SenderName" class="text-danger"></span>
+                        <div class="form-floating">
+                            <input type="text" asp-for="SenderName" id="Sender" class="form-control" placeholder="Avsändare" />
+                            <label for="Sender" class="form-label">Avsändare</label>
+                            <span asp-validation-for="SenderName" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-floating mt-2">
+                            <input type="text" asp-for="ReceiverName" id="Receiver" class="form-control" placeholder="Mottagare" />
+                            <label for="receiver" class="form-label">Mottagare</label>
+                            <span asp-validation-for="ReceiverName" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-floating mt-2">
+                            <textarea asp-for="Text" class="form-control" placeholder="Meddelande" style="resize: none;height: 150px;"></textarea>
+                            <label asp-for="Text" class="form-label">Meddelande</label>
+                            <span asp-validation-for="Text" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group text-center ">
+                            <button type="submit" class="btn btn-primary btn-block mt-2">Skicka</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
-
-        <div class="form-group">
-            <label asp-for="ReceiverName"></label>
-            <input asp-for="ReceiverName" class="form-control" />
-            <span asp-validation-for="ReceiverName" class="text-danger"></span>
-        </div>
-
-        <div class="form-group">
-            <label asp-for="Text"></label>
-            <textarea asp-for="Text" class="form-control"></textarea>
-            <span asp-validation-for="Text" class="text-danger"></span>
-        </div>
-
-        <button type="submit" class="btn btn-primary">Skicka meddelande</button>
-
-    </form>
-
+    </div>
 </div>
-
-<script type="module" src="din-javascript-fil.js"></script>
