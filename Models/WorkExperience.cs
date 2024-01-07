@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.Build.Framework;
 
 namespace MittClick.Models
@@ -11,8 +12,7 @@ namespace MittClick.Models
 		public string Workplace { get; set; }
 	
 		public string Role {  get; set; }
-	
-		public int From {  get; set; }
+		public int From { get; set; }
 		public int? To { get; set; }
 		[ForeignKey(nameof(ProfileId))]
 		public int ProfileId { get; set; }

@@ -11,7 +11,6 @@ namespace MittClick.Models
 		public string School { get; set; }
 		
 		public string Type { get; set; }
-	
 		public int From { get; set; }
 		public int? To { get; set; }
 		[ForeignKey(nameof(ProfileId))]

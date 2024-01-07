@@ -25,8 +25,9 @@
 
 
                         <!--Kontaktuppgifter-->
-                        <div class="form-floating mt-2">
-                            <div class="input-group mt-3">
+                        <div class="form-floating mt-4">
+                            <h6>Kontaktuppgifter</h6>
+                            <div class="input-group">
                                 <div class="dropdown">
                                     <button class="btn btn-outline-primary dropdown-toggle" type="button" id="contactDropDown" data-bs-toggle="dropdown" aria-expanded="false">
                                         Välj kontakttyp
@@ -135,33 +136,35 @@
                         </div> 
 
                         <!--Beskrivning-->
-                        <div class="form-floating mt-2">
+                        <div class="form-floating mt-4">
                             <textarea asp-for="Information" class="form-control" placeholder="Input description here"></textarea>
                             <label asp-for="Information" class="form-label">Kort beskrivning om dig:</label>
                             <span asp-validation-for="Information" class="text-danger"></span>
                         </div>
 
                         <!--Utbildning-->
-
-						<div class="form-floating mt-2">
-							<h5>Utbildning</h5>
+                        <div class="form-floating mt-4">
+                            <h5>Utbildning</h5>
                             <div class="input-group">
                                 <div class="form-floating w-50">
                                     <input type="text" class="form-control" id="schoolInput" placeholder="Skola/Universitet">
                                     <label for="schoolInput" class="form-label">Skola/Universitet</label>
-								</div>
+                                </div>
                                 <div class="form-floating w-50">
                                     <input type="text" class="form-control" id="typeInput" placeholder="Typ av utbildning">
-									<label for="typeInput" class="form-label">Typ av utbildning</label>
+                                    <label for="typeInput" class="form-label">Typ av utbildning</label>
                                 </div>
                             </div>
                             <div class="input-group">
-                                <input type="number" class="form-control" id="fromInput" placeholder="Från">
-                                <input type="number" class="form-control" id="toInput" placeholder="Till">
+                                <input type="number" class="form-control" id="fromInput" placeholder="Från" min="1900" max="2099" required>
+                                <input type="number" class="form-control" id="toInput" placeholder="Till" min="1900" max="2099" required>
                                 <button class="btn btn-outline-primary" id="addSchoolButton">Lägg till</button>
                             </div>
-                            <ul class ="list-group mt-2" id="schoolList"></ul>
+                            <div id="educationErrorMessage" class="text-danger"></div>
+                            <div id="educationFormatErrorMessage" class="text-danger"></div>
+                            <ul class="list-group mt-2" id="schoolList"></ul>
                         </div>
+
                         <script>
                             document.addEventListener('DOMContentLoaded', function () {
                                 var educationIndex = 0;
@@ -171,6 +174,8 @@
                                 var fromInput = document.getElementById('fromInput');
                                 var toInput = document.getElementById('toInput');
                                 var schoolList = document.getElementById('schoolList');
+                                var educationErrorMessage = document.getElementById('educationErrorMessage'); // Lägg till detta
+                                var educationFormatErrorMessage = document.getElementById('educationFormatErrorMessage');
 
                                 addSchoolButton.addEventListener('click', function (event) {
                                     event.preventDefault();
@@ -180,10 +185,36 @@
                                     var fromValue = parseInt(fromInput.value);
                                     var toValue = toInput.value ? parseInt(toInput.value) : null;
 
+                                    // Dölj tidigare felmeddelanden
+                                    educationErrorMessage.textContent = "";
+                                    educationErrorMessage.style.display = 'none'; // Dölj felmeddelandet
+                                    educationFormatErrorMessage.textContent = "";
+                                    educationFormatErrorMessage.style.display = 'none'; // Dölj felmeddelandet
+
                                     if (schoolValue.trim() !== '' && typeValue.trim() !== '' && !isNaN(fromValue) && !isNaN(toValue)) {
+                                        // Kontrollera formatet på årtalen
+                                        var validFromYear = isValidYearFormat(fromValue.toString());
+                                        var validToYear = isValidYearFormat(toValue !== null ? toValue.toString() : '');
+
+                                        if (!validFromYear || !validToYear) {
+                                            // Visa felmeddelande för ogiltigt årtalsformat
+                                            educationFormatErrorMessage.textContent = "Ogiltigt format! Ange ett giltigt årtal.";
+                                            educationFormatErrorMessage.style.display = 'block';
+                                            return;
+                                        }
+
+                                        if (toValue !== null && toValue < fromValue) {
+                                            // Visa felmeddelande för otillåtet intervall
+                                            educationErrorMessage.textContent = "'Från'-årtalet får inte vara mindre än 'Till'-årtalet.";
+                                            educationErrorMessage.style.display = 'block';
+                                            return;
+                                        }
+
+                                        // Lägg till utbildningsinformation och återställ inputfälten
                                         addEducationInfo(schoolValue, typeValue, fromValue, toValue);
                                         resetInputFields();
                                     }
+
                                 });
 
                                 function addEducationInfo(school, type, from, to) {
@@ -195,7 +226,7 @@
 
                                     listItem.appendChild(textContent);
 
-                                    // Create hidden input fields
+                                    // Skapa dolda input-fält
                                     var hiddenSchoolInput = createHiddenInput(school, 'School');
                                     var hiddenTypeInput = createHiddenInput(type, 'Type');
                                     var hiddenFromInput = createHiddenInput(from, 'From');
@@ -206,13 +237,13 @@
                                     listItem.appendChild(hiddenFromInput);
                                     listItem.appendChild(hiddenToInput);
 
-                                    // Add Remove button
+                                    // Lägg till Ta bort-knapp
                                     var removeButton = createRemoveButton(listItem);
                                     listItem.appendChild(removeButton);
 
                                     schoolList.appendChild(listItem);
 
-                                    // Update index for education
+                                    // Uppdatera index för utbildning
                                     updateEducationIndexes();
                                 }
 
@@ -258,14 +289,19 @@
                                         }
                                     });
                                 }
-                            });
 
-                        </script>                                                           
+                                function isValidYearFormat(year) {
+                                    return /^(19|20)\d{2}$/.test(year);
+                                }
+                            });
+                        </script>
+
 
 
 
                         <!--Arbetserfarenheter-->
-                        <div class="form-floating mt-2">
+                        <div class="form-floating mt-4">
+                            <h5>Arbetserfarenheter</h5>
                             <div class="input-group">
                                 <div class="form-floating w-50">
                                     <input type="text" class="form-control" id="workplaceInput" placeholder="Arbetsgivare">
@@ -277,11 +313,15 @@
                                 </div>
                             </div>
                             <div class="input-group">
-                                    <input type="number" class="form-control" id="startInput" placeholder="Från">
-                                    <input type="number" class="form-control" id="endInput" placeholder="Till">
-                                    <button class="btn btn-outline-primary" id="addWorkButton">Lägg till</button></div>
-                            <ul class="list-group mt-2" id="workList"></ul>
+                                <input type="number" class="form-control" id="startInput" placeholder="Från" min="1900" max="2099" required>
+                                <input type="number" class="form-control" id="endInput" placeholder="Till" min="1900" max="2099" required>
+                                <button class="btn btn-outline-primary" id="addWorkButton">Lägg till</button>
+                            </div>
                         </div>
+                        <div id="workErrorMessage" class="text-danger"></div>
+                        <div id="formatErrorMessage" class="text-danger"></div>
+                        <ul class="list-group mt-2" id="workList"></ul>
+
                         <script>
                             document.addEventListener('DOMContentLoaded', function () {
                                 var workIndex = 0;
@@ -291,6 +331,8 @@
                                 var startInput = document.getElementById('startInput');
                                 var endInput = document.getElementById('endInput');
                                 var workList = document.getElementById('workList');
+                                var errorMessage = document.getElementById('workErrorMessage'); // Lägg till detta
+                                var formatErrorMessage = document.getElementById('formatErrorMessage');
 
                                 addWorkButton.addEventListener('click', function (event) {
                                     event.preventDefault();
@@ -300,10 +342,36 @@
                                     var fromValue = parseInt(startInput.value);
                                     var toValue = endInput.value ? parseInt(endInput.value) : null;
 
+                                    // Dölj tidigare felmeddelanden
+                                    errorMessage.textContent = "";
+                                    errorMessage.style.display = 'none'; // Dölj felmeddelandet
+                                    formatErrorMessage.textContent = "";
+                                    formatErrorMessage.style.display = 'none'; // Dölj felmeddelandet
+
                                     if (workValue.trim() !== '' && roleValue.trim() !== '' && !isNaN(fromValue) && !isNaN(toValue)) {
+                                        // Kontrollera formatet på årtalen
+                                        var validFromYear = isValidYearFormat(fromValue.toString());
+                                        var validToYear = isValidYearFormat(toValue !== null ? toValue.toString() : '');
+
+                                        if (!validFromYear || !validToYear) {
+                                            // Visa felmeddelande för ogiltigt årtalsformat
+                                            formatErrorMessage.textContent = "Ogiltigt format! Ange ett giltigt årtal.";
+                                            formatErrorMessage.style.display = 'block';
+                                            return;
+                                        }
+
+                                        if (toValue !== null && toValue < fromValue) {
+                                            // Visa felmeddelande för otillåtet intervall
+                                            errorMessage.textContent = "'Från'-årtalet får inte vara mindre än 'Till'-årtalet.";
+                                            errorMessage.style.display = 'block';
+                                            return;
+                                        }
+
+                                        // Lägg till arbetsinformation och återställ inputfälten
                                         addWorkInfo(workValue, roleValue, fromValue, toValue);
                                         resetInputFields();
                                     }
+
                                 });
 
                                 function addWorkInfo(work, role, from, to) {
@@ -315,7 +383,7 @@
 
                                     listItem.appendChild(textContent);
 
-                                    // Create hidden input fields
+                                    // Skapa dolda input-fält
                                     var hiddenWorkInput = createHiddenInput(work, 'Workplace');
                                     var hiddenRoleInput = createHiddenInput(role, 'Role');
                                     var hiddenFromInput = createHiddenInput(from, 'From');
@@ -326,13 +394,13 @@
                                     listItem.appendChild(hiddenFromInput);
                                     listItem.appendChild(hiddenToInput);
 
-                                    // Add Remove button
+                                    // Lägg till Ta bort-knapp
                                     var removeButton = createRemoveButton(listItem);
                                     listItem.appendChild(removeButton);
 
                                     workList.appendChild(listItem);
 
-                                    // Update index for work
+                                    // Uppdatera index för arbete
                                     updateWorkIndexes();
                                 }
 
@@ -378,47 +446,64 @@
                                         }
                                     });
                                 }
-                            });
 
+                                function isValidYearFormat(year) {
+                                    return /^(19|20)\d{2}$/.test(year);
+                                }
+                            });
                         </script>
+
+
+
 
 
 
                         <!-- Bilduppladdning -->
-                        <div class="form-group mt-2">
-                            <label asp-for="ProfileImage" class="mb-0 mr-2">Ladda upp bild</label>
+                        <div class="form-group mt-4">
+                            <h6>Ladda upp profilbild</h6>
                             <div class="d-flex">
                                 <input type="file" class="form-control" asp-for="ProfileImage" id="inputGroupFile02">
-                                <button type="button" class="btn btn-outline-primary" for="inputGroupFile02" id="uploadBtn">Upload</button>
+                                <button type="button" class="btn btn-outline-primary" for="inputGroupFile02" id="uploadBtn">Visa</button>
 
                             </div>
-                        </div>
-                        <script>
-                            $(document).ready(function () {
-                                $("#uploadBtn").click(function () {
-                                    var input = $("#inputGroupFile02")[0];
-                                    var file = input.files[0];
+                        </div><script>
+                                  $(document).ready(function () {
+                                      $("#uploadBtn").click(function () {
+                                          var input = $("#inputGroupFile02")[0];
+                                          var file = input.files[0];
 
-                                    if (file) {
-                                        var reader = new FileReader();
+                                          // Kolla om bilden redan visas
+                                          var imageVisible = $("#uploadedImage").is(":visible");
 
-                                        reader.onload = function (e) {
-                                            $("#uploadedImage").attr("src", e.target.result).show();
-                                        };
+                                          if (file) {
+                                              var reader = new FileReader();
 
-                                        reader.readAsDataURL(file);
-                                    }
-                                });
-                            });
+                                              reader.onload = function (e) {
+                                                  var image = $("#uploadedImage");
+
+                                                  // Om bilden redan visas, dölj den, annars visa den
+                                                  if (imageVisible) {
+                                                      image.hide();
+                                                  } else {
+                                                      image.attr("src", e.target.result).show();
+                                                  }
+                                              };
+
+                                              reader.readAsDataURL(file);
+                                          }
+                                      });
+                                  });
                         </script>
-
+<!--Visa som rund grej--------------------------------------------------------------->
                         <div id="imageContainer" class="mt-2">
                             <img id="uploadedImage" class="img-fluid" src="#" alt="Uploaded Image" style="display: none;">
                         </div>
+
                         <!--Skills-->
-                        <div class="form-floating mt-2">
+                        <div class="form-floating mt-4">
+                            <h5>Skills</h5>
                             <div class="input-group mt-2">
-                                <input type="text" class="form-control" id="textInput" placeholder="Enter skill">
+                                <input type="text" class="form-control" id="textInput" placeholder="Lägg till skill">
                                 <div class="input-group-append">
                                     <button type="button" class="btn btn-outline-primary" id="addSkillButton">Lägg till</button>
                                 </div>
@@ -486,9 +571,6 @@
 
                         </script>
 
-
-
-
                         <!--Privat profil checkbox-->
                         <div class="form-group mt-2">
                             <div class="custom-control custom-checkbox">
@@ -497,7 +579,7 @@
                             </div>
                         </div>
                         <!--Skapa knapp-->
-                        <div class="form-group text-center ">
+                        <div class="form-group text-center">
                             <button type="submit" class="btn btn-primary btn-block mt-2">Skapa</button>
                         </div>
                    </form>

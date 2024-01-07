@@ -9,10 +9,10 @@ namespace MittClick.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ProfileId { get; set; }
 
-        [Required(ErrorMessage = "Snel fyll förstnamnet!")]
+        [Required(ErrorMessage = "Obligatoriskt fält!")]
         public string FirstName { get; set; }
 
-        [Required(ErrorMessage = "Snel fyll andernamnet!")]
+        [Required(ErrorMessage = "Obligatoriskt fält!")]
         public string LastName { get; set; }
 
         [Required]
@@ -26,7 +26,6 @@ namespace MittClick.Models
 		public virtual ICollection<WorkExperience> WorkExperiences { get; set; }
 
 		public virtual ICollection<Skill>? Skills { get; set; }
-
         public virtual ICollection<ContactInfo>? ContactInfos { get; set; }
     }
 }
