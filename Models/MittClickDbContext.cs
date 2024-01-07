@@ -12,6 +12,9 @@ namespace MittClick.Models
         public DbSet<Project> Projects { get; set; }
 
         public DbSet<Image> Images { get; set; }
+
+        public DbSet<Message> Messages { get; set; }
+
         public DbSet<PartOfProject> PartOfProjects { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -42,6 +45,23 @@ namespace MittClick.Models
             {
                 optionsBuilder.UseSqlServer("ApplicationDbContext");
             }
+        }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<Message>()
+                .HasOne(m => m.Sender)
+                .WithMany(u => u.SentMessages)
+                .HasForeignKey(m => m.SenderId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Message>()
+                .HasOne(m => m.Receiver)
+                .WithMany(u => u.ReceivedMessages)
+                .HasForeignKey(m => m.ReceiverId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

@@ -67,7 +67,6 @@ namespace MittClick.Controllers
 
             if (ModelState.IsValid)
             {
-
                 Profile newProfile = new Profile
                 {
                     User = currentUser,
@@ -162,7 +161,7 @@ namespace MittClick.Controllers
                 LastName = userProfile.LastName,
                 PrivateProfile = userProfile.PrivateProfile,
                 Information = userProfile.Information,
-
+               
                 // Lämna ProfileImage tomt för att undvika överföring av bilddata till klienten
             };
 

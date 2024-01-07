@@ -33,7 +33,6 @@ namespace MittClick.Controllers
 
 				return RedirectToAction("Index", "Home");
 			}
-
 			return View(model);
 		}
 
