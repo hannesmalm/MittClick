@@ -5,38 +5,36 @@
 }
 
 <div class="container mt-4">
-    <h2>Inkorg</h2>
+    <h2>Inbox</h2>
 
     @if (Model.Count > 0)
     {
-        <div class="row">
-            @foreach (var message in Model)
-            {
-                <div class="col-md-12 mb-4">
-                    <div class="card">
-                        <div class="card-header">
-                            Från: @message.SenderName
-                        </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-md-10">
-                                    <p class="card-text">@message.Text</p>
-                                </div>
-                                <div class="col-md-2">
-                                    <p class="card-text"><strong>Status:</strong> @(message.IsRead ? "Läst" : "Oläst")</p>
-                                    @if (message.IsRead == false)
-                                    {
-                                        <a class="btn btn-light" asp-action="MarkAsRead" asp-controller="Message" asp-route-messageId="@message.MessageId">
-                                            <i class="fas fa-check"></i> Markera som läst
-                                        </a>
-                                    }
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            }
-        </div>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Från</th>
+                    <th>Meddelande</th>
+                    <th>Status</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var message in Model)
+                {
+                    <tr>
+                        <td>@message.SenderName</td>
+                        <td>@message.Text</td>
+                        <td>@(message.IsRead ? "Läst" : "Oläst")</td>
+                        <td>
+                            @if (message.IsRead == false)
+                            {
+                              <a class="btn btn-light" asp-action="MarkAsRead" asp-controller="Message" asp-route-messageId="@message.MessageId">Markera som läst</a>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
     }
     else
     {
