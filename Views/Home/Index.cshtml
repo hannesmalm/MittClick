@@ -1,56 +1,41 @@
-﻿@model List<MittClick.Models.UserProfileViewModel>
+﻿@model IEnumerable<Profile>
 
 @{
     ViewData["Title"] = "Home Page";
 }
 
 <div class="text-center">
-    <h1>God jul @User.Identity.Name!</h1>
-
-    <!-- ... övrigt innehåll ... -->
-
-    <h2>User Profiles</h2>
-    <table class="table">
-        <!-- ... övrigt innehåll ... -->
-    </table>
+    <h1>Hej @User.Identity.Name!</h1>
 
     <br />
     <br />
-    -------------------- ! Lista med användare här för testing ! --------------------
 
-    <h2>User Profiles</h2>
+    <h1 class="display-4">Välkommen!</h1>
+    <h4> Hitta din nya click</h4>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>UserName</th>
-                <th>Profile Link</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var userProfile in Model)
-            {
-                <tr>
-                    <td>@userProfile.UserName</td>
-                    <td>
-                        @if (userProfile.HasProfile)
-                        {
-                            <a href="@Url.Action("Profile", "Profile", new { userId = userProfile.UserId })">View Profile</a>
-                        }
-                        else
-                        {
-                            <span>No Profile</span>
-                        }
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
+    <div class="col-lg-6 mx-auto">
+        <form asp-controller="Search" asp-action="Result" method="get" class="form-inline my-2 my-lg-0">
+            <div class="input-group w-100">
+                <input class="form-control mr-sm-2" type="search" placeholder="Sök..." aria-label="Search" name="query">
+                <button class="btn btn-outline-primary my-3 my-sm-0" type="submit">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                        <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0" />
+                    </svg>
+                </button>
+            </div>
+        </form>
+    </div>
 
-    <!-- Inkludera ImageUploadPartial och skicka en instans av ImageUploadViewModel som modell -->
-@*     @await Html.PartialAsync("~/Views/Image/UploadImagePartial.cshtml", new MittClick.Models.ImageUploadViewModel())
- *@
-    <h1 class="display-4">Välkommen till din nya click!</h1>
+    <br />
+
+    <div class="mb-3">
+        <button class="btn btn-info" onclick="loadRandomProfiles()">Ladda slumpade profiler</button>
+    </div>
+
+    <div id="profilesList">
+        @Html.Partial("SearchProfile", Model)
+    </div>
+
     <p>
         "Lorem ipsum dolor sit amet, consectetur adipiscing elit,
         sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
@@ -60,4 +45,23 @@
         pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
         culpa qui officia deserunt mollit anim id est laborum."
     </p>
+
+    <script>
+        $(document).ready(function () {
+            loadRandomProfiles();
+        });
+
+        function loadRandomProfiles() {
+            $.ajax({
+                url: '@Url.Action("SearchRandom", "Search")',
+                type: 'GET',
+                success: function (data) {
+                    $('#profilesList').html(data);
+                },
+                error: function () {
+                    // Handle errors if needed
+                }
+            });
+        }
+    </script>
 </div>
