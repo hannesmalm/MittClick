@@ -4,12 +4,17 @@
     ViewData["Title"] = "Home Page";
 }
 
+@{
+    var currentUser = User.Identity.Name;
+}
+
 <div class="text-center">
     <h1>Hej @User.Identity.Name!</h1>
 
     <br />
     @if (User.Identity.IsAuthenticated)
     {
+        <vc:inbox-badge></vc:inbox-badge>
         <a href="@Url.Action("Inbox", "Message")" class="btn btn-primary mb-2">Inbox</a>
     }
     <br />
@@ -18,8 +23,7 @@
     <h4> Hitta din nya click</h4>
     
     <div class="col-lg-6 mx-auto">
-        <form asp-controller="Search" asp-action="Result" method="get" class="form-inline my-2 my-lg-0"
-        >
+        <form asp-controller="Search" asp-action="Result" method="get" class="form-inline my-2 my-lg-0">
 			<div class="input-group w-100">
 				<input class="form-control mr-sm-2" type="search" placeholder="Sök..." aria-label="Search" name="query">
 				<button class="btn btn-outline-primary my-3 my-sm-0" type="submit">
