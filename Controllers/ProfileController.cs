@@ -50,7 +50,6 @@ namespace MittClick.Controllers
 
             if (ModelState.IsValid)
             {
-
                 Profile newProfile = new Profile
                 {
                     User = currentUser,

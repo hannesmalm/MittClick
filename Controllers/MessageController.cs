@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MittClick.Models;
+using NuGet.Protocol.Plugins;
 
 namespace MittClick.Controllers
 {
@@ -17,70 +18,105 @@ namespace MittClick.Controllers
         }
 
         [HttpGet]
-        public IActionResult Send(string? senderId, string receiverUserName)
+        public IActionResult Send(string? senderId, string receiverId)
         {
-            Profile receiverProfile = dbContext.Profiles.FirstOrDefault(p => p.UserName == receiverUserName);
-            string receiverFullName = receiverProfile.FirstName + " " + receiverProfile.LastName;
-
-            if (senderId != null)
+            Profile receiverProfile = dbContext.Profiles.FirstOrDefault(p => p.UserId == receiverId);
+            
+            if (receiverProfile != null)
             {
-                Profile senderProfile = dbContext.Profiles.FirstOrDefault(p => p.UserId == senderId);
-                string senderFullName = senderProfile.FirstName + " " + senderProfile.LastName;
-
-                SendMessageViewModel sendMessageViewModel = new SendMessageViewModel
+                string receiverFullName = receiverProfile.FirstName + " " + receiverProfile.LastName;
+            
+                if (senderId != null)
                 {
-                    SenderName = senderFullName,
-                    ReceiverName = receiverFullName,
-                };
-                return View(sendMessageViewModel);
-            }
+                    Profile senderProfile = dbContext.Profiles.FirstOrDefault(p => p.UserId == senderId);
+                    string senderFullName = senderProfile.FirstName + " " + senderProfile.LastName;
+
+                    SendMessageViewModel sendMessageViewModel = new SendMessageViewModel
+                    {
+                        SenderName = senderFullName,
+                        ReceiverName = receiverFullName,
+                        ReceiverId = receiverId
+                    };
+                    return View(sendMessageViewModel);
+                }
+                else
+                {
+                    SendMessageViewModel sendMessageViewModel = new SendMessageViewModel
+                    {
+                        ReceiverName = receiverFullName,
+                        ReceiverId = receiverId
+                    };
+                    return View(sendMessageViewModel);
+                }
+            } 
             else
             {
-                SendMessageViewModel sendMessageViewModel = new SendMessageViewModel
-                {
-                    ReceiverName = receiverFullName,
-                };
-                return View(sendMessageViewModel);
+                Console.WriteLine("receiverProfile var null");
+                return View(null);
             }
         }
 
         [HttpPost]
-        public IActionResult SendMessage(SendMessageViewModel messageViewModel)
+        public IActionResult Send(SendMessageViewModel sendMessageViewModel)
         {
-            // Här fortsätter din befintliga POST-kod för att spara meddelandet i databasen
+            string? senderId = userManager.GetUserId(User);
+            string senderName = sendMessageViewModel.SenderName;
+            string receiverId = sendMessageViewModel.ReceiverId;
+            string receiverName = sendMessageViewModel.ReceiverName;
+            string text = sendMessageViewModel.Text;
 
-            // ... (andra kod för att spara meddelandet i databasen)
+            if (senderId != null)
+            {
+                Create(senderId, senderName, receiverId, receiverName, text);
+            }
+            else
+            {
+                Create(null, senderName, receiverId, receiverName, text);
+            }
 
-            TempData["SuccessMessage"] = "Meddelandet skickades framgångsrikt!";
             return RedirectToAction("Index", "Home");
         }
 
+        private Models.Message Create(string? senderId, string senderName, string receiverId, string receiverName, string text)
+        {
+            Models.Message message = new Models.Message
+            {
+                SenderId = senderId,
+                SenderName = senderName,
+                ReceiverId = receiverId,
+                ReceiverName = receiverName,
+                Text = text,
+                IsRead = false
+            };
 
-        //[HttpGet]
-        //[Authorize]
-        //public IActionResult Inbox()
-        //{
-        //    var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        //    var messages = dbContext.Messages
-        //        .Where(m => m.Receiver.Id == currentUserId)
-        //        .ToList();
+            dbContext.Messages.Add(message);
+            dbContext.SaveChanges();
 
-        //    return View(messages);
-        //}
+            return (message);
+        }
 
-        //[HttpPost]
-        //public IActionResult MarkAsRead(int messageId)
-        //{
-        //    // Markera meddelandet som läst och spara i databasen
-        //    var message = dbContext.Messages.Find(messageId);
-        //    if (message != null)
-        //    {
-        //        message.IsRead = true;
-        //        dbContext.SaveChanges();
-        //    }
+        public IActionResult Inbox()
+        {
+            var currentUserId = userManager.GetUserId(User);
+            var messages = dbContext.Messages
+                .Where(m => m.ReceiverId == currentUserId)
+                .ToList();
 
-        //    // Redirect tillbaka till inkorgen efter att ha markerat som läst
-        //    return RedirectToAction("Inbox");
-        //}
+            return View(messages);
+        }
+
+        [HttpPost]
+        public IActionResult MarkAsRead(int messageId)
+        {
+            var message = dbContext.Messages.Find(messageId);
+
+            if (message != null)
+            {
+                message.IsRead = true;
+                dbContext.SaveChanges();
+            }
+
+            return RedirectToAction("Inbox");
+        }
     }
 }

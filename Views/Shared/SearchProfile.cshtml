@@ -1,7 +1,6 @@
 ﻿@using System.Security.Claims
 @model IEnumerable<Profile>
 
-
 <div id="profilesList" class="row">
     @foreach (var profile in Model)
     {
@@ -22,24 +21,16 @@
 
                 <div class="card-body text-center">
                     <h5 class="card-title">@profile.FirstName @profile.LastName</h5>
+                    
                     <p class="card-text">
                       
                         @* profile.Information om vi vill ha det *@
 
                     </p>
-                    
-                    @if (User.Identity.IsAuthenticated)
-                    {
-                        var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-                        var receiverUserName = profile.UserId;
 
-                        <a href="@Url.Action("Send", "Message", new { senderId = currentUserId, receiverUserName = receiverUserName })" class="btn btn-success mb-2">Skicka meddelande</a>
-                    }
-                    else
-                    {
-                        var receiverUserName = profile.UserId;
-                        <a href="@Url.Action("Send", "Message", new { receiverUserName = receiverUserName })" class="btn btn-success mb-2">Skicka meddelande</a>
-                    }
+                    <div class="text-center">
+                        @Html.Partial("SendMessageButtonPartial", profile)
+                    </div>
 
                     <a href="@Url.Action("Profile", "Profile", new { userId = profile.UserId })" class="btn btn-primary mb-2">Visa Profil</a>
 

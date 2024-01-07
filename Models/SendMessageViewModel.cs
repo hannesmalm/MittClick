@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.RazorPages;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
 
 namespace MittClick.Models
@@ -8,10 +9,13 @@ namespace MittClick.Models
         [Required(ErrorMessage = "Du måste ange ett avsändarnamn")]
         public string SenderName { get; set; }
 
-        [Required(ErrorMessage = "Du måste ange ett mottagarenamn")]
+        [Required]
         public string ReceiverName { get; set; }
 
         [Required(ErrorMessage = "Du kan inte skicka ett tomt meddelande")]
         public string Text { get; set; }
+
+        [Required]
+        public string ReceiverId { get; set; }
     }
 }

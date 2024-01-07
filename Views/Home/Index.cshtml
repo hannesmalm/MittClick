@@ -8,6 +8,10 @@
     <h1>Hej @User.Identity.Name!</h1>
 
     <br />
+    @if (User.Identity.IsAuthenticated)
+    {
+        <a href="@Url.Action("Inbox", "Message")" class="btn btn-primary mb-2">Inbox</a>
+    }
     <br />
 
     <h1 class="display-4">Välkommen!</h1>
