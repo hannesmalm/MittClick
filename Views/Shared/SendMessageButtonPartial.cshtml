@@ -1,6 +1,7 @@
 ﻿@model MittClick.Models.Profile
 @using System.Security.Claims
 
+
 @if (User.Identity.IsAuthenticated)
 {
     var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;

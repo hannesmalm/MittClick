@@ -30,11 +30,20 @@
 
                         @if (currentUserName != Model.UserName)
                         {
-                            var currentUserId = User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                            
+                            @if (User.Identity.IsAuthenticated)
+                            {
 
-                            <div class="text-center">
-                                @Html.Partial("SendMessageButtonPartial", Model)
-                            </div>
+                                var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                                var receiverId = Model.UserId;
+
+                                <a href="@Url.Action("Send", "Message", new { senderId = currentUserId, receiverId = receiverId })" class="btn btn-success mb-2">Skicka meddelande</a>
+                            }
+                            else
+                            {
+                                var receiverId = Model.UserId;
+                                <a href="@Url.Action("Send", "Message", new { receiverId = receiverId })" class="btn btn-success mb-2">Skicka meddelande</a>
+                            }
 
                         }
 
