@@ -9,7 +9,6 @@
 
 <div class="container mt-4">
     <div class="row">
-
         <div class="col-md-3">
             <div class="card mb-3">
                 @if (Model.ProfileImage != null)
@@ -33,7 +32,10 @@
                         {
                             var currentUserId = User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-                            <a href="@Url.Action("SendMessage", "Message", new { reciever = Model.UserId, sender = currentUserId })" class="btn btn-success mb-2">Skicka meddelande</a>
+                            <div class="text-center">
+                                @Html.Partial("SendMessageButtonPartial", Model)
+                            </div>
+
                         }
 
                         @if (currentUserName == Model.UserName)
@@ -44,9 +46,21 @@
                     </div>
                 </div>
             </div>
+            <div class="card mt-3">
+                <div class="card-header">
+                    <h5>Färdigheter</h5>
+                </div>
+                <div class="card-body">
+                    @foreach (var skill in Model.Skills)
+                    {
+                        <span class="badge bg-secondary">@skill.Name</span>
+                    }
+                </div>
+            </div>
+        </div>
         </div>
 
-        <div class="col-md-8">
+        <dv class="col-md-8">
             <div class="card">
                 <div class="card-header">
                     <h5 class="card-title">Kontaktinfo</h5>
@@ -56,33 +70,65 @@
                         <dt class="col-sm-3">Namn:</dt>
                         <dd class="col-sm-9">@Model.FirstName @Model.LastName</dd>
 
-                        <dt class="col-sm-3">Email:</dt>
-                        <dd class="col-sm-9">------------</dd>
-
-                        <dt class="col-sm-3">Tel:</dt>
-                        <dd class="col-sm-9">------------</dd>
-
-                        <dt class="col-sm-3">Adress:</dt>
-                        <dd class="col-sm-9">------------</dd>
-
-                        <!-- Vi kan loopa genom en lista med kontaktinfo sen för att slippa tomma fält -->
-
+                        @foreach (var contactInfo in Model.ContactInfos)
+                        {
+                            <dt class="col-sm-3">@contactInfo.Type:</dt>
+                            <dd class="col-sm-9">@contactInfo.Info</dd>
+                        }
                     </dl>
                 </div>
             </div>
 
+            <div class="row">
+                <!--Utbildning-->
+                <div class="col-md-6">
+                    <div class="card mt-3">
+                        <div class="card-header">
+                            <h5>Utbildning</h5>
+                        </div>
+                        <div class="card-body">
+                            @foreach (var education in Model.Educations)
+                            {
+                                <p><strong>@education.School</strong> (@education.Type, @education.From - @education.To)</p>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                <!--Arbete-->
+                <div class="col-md-6">
+                    <div class="card mt-3">
+                        <div class="card-header">
+                            <h5>Arbetserfarenhet</h5>
+                        </div>
+                        <div class="card-body">
+                            @foreach (var experience in Model.WorkExperiences)
+                            {
+                                <p><strong>@experience.Role</strong> at @experience.Workplace (@experience.From - @experience.To)</p>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <!--Projekt-->
             <div class="card mt-3">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h5 class="card-title mb-0">Projekt</h5>
-                    <a asp-action="Add" asp-controller="Project" class="icon-link" data-bs-toggle="tooltip" data-bs-placement="top" title="Lägg till nytt projekt">
-                        <!-- Ikon -->
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="green" class="bi bi-plus-circle" viewBox="0 0 16 16">
-                            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
-                            <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4" />
-                        </svg>
-                    </a>
-                </div>
-
+                    
+                    <!--Lägg till projekt-knapp med check om inloggad-->
+                    @if (currentUserName == Model.UserName && User.Identity.IsAuthenticated)
+                    {
+                        <a asp-action="Add" asp-controller="Project" class="icon-link" data-bs-toggle="tooltip" data-bs-placement="top" title="Lägg till nytt projekt">
+                            <!-- Ikon -->
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="green" class="bi bi-plus-circle" viewBox="0 0 16 16">
+                                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
+                                <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4" />
+                            </svg>
+                        </a>
+                    }
+                </div
                 <div class="card-body d-flex flex-wrap justify-content-center">
                     <div class="container">
                         <div class="row">

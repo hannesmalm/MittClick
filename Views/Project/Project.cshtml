@@ -45,7 +45,7 @@
                         </div>
                     </div>
 
-                    <!-- Redigeringsikon och knapp -->
+                    <!-- Redigera projektknapp -->
                     @if (Model.UserId == currentUserId)
                     {
                         <div class="card-footer bg-white d-flex justify-content-end">
@@ -65,21 +65,18 @@
 
 
 
-        <!--  BESKRIVNING  -->
-        <div class="row">
-            <div class="col-md-12 mb-4">
-                <div class="card">
-                    <div class="card-header">
-                        <h5 class="card-title">Beskrivning</h5>
-                    </div>
-                    <div class="card-body">
-                        <dl class="row">
-                            <dt class="col-sm-3">@Model.Description</dt>
-                        </dl>
-                    </div>
+    <div class="row">
+        <div class="col-md-12 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title">Beskrivning</h5>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">@Model.Description</p>
                 </div>
             </div>
         </div>
+    </div>
 
 
 
@@ -89,6 +86,10 @@
                 <div class="card">
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <h5 class="card-title">Medverkande</h5>
+
+                        <!--Gå med i projekt-knapp om användare är inloggad-->
+                    @if (User.Identity.IsAuthenticated)
+                    {
                         <form method="post" asp-action="AddUserToProject" asp-controller="Project">
                             <input type="hidden" name="projectId" value="@Model.ProjectId" />
                             <button type="submit" class="btn btn-outline-success">
@@ -99,7 +100,8 @@
                                 </svg>
                             </button>
                         </form>
-                    </div>
+                    }
+                </div>
 
                     <div id="profilesList" class="row">
                         @foreach (var userInProject in Model.PartOfProjects.Select(pp => pp.User))
@@ -121,9 +123,7 @@
 
                                     <div class="card-body text-center">
                                         <h5 class="card-title">@userInProject.Profile.FirstName @userInProject.Profile.LastName</h5>
-                                        <p class="card-text">
-                                            <!-- Additional profile information can be added here -->
-                                        </p>
+                                        <p class="card-text"></p>
                                         <a href="#" class="btn btn-success mb-2">Skicka meddelande</a>
                                         <a href="@Url.Action("Profile", "Profile", new { userId = userInProject.Profile.UserId })" class="btn btn-primary mb-2">Visa Profil</a>
                                     </div>

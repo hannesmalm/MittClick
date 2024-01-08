@@ -1,0 +1,49 @@
+﻿@model List<Project>
+
+<style>
+    .card {
+        
+        height: 400px;
+        /* Justera andra egenskaper efter behov för att ge en enhetlig storlek för korten */
+        margin-bottom: 20px; /* Tillämpa marginal för att separera korten */
+    }
+
+    .card-img-top {
+        max-width: 100%; /* Sätt den maximala bredden till 100% av dess förälder */
+        max-height: 200px; /* Sätt den maximala höjden till 200px */
+        object-fit: cover; /* Behåll bildens proportioner och klipp om det behövs för att fylla ramen */
+    }
+
+</style>
+
+<div class="card-body d-flex flex-wrap justify-content-center">
+    <div class="container">
+        <div class="row">
+
+            <!-- Loopa igenom projekt -->
+            @foreach (var project in Model)
+            {
+                <div class="col-md-4 col-sm-6">
+                    <div class="card">
+                        @if (project.ProjectImage != null)
+                        {
+                            var imageBase64 = Convert.ToBase64String(project.ProjectImage);
+                            var imageSrc = $"data:image/png;base64,{imageBase64}";
+                            <img class="card-img-top" src="@imageSrc" alt="Project Image">
+                        }
+                        <div class="card-body">
+                            <h5 class="card-title text-center">@project.Title</h5>
+                            <p class="card-text">@project.Summary</p>
+                            <div class="d-flex justify-content-center">
+                                <form asp-controller="Project" asp-action="Project" method="get">
+                                    <input type="hidden" name="projectId" value="@project.ProjectId" />
+                                    <button type="submit" class="btn btn-primary">Läs Mer</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>

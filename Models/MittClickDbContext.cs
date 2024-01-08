@@ -13,6 +13,9 @@ namespace MittClick.Models
         public DbSet<Project> Projects { get; set; }
 
         public DbSet<Image> Images { get; set; }
+
+        public DbSet<Message> Messages { get; set; }
+
         public DbSet<PartOfProject> PartOfProjects { get; set; }
         public DbSet<Education> Educations { get; set; }
         public DbSet<WorkExperience>WorkExperiences { get; set; }
@@ -36,6 +39,12 @@ namespace MittClick.Models
                 .HasOne(pp => pp.Project)
                 .WithMany(p => p.PartOfProjects)
                 .HasForeignKey(pp => pp.PId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Message>()
+                .HasOne(m => m.Receiver)
+                .WithMany(u => u.ReceivedMessages)
+                .HasForeignKey(m => m.ReceiverId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<IdentityUserLogin<string>>().HasKey(p => p.UserId);

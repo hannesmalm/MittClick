@@ -24,7 +24,14 @@ namespace MittClick.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            var allProjects = dbContext.Projects.ToList(); // Hämta alla projekt från databasen
+            return View(allProjects); // Skicka med alla projekt till vyn för att visa dem
+        }
+
+        public IActionResult All()
+        {
+            var allProjects = dbContext.Projects.ToList(); // Hämta alla projekt från databasen
+            return View(allProjects);
         }
 
 
@@ -40,6 +47,13 @@ namespace MittClick.Controllers
             {
                 return RedirectToAction("Index");
             }
+
+            // Ny logik för att filtrera profiler
+            var isUserAuthenticated = User.Identity.IsAuthenticated;
+            project.PartOfProjects = project.PartOfProjects
+                .Where(pp => isUserAuthenticated || !pp.User.Profile.PrivateProfile)
+                .ToList();
+
 
             var currentUser = userManager.GetUserAsync(User).Result;
             var isCurrentUserPartOfProject = project.PartOfProjects.Any(pp => pp.UId == currentUser?.Id);
@@ -167,9 +181,6 @@ namespace MittClick.Controllers
             return RedirectToAction("Project", new { projectId });
         }
 
-        // Hämta användarinformation baserat på userId och rendera profilsidan
-
-
         public IActionResult ViewUserProfile(string userId)
         {
             Console.WriteLine("User ID received: " + userId);
@@ -219,12 +230,6 @@ namespace MittClick.Controllers
         [HttpPost]
         public IActionResult Edit(EditProjectViewModel editedProject)
         {
-            Console.WriteLine(editedProject.ProjectId);
-            Console.WriteLine(editedProject.Title);
-            Console.WriteLine(editedProject.Summary);
-            Console.WriteLine(editedProject.Description);
-
-
             if (ModelState.IsValid)
             {
                 try

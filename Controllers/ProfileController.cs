@@ -38,8 +38,10 @@ namespace MittClick.Controllers
                     PrivateProfile = profileEntity.PrivateProfile,
                     Information = profileEntity.Information,
                     ProfileImage = profileEntity.ProfileImage,
+
                     UserProjects = userProjects
                 };
+
 
                 return View("Profile", userProfileViewModel);
             }
@@ -63,7 +65,6 @@ namespace MittClick.Controllers
 
             if (ModelState.IsValid)
             {
-
                 Profile newProfile = new Profile
                 {
                     User = currentUser,
@@ -158,6 +159,7 @@ namespace MittClick.Controllers
 
             if (userProfile != null)
             {
+
                 EditProfileViewModel editProfileViewModel = new EditProfileViewModel()
                 {
                     FirstName = userProfile.FirstName,
@@ -170,10 +172,6 @@ namespace MittClick.Controllers
                     Educations = userProfile.Educations.Select(e => new Education { School = e.School, Type = e.Type, From = e.From, To = e.To }).ToList(),
                     WorkExperiences = userProfile.WorkExperiences.Select(we => new WorkExperience { Workplace = we.Workplace, Role = we.Role, From = we.From, To = we.To }).ToList()
                 };
-                ViewBag.ContactInfos = editProfileViewModel.ContactInfos;
-                ViewBag.Skills = editProfileViewModel.Skills;
-                ViewBag.Educations = editProfileViewModel.Educations;
-                ViewBag.WorkExperiences = editProfileViewModel.WorkExperiences;
 
 
                 return View(editProfileViewModel);
