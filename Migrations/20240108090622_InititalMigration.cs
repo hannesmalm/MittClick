@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace MittClick.Migrations
 {
     /// <inheritdoc />
-    public partial class frutteleinen : Migration
+    public partial class InititalMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -170,6 +170,35 @@ namespace MittClick.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Messages",
+                columns: table => new
+                {
+                    MessageId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    SenderId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    SenderName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ReceiverId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ReceiverName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Text = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IsRead = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Messages", x => x.MessageId);
+                    table.ForeignKey(
+                        name: "FK_Messages_AspNetUsers_ReceiverId",
+                        column: x => x.ReceiverId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Messages_AspNetUsers_SenderId",
+                        column: x => x.SenderId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Profiles",
                 columns: table => new
                 {
@@ -218,7 +247,7 @@ namespace MittClick.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ContactInfo",
+                name: "Contacts",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -229,9 +258,9 @@ namespace MittClick.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ContactInfo", x => x.Id);
+                    table.PrimaryKey("PK_Contacts", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ContactInfo_Profiles_ProfileId",
+                        name: "FK_Contacts_Profiles_ProfileId",
                         column: x => x.ProfileId,
                         principalTable: "Profiles",
                         principalColumn: "ProfileId",
@@ -239,7 +268,7 @@ namespace MittClick.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Education",
+                name: "Educations",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -252,9 +281,9 @@ namespace MittClick.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Education", x => x.Id);
+                    table.PrimaryKey("PK_Educations", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Education_Profiles_ProfileId",
+                        name: "FK_Educations_Profiles_ProfileId",
                         column: x => x.ProfileId,
                         principalTable: "Profiles",
                         principalColumn: "ProfileId",
@@ -262,7 +291,7 @@ namespace MittClick.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Skill",
+                name: "Skills",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -272,9 +301,9 @@ namespace MittClick.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Skill", x => x.Id);
+                    table.PrimaryKey("PK_Skills", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Skill_Profiles_ProfileId",
+                        name: "FK_Skills_Profiles_ProfileId",
                         column: x => x.ProfileId,
                         principalTable: "Profiles",
                         principalColumn: "ProfileId",
@@ -282,7 +311,7 @@ namespace MittClick.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "WorkExperience",
+                name: "WorkExperiences",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -295,9 +324,9 @@ namespace MittClick.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_WorkExperience", x => x.Id);
+                    table.PrimaryKey("PK_WorkExperiences", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_WorkExperience_Profiles_ProfileId",
+                        name: "FK_WorkExperiences_Profiles_ProfileId",
                         column: x => x.ProfileId,
                         principalTable: "Profiles",
                         principalColumn: "ProfileId",
@@ -363,14 +392,24 @@ namespace MittClick.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ContactInfo_ProfileId",
-                table: "ContactInfo",
+                name: "IX_Contacts_ProfileId",
+                table: "Contacts",
                 column: "ProfileId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Education_ProfileId",
-                table: "Education",
+                name: "IX_Educations_ProfileId",
+                table: "Educations",
                 column: "ProfileId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Messages_ReceiverId",
+                table: "Messages",
+                column: "ReceiverId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Messages_SenderId",
+                table: "Messages",
+                column: "SenderId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PartOfProjects_PId",
@@ -389,13 +428,13 @@ namespace MittClick.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Skill_ProfileId",
-                table: "Skill",
+                name: "IX_Skills_ProfileId",
+                table: "Skills",
                 column: "ProfileId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_WorkExperience_ProfileId",
-                table: "WorkExperience",
+                name: "IX_WorkExperiences_ProfileId",
+                table: "WorkExperiences",
                 column: "ProfileId");
         }
 
@@ -418,22 +457,25 @@ namespace MittClick.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "ContactInfo");
+                name: "Contacts");
 
             migrationBuilder.DropTable(
-                name: "Education");
+                name: "Educations");
 
             migrationBuilder.DropTable(
                 name: "Images");
 
             migrationBuilder.DropTable(
+                name: "Messages");
+
+            migrationBuilder.DropTable(
                 name: "PartOfProjects");
 
             migrationBuilder.DropTable(
-                name: "Skill");
+                name: "Skills");
 
             migrationBuilder.DropTable(
-                name: "WorkExperience");
+                name: "WorkExperiences");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");

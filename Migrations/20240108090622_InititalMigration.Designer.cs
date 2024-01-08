@@ -12,8 +12,8 @@ using MittClick.Models;
 namespace MittClick.Migrations
 {
     [DbContext(typeof(MittClickDbContext))]
-    [Migration("20240107152157_frutteleinen")]
-    partial class frutteleinen
+    [Migration("20240108090622_InititalMigration")]
+    partial class InititalMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -181,7 +181,7 @@ namespace MittClick.Migrations
 
                     b.HasIndex("ProfileId");
 
-                    b.ToTable("ContactInfo");
+                    b.ToTable("Contacts");
                 });
 
             modelBuilder.Entity("MittClick.Models.Education", b =>
@@ -213,7 +213,7 @@ namespace MittClick.Migrations
 
                     b.HasIndex("ProfileId");
 
-                    b.ToTable("Education");
+                    b.ToTable("Educations");
                 });
 
             modelBuilder.Entity("MittClick.Models.Image", b =>
@@ -231,6 +231,45 @@ namespace MittClick.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Images");
+                });
+
+            modelBuilder.Entity("MittClick.Models.Message", b =>
+                {
+                    b.Property<int>("MessageId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MessageId"));
+
+                    b.Property<bool>("IsRead")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("ReceiverId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ReceiverName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SenderId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("SenderName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Text")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("MessageId");
+
+                    b.HasIndex("ReceiverId");
+
+                    b.HasIndex("SenderId");
+
+                    b.ToTable("Messages");
                 });
 
             modelBuilder.Entity("MittClick.Models.PartOfProject", b =>
@@ -342,7 +381,7 @@ namespace MittClick.Migrations
 
                     b.HasIndex("ProfileId");
 
-                    b.ToTable("Skill");
+                    b.ToTable("Skills");
                 });
 
             modelBuilder.Entity("MittClick.Models.User", b =>
@@ -439,7 +478,7 @@ namespace MittClick.Migrations
 
                     b.HasIndex("ProfileId");
 
-                    b.ToTable("WorkExperience");
+                    b.ToTable("WorkExperiences");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -513,6 +552,23 @@ namespace MittClick.Migrations
                         .IsRequired();
 
                     b.Navigation("Profile");
+                });
+
+            modelBuilder.Entity("MittClick.Models.Message", b =>
+                {
+                    b.HasOne("MittClick.Models.User", "Receiver")
+                        .WithMany("ReceivedMessages")
+                        .HasForeignKey("ReceiverId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("MittClick.Models.User", "Sender")
+                        .WithMany()
+                        .HasForeignKey("SenderId");
+
+                    b.Navigation("Receiver");
+
+                    b.Navigation("Sender");
                 });
 
             modelBuilder.Entity("MittClick.Models.PartOfProject", b =>
@@ -600,6 +656,8 @@ namespace MittClick.Migrations
 
                     b.Navigation("Profile")
                         .IsRequired();
+
+                    b.Navigation("ReceivedMessages");
                 });
 #pragma warning restore 612, 618
         }
