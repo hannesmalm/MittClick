@@ -4,13 +4,7 @@
     ViewData["Title"] = "Home Page";
 }
 
-@{
-    var currentUser = User.Identity.Name;
-}
-
 <div class="text-center">
-    <h1>Hej @User.Identity.Name!</h1>
-
     <br />
 
     <br />
@@ -25,8 +19,10 @@
     </p>
     <h4> Hitta din nya click</h4>
 
-    <div class="col-lg-6 mx-auto">
-        <form asp-controller="Search" asp-action="Result" method="get" class="form-inline my-2 my-lg-0">
+    <br />
+
+	<div class="col-lg-6 mx-auto">
+		<form asp-controller="Search" asp-action="Result" method="get" class="form-inline my-2 my-lg-0">
 			<div class="input-group w-100">
 				<input class="form-control mr-sm-2" type="search" placeholder="Sök..." aria-label="Search" name="query">
 				<button class="btn btn-outline-primary my-3 my-sm-0" type="submit">
@@ -36,15 +32,17 @@
 				</button>
 			</div>
 		</form>
-
-    </div>
-
+	</div>
 
     <br />
 
-    <div id="profilesList">
-        @Html.Partial("SearchProfile", Model)
-    </div>
+	<div id="profilesList">
+		@Html.Partial("SearchProfile", Model)
+	</div>
+
+   
+
+    <br />
 
     <script>
         $(document).ready(function () {

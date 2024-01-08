@@ -100,8 +100,10 @@ namespace MittClick.Controllers
         {
             var currentUserId = userManager.GetUserId(User);
             var messages = dbContext.Messages
-                .Where(m => m.ReceiverId == currentUserId)
-                .ToList();
+                           .Where(m => m.ReceiverId == currentUserId)
+                           .OrderByDescending(m => m.IsRead)
+                           .ThenByDescending(m => m.MessageId)
+                           .ToList();
 
             return View(messages);
         }

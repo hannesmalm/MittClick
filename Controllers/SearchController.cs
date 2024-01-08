@@ -53,7 +53,6 @@ namespace MittClick.Controllers
 
         public ActionResult SearchRandom()
         {
-            // Filtrera profiler baserat på om användaren är inloggad eller inte
             if (!User.Identity.IsAuthenticated)
             {
                 profileQuery = profileQuery.Where(p => !p.PrivateProfile);
@@ -66,12 +65,12 @@ namespace MittClick.Controllers
                 return PartialView("SearchProfile", new List<Profile>());
             }
 
-            int seed = (int)DateTime.Now.Ticks; // Använd nuvarande tid i ticks som seed
+            int seed = (int)DateTime.Now.Ticks;
             Random randomId = new Random(seed);
 
-            var randomProfiles = profileQuery.ToList() // Hämta data från databasen
-                                        .OrderBy(p => randomId.Next()) // Använd slumpmässig ordning
-                                        .Take(5) // Ta de fem första
+            var randomProfiles = profileQuery.ToList()
+                                        .OrderBy(p => randomId.Next())
+                                        .Take(5)
                                         .ToList();
 
             return PartialView("SearchProfile", randomProfiles);

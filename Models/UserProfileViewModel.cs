@@ -21,6 +21,10 @@ namespace MittClick.Models
 
         public UserProfileViewModel()
         {
+            ContactInfos = new List<ContactInfo>();
+            Educations = new List<Education>();
+            WorkExperiences = new List<WorkExperience>();
+            Skills = new List<Skill>();
             UserProjects = new List<Project>();
         }
     }
