@@ -38,12 +38,10 @@ namespace MittClick.Controllers
                     PrivateProfile = profileEntity.PrivateProfile,
                     Information = profileEntity.Information,
                     ProfileImage = profileEntity.ProfileImage,
-                    UserProjects = userProjects,
-                    ContactInfos = profileEntity.ContactInfos.ToList(),
-                    Educations = profileEntity.Educations.ToList(),
-                    WorkExperiences = profileEntity.WorkExperiences.ToList(),
-                    Skills = profileEntity.Skills.ToList()
-            };
+
+                    UserProjects = userProjects
+                };
+
 
                 return View("Profile", userProfileViewModel);
             }
@@ -150,23 +148,41 @@ namespace MittClick.Controllers
         public async Task<IActionResult> Edit()
         {
             var currentUser = await userManager.GetUserAsync(User);
-
+            
             var userProfile = dbContext.Profiles
                 .Include(p => p.User)
+                .Include(p => p.ContactInfos)
+                .Include(p => p.Skills)
+                .Include(p => p.Educations)
+                .Include(p => p.WorkExperiences)
                 .FirstOrDefault(p => p.UserId == currentUser.Id);
 
-            EditProfileViewModel editProfileViewModel = new EditProfileViewModel()
+            if (userProfile != null)
             {
-                FirstName = userProfile.FirstName,
-                LastName = userProfile.LastName,
-                PrivateProfile = userProfile.PrivateProfile,
-                Information = userProfile.Information,
-               
-                // Lämna ProfileImage tomt för att undvika överföring av bilddata till klienten
-            };
 
-            return View(editProfileViewModel);
+                EditProfileViewModel editProfileViewModel = new EditProfileViewModel()
+                {
+                    FirstName = userProfile.FirstName,
+                    LastName = userProfile.LastName,
+                    PrivateProfile = userProfile.PrivateProfile,
+                    Information = userProfile.Information,
+                    // Populate additional collections
+                    ContactInfos = userProfile.ContactInfos.Select(ci => new ContactInfo { Type = ci.Type, Info = ci.Info }).ToList(),
+                    Skills = userProfile.Skills.Select(s => new Skill { Name = s.Name }).ToList(),
+                    Educations = userProfile.Educations.Select(e => new Education { School = e.School, Type = e.Type, From = e.From, To = e.To }).ToList(),
+                    WorkExperiences = userProfile.WorkExperiences.Select(we => new WorkExperience { Workplace = we.Workplace, Role = we.Role, From = we.From, To = we.To }).ToList()
+                };
+
+
+                return View(editProfileViewModel);
+            }
+            else
+            {
+                Console.WriteLine("Användaren har ingen profil.");
+                return NotFound();
+            }
         }
+
 
         [HttpPost]
         public async Task<IActionResult> Edit(EditProfileViewModel editProfileViewModel)
@@ -179,6 +195,10 @@ namespace MittClick.Controllers
 
                     var userProfile = dbContext.Profiles
                         .Include(p => p.User)
+                        .Include(p => p.ContactInfos)
+                        .Include(p => p.Skills)
+                        .Include(p => p.Educations)
+                        .Include(p => p.WorkExperiences)
                         .FirstOrDefault(p => p.UserId == currentUser.Id);
 
                     if (userProfile != null)
@@ -187,9 +207,8 @@ namespace MittClick.Controllers
                         userProfile.LastName = editProfileViewModel.LastName;
                         userProfile.PrivateProfile = editProfileViewModel.PrivateProfile;
                         userProfile.Information = editProfileViewModel.Information;
-                       
 
-                        // Profilbildsuppdatering endast om en ny bild laddas upp
+                        // Update ProfileImage if a new image is uploaded
                         if (editProfileViewModel.ProfileImage != null && editProfileViewModel.ProfileImage.Length > 0)
                         {
                             var image = new Image
@@ -202,8 +221,16 @@ namespace MittClick.Controllers
 
                             userProfile.ProfileImage = image.Data;
                         }
+                        //UpdateContactInfos(userProfile, editProfileViewModel.ContactInfos);
+                        UpdateSkills(userProfile, editProfileViewModel.Skills);
+                        //UpdateEducations(userProfile, editProfileViewModel.Educations);
+                        //UpdateWorkExperiences(userProfile, editProfileViewModel.WorkExperiences);
 
                         dbContext.SaveChanges();
+                        ViewBag.ContactInfos = userProfile.ContactInfos;
+                        ViewBag.Skills = userProfile.Skills;
+                        ViewBag.Educations = userProfile.Educations;
+                        ViewBag.WorkExperiences = userProfile.WorkExperiences;
                         return RedirectToAction("Profile", "Profile", new { userId = currentUser.Id });
                     }
                     else
@@ -211,21 +238,106 @@ namespace MittClick.Controllers
                         Console.WriteLine("Användaren har ingen profil.");
                         return NotFound();
                     }
-
-                    return RedirectToAction("Profile", "Profile");
                 }
                 catch (Exception ex)
                 {
                     Console.WriteLine($"Ett fel uppstod: {ex.Message}");
-                    return RedirectToAction("Error", "Home"); // Redirect till en sida som visar felmeddelandet för användaren
+                    return RedirectToAction("Error", "Home");
                 }
             }
             else
             {
-                Console.WriteLine("ModelState är inte giltig.");
+                Console.WriteLine("hehehehhehehehe");
+                
                 return View(editProfileViewModel);
             }
         }
+        private void UpdateSkills(Profile userProfile, ICollection<Skill> newSkills)
+        {
+            // Skapa en kopia av befintliga färdigheter
+            var existingSkillsCopy = new List<Skill>(userProfile.Skills);
+
+            // Ta bort alla befintliga färdigheter
+            foreach (var skillToRemove in existingSkillsCopy)
+            {
+                userProfile.Skills.Remove(skillToRemove);
+            }
+
+            // Lägg till alla nya färdigheter från formuläret
+            foreach (var skill in newSkills)
+            {
+                userProfile.Skills.Add(new Skill { Name = skill.Name, ProfileId = userProfile.ProfileId });
+            }
+        }
+
+        private void UpdateContactInfos(Profile userProfile, ICollection<ContactInfo> newContactInfos)
+        {
+            var existingContactInfosCopy = new List<ContactInfo>(userProfile.ContactInfos);
+
+            foreach (var contactInfoToRemove in existingContactInfosCopy)
+            {
+                userProfile.ContactInfos.Remove(contactInfoToRemove);
+            }
+
+            foreach (var contactInfo in newContactInfos)
+            {
+                userProfile.ContactInfos.Add(new ContactInfo
+                {
+                    Type = contactInfo.Type,
+                    Info = contactInfo.Info,
+                    ProfileId = userProfile.ProfileId
+                });
+            }
+        }
+
+        private void UpdateEducations(Profile userProfile, ICollection<Education> newEducations)
+        {
+            var existingEducationsCopy = new List<Education>(userProfile.Educations);
+
+            foreach (var educationToRemove in existingEducationsCopy)
+            {
+                userProfile.Educations.Remove(educationToRemove);
+            }
+
+            foreach (var education in newEducations)
+            {
+                userProfile.Educations.Add(new Education
+                {
+                    School = education.School,
+                    Type = education.Type,
+                    From = education.From,
+                    To = education.To,
+                    ProfileId = userProfile.ProfileId
+                });
+            }
+        }
+
+        private void UpdateWorkExperiences(Profile userProfile, ICollection<WorkExperience> newWorkExperiences)
+        {
+            Console.WriteLine("hoppelihopp");
+            // Skapa en kopia av befintliga arbetslivserfarenheter
+            var existingWorkExperiencesCopy = new List<WorkExperience>(userProfile.WorkExperiences);
+
+            // Ta bort alla befintliga arbetslivserfarenheter
+            foreach (var workExperienceToRemove in existingWorkExperiencesCopy)
+            {
+                userProfile.WorkExperiences.Remove(workExperienceToRemove);
+            }
+
+            // Lägg till alla nya arbetslivserfarenheter från formuläret
+            foreach (var workExperienceViewModel in newWorkExperiences)
+            {
+                userProfile.WorkExperiences.Add(new WorkExperience
+                {
+                    Workplace = workExperienceViewModel.Workplace,
+                    Role = workExperienceViewModel.Role,
+                    From = workExperienceViewModel.From,
+                    To = workExperienceViewModel.To,
+                    ProfileId = userProfile.ProfileId
+                });
+            }
+        }
+
 
         private List<Project> GetUserProjects(string userId)
         {

@@ -1,11 +1,11 @@
-﻿@model MittClick.Models.EditProfileViewModel
+﻿@model EditProfileViewModel
 
 <div class="container mt-5">
     <div class="row justify-content-center">
         <div class="col-md-9 col-lg-6">
             <div class="card">
                 <div class="card-header text-center">
-                    <h4> Redigera profil </h4>
+                    <h4> Skapa profil </h4>
                 </div>
                 <div class="card-body">
 
@@ -26,8 +26,9 @@
                         </div>
 
                         <!--Kontaktuppgifter-->
-                        <div class="form-floating mt-2">
-                            <div class="input-group mt-3">
+                        <div class="form-floating mt-4">
+                            <h6>Kontaktuppgifter</h6>
+                            <div class="input-group">
                                 <div class="dropdown">
                                     <button class="btn btn-outline-primary dropdown-toggle" type="button" id="contactDropDown" data-bs-toggle="dropdown" aria-expanded="false">
                                         Välj kontakttyp
@@ -44,148 +45,616 @@
                                 </div>
                             </div>
                             <ul class="list-group mt-2" id="contactinfo">
+                                @if (Model.ContactInfos != null && Model.ContactInfos.Any())
+                                {
+                                    var contactIndex = 0; // Lägg till en räknare för att hålla reda på index
+                                    foreach (var contactInfo in Model.ContactInfos)
+                                    {
+                                        <li class="list-group-item list-group-item-primary">
+                                            @contactInfo.Type: @contactInfo.Info
+                                            <button class="btn btn-outline-danger btn-sm float-end" onclick="removeContact(this)">Ta bort</button>
+                                            <input type="hidden" name="ContactInfos[@contactIndex].Type" value="@contactInfo.Type" />
+                                            <input type="hidden" name="ContactInfos[@contactIndex].Info" value="@contactInfo.Info" />
+                                        </li>
+                                        contactIndex++;
+                                    }
+                                }
+
                             </ul>
                             <script>
-                                var addCButton = document.getElementById('addCButton');
-                                var cInputField = document.getElementById('contactInput');
-                                var contactinfo = document.getElementById('contactinfo');
-                                var contactDropDown = document.getElementById('contactDropDown');
+                                document.addEventListener('DOMContentLoaded', function () {
+                                    var contactIndex = 0; // Set start index based on the number of existing contact information
+                                    var addCButton = document.getElementById('addCButton');
+                                    var cInputField = document.getElementById('contactInput');
+                                    var contactinfo = document.getElementById('contactinfo');
+                                    var contactDropDown = document.getElementById('contactDropDown');
 
-                                var selectedContactType = ''; // Variabel för att hålla reda på det valda kontakttypen
+                                    var selectedContactType = '';
 
-                                // Lyssna på klickhändelser på dropdown-alternativen
-                                var dropdownItems = document.querySelectorAll('.dropdown-item');
-
-                                dropdownItems.forEach(function (item) {
-                                    item.addEventListener('click', function () {
-                                        console.log('Button clicked!');
-                                        selectedContactType = item.getAttribute('data-value');
-                                        contactDropDown.textContent = selectedContactType;
+                                    var dropdownItems = document.querySelectorAll('.dropdown-item');
+                                    dropdownItems.forEach(function (item) {
+                                        item.addEventListener('click', function () {
+                                            selectedContactType = item.getAttribute('data-value');
+                                            contactDropDown.textContent = selectedContactType;
+                                        });
                                     });
-                                });
 
-                                addCButton.addEventListener('click', function (event) {
-                                    event.preventDefault();
-                                    var inputValue = cInputField.value;
+                                    addCButton.addEventListener('click', function (event) {
+                                        event.preventDefault();
+                                        var inputValue = cInputField.value;
 
-                                    if (inputValue.trim() !== '') {
-                                        // Lägg till listelementet i DOM:en
+                                        if (inputValue.trim() !== '' && selectedContactType !== '') {
+                                            addContactInfo(selectedContactType, inputValue);
+                                            cInputField.value = '';
+                                            selectedContactType = '';
+                                            contactDropDown.textContent = 'Välj kontakttyp';
+                                        }
+                                    });
 
+                                    function addContactInfo(type, info) {
                                         var listItem = document.createElement('li');
                                         listItem.className = 'list-group-item list-group-item-primary';
-                                        listItem.textContent = selectedContactType + ": " + inputValue;
+                                        listItem.textContent = type + ": " + info;
 
+                                        var hiddenTypeInput = createHiddenInput(type, 'Type');
+                                        var hiddenInfoInput = createHiddenInput(info, 'Info');
+                                        listItem.appendChild(hiddenTypeInput);
+                                        listItem.appendChild(hiddenInfoInput);
+
+                                        var removeButton = createRemoveButton(listItem);
+                                        listItem.appendChild(removeButton);
+
+                                        contactinfo.appendChild(listItem);
+
+                                        updateContactIndexes();
+                                    }
+
+                                    function createHiddenInput(value, name) {
+                                        var hiddenInput = document.createElement('input');
+                                        hiddenInput.type = 'hidden';
+                                        hiddenInput.value = value;
+                                        hiddenInput.name = `ContactInfos[${contactIndex}].${name}`;
+                                        return hiddenInput;
+                                    }
+
+                                    function createRemoveButton(item) {
                                         var removeButton = document.createElement('button');
                                         removeButton.textContent = 'Ta bort';
                                         removeButton.className = 'btn btn-outline-danger btn-sm float-end';
-
                                         removeButton.addEventListener('click', function () {
-                                            RemoveSkill(listItem); // Anropa RemoveSkill med aktuell färdighet
+                                            item.remove();
+                                            updateContactIndexes();
                                         });
+                                        return removeButton;
+                                    }
 
-                                        listItem.appendChild(removeButton);
-                                        contactinfo.appendChild(listItem);
-                                        cInputField.value = '';
-                                        selectedContactType = ''; // Återställ det valda kontakttypen efter att ha lagt till
-                                        contactDropDown.textContent = 'Välj kontakttyp';
+                                    function updateContactIndexes() {
+                                        contactIndex++;
+                                        var allContacts = contactinfo.querySelectorAll('li');
+                                        allContacts.forEach(function (item, index) {
+                                            var typeInput = item.querySelector('input[name*=".Type"]');
+                                            var infoInput = item.querySelector('input[name*=".Info"]');
+                                            if (typeInput && infoInput) {
+                                                typeInput.name = `ContactInfos[${index}].Type`;
+                                                infoInput.name = `ContactInfos[${index}].Info`;
+                                            }
+                                        });
                                     }
                                 });
-                                function RemoveSkill(item) {
-                                    // Lägg till riktig funktionalitet för att ta bort en färdighet
-                                    item.remove();
+
+                                function removeContact(button) {
+                                    button.parentElement.remove();
+                                    updateContactIndexes(); // Update index after removal
                                 }
                             </script>
+
                         </div>
 
+
+
                         <!--Beskrivning-->
-                        <div class="form-floating mt-2">
-                            <textarea asp-for="Information" class="form-control" placeholder="Input description here" style="resize: none;height: 150px;"></textarea>
+                        <div class="form-floating mt-4">
+                            <textarea asp-for="Information" class="form-control" placeholder="Input description here"></textarea>
                             <label asp-for="Information" class="form-label">Kort beskrivning om dig:</label>
                             <span asp-validation-for="Information" class="text-danger"></span>
                         </div>
 
-                        <!--CV-->
-                        <div class="form-floating mt-2">
-                            <textarea asp-for="Resume" class="form-control" placeholder="Input resume here" style="resize: none;height: 150px;"></textarea>
-                            <label asp-for="Resume" class="form-label">CV:</label>
-                            <span asp-validation-for="Resume" class="text-danger"></span>
-                        </div>
-
-                        <!-- Bilduppladdning -->
-                        <div class="form-group mt-2">
-                            <label asp-for="ProfileImage" class="mb-0 mr-2">Ladda upp ny bild</label>
-                            <div class="d-flex">
-                                <input type="file" class="form-control" asp-for="ProfileImage" id="inputGroupFile02">
-                                <button type="button" class="btn btn-outline-primary" for="inputGroupFile02" id="uploadBtn">Upload</button>
+                        <!--Utbildning-->
+                        <div class="form-floating mt-4">
+                            <h5>Utbildning</h5>
+                            <div class="input-group">
+                                <div class="form-floating w-50">
+                                    <input type="text" class="form-control" id="schoolInput" placeholder="Skola/Universitet">
+                                    <label for="schoolInput" class="form-label">Skola/Universitet</label>
+                                </div>
+                                <div class="form-floating w-50">
+                                    <input type="text" class="form-control" id="typeInput" placeholder="Typ av utbildning">
+                                    <label for="typeInput" class="form-label">Typ av utbildning</label>
+                                </div>
                             </div>
-                        </div>
-                        <script>
-                            $(document).ready(function () {
-                                $("#uploadBtn").click(function () {
-                                    var input = $("#inputGroupFile02")[0];
-                                    var file = input.files[0];
-
-                                    if (file) {
-                                        var reader = new FileReader();
-
-                                        reader.onload = function (e) {
-                                            $("#uploadedImage").attr("src", e.target.result).show();
-                                        };
-
-                                        reader.readAsDataURL(file);
+                            <div class="input-group">
+                                <input type="number" class="form-control" id="fromInput" placeholder="Från" min="1900" max="2099">
+                                <input type="number" class="form-control" id="toInput" placeholder="Till" min="1900" max="2099">
+                                <button class="btn btn-outline-primary" id="addSchoolButton">Lägg till</button>
+                            </div>
+                            <div id="educationErrorMessage" class="text-danger"></div>
+                            <div id="educationFormatErrorMessage" class="text-danger"></div>
+                            <ul class="list-group mt-2" id="schoolList">
+                                @if (Model.Educations != null && Model.Educations.Any())
+                                {
+                                    var educationIndex = 0; // Lägg till en räknare för att hålla reda på index
+                                    foreach (var education in Model.Educations)
+                                    {
+                                        <li class="list-group-item list-group-item-primary">
+                                            <div>
+                                                @education.School
+                                            </div>
+                                            <div>
+                                                @education.Type
+                                            </div>
+                                            <div>
+                                                @education.From - @education.To
+                                            </div>
+                                            <button class="btn btn-outline-danger btn-sm float-end" onclick="removeEducation(this)">Ta bort</button>
+                                            <input type="hidden" name="Educations[@educationIndex].School" value="@education.School" />
+                                            <input type="hidden" name="Educations[@educationIndex].Type" value="@education.Type" />
+                                            <input type="hidden" name="Educations[@educationIndex].From" value="@education.From" />
+                                            <input type="hidden" name="Educations[@educationIndex].To" value="@education.To" />
+                                        </li>
+                                        educationIndex++;
                                     }
+                                }
+
+                            </ul>
+
+                        </div>
+
+                        <script>
+                            document.addEventListener('DOMContentLoaded', function () {
+                                var educationIndex = 0;
+                                var addSchoolButton = document.getElementById('addSchoolButton');
+                                var schoolInput = document.getElementById('schoolInput');
+                                var typeInput = document.getElementById('typeInput');
+                                var fromInput = document.getElementById('fromInput');
+                                var toInput = document.getElementById('toInput');
+                                var schoolList = document.getElementById('schoolList');
+                                var educationErrorMessage = document.getElementById('educationErrorMessage'); // Lägg till detta
+                                var educationFormatErrorMessage = document.getElementById('educationFormatErrorMessage');
+
+                                addSchoolButton.addEventListener('click', function (event) {
+                                    event.preventDefault();
+
+                                    var schoolValue = schoolInput.value;
+                                    var typeValue = typeInput.value;
+                                    var fromValue = parseInt(fromInput.value);
+                                    var toValue = toInput.value ? parseInt(toInput.value) : null;
+
+                                    // Dölj tidigare felmeddelanden
+                                    educationErrorMessage.textContent = "";
+                                    educationErrorMessage.style.display = 'none'; // Dölj felmeddelandet
+                                    educationFormatErrorMessage.textContent = "";
+                                    educationFormatErrorMessage.style.display = 'none'; // Dölj felmeddelandet
+
+                                    if (schoolValue.trim() !== '' && typeValue.trim() !== '' && !isNaN(fromValue) && !isNaN(toValue)) {
+                                        // Kontrollera formatet på årtalen
+                                        var validFromYear = isValidYearFormat(fromValue.toString());
+                                        var validToYear = isValidYearFormat(toValue !== null ? toValue.toString() : '');
+
+                                        if (!validFromYear || !validToYear) {
+                                            // Visa felmeddelande för ogiltigt årtalsformat
+                                            educationFormatErrorMessage.textContent = "Ogiltigt format! Ange ett giltigt årtal.";
+                                            educationFormatErrorMessage.style.display = 'block';
+                                            return;
+                                        }
+
+                                        if (toValue !== null && toValue < fromValue) {
+                                            // Visa felmeddelande för otillåtet intervall
+                                            educationErrorMessage.textContent = "'Från'-årtalet får inte vara mindre än 'Till'-årtalet.";
+                                            educationErrorMessage.style.display = 'block';
+                                            return;
+                                        }
+
+                                        // Lägg till utbildningsinformation och återställ inputfälten
+                                        addEducationInfo(schoolValue, typeValue, fromValue, toValue);
+                                        resetInputFields();
+                                    }
+
                                 });
+
+                                function addEducationInfo(school, type, from, to) {
+                                    var listItem = document.createElement('li');
+                                    listItem.className = 'list-group-item list-group-item-primary';
+
+                                    var textContent = document.createElement('div');
+                                    textContent.innerHTML = `<div>${school}</div><div>${type}</div><div>${from} - ${to}</div>`;
+
+                                    listItem.appendChild(textContent);
+
+                                    // Skapa dolda input-fält
+                                    var hiddenSchoolInput = createHiddenInput(school, 'School');
+                                    var hiddenTypeInput = createHiddenInput(type, 'Type');
+                                    var hiddenFromInput = createHiddenInput(from, 'From');
+                                    var hiddenToInput = createHiddenInput(to, 'To');
+
+                                    listItem.appendChild(hiddenSchoolInput);
+                                    listItem.appendChild(hiddenTypeInput);
+                                    listItem.appendChild(hiddenFromInput);
+                                    listItem.appendChild(hiddenToInput);
+
+                                    // Lägg till Ta bort-knapp
+                                    var removeButton = createRemoveButton(listItem);
+                                    listItem.appendChild(removeButton);
+
+                                    schoolList.appendChild(listItem);
+
+                                    // Uppdatera index för utbildning
+                                    updateEducationIndexes();
+                                }
+
+                                function createHiddenInput(value, name) {
+                                    var hiddenInput = document.createElement('input');
+                                    hiddenInput.type = 'hidden';
+                                    hiddenInput.value = value;
+                                    hiddenInput.name = `Educations[${educationIndex}].${name}`;
+                                    return hiddenInput;
+                                }
+
+                                function createRemoveButton(item) {
+                                    var removeButton = document.createElement('button');
+                                    removeButton.textContent = 'Ta bort';
+                                    removeButton.className = 'btn btn-outline-danger btn-sm float-end';
+                                    removeButton.addEventListener('click', function () {
+                                        item.remove();
+                                        updateEducationIndexes();
+                                    });
+                                    return removeButton;
+                                }
+
+                                function resetInputFields() {
+                                    schoolInput.value = '';
+                                    typeInput.value = '';
+                                    fromInput.value = '';
+                                    toInput.value = '';
+                                }
+
+                                function updateEducationIndexes() {
+                                    educationIndex++;
+                                    var allEducations = schoolList.querySelectorAll('li');
+                                    allEducations.forEach(function (item, index) {
+                                        var schoolInput = item.querySelector('input[name*=".School"]');
+                                        var typeInput = item.querySelector('input[name*=".Type"]');
+                                        var fromInput = item.querySelector('input[name*=".From"]');
+                                        var toInput = item.querySelector('input[name*=".To"]');
+                                        if (schoolInput && typeInput && fromInput && toInput) {
+                                            schoolInput.name = `Educations[${index}].School`;
+                                            typeInput.name = `Educations[${index}].Type`;
+                                            fromInput.name = `Educations[${index}].From`;
+                                            toInput.name = `Educations[${index}].To`;
+                                        }
+                                    });
+                                }
+
+                                function isValidYearFormat(year) {
+                                    return /^(19|20)\d{2}$/.test(year);
+                                }
                             });
+                            function removeEducation(button) {
+                                button.parentElement.remove();
+                                updateEducationIndexes();
+                            }
                         </script>
 
+
+
+
+                        <!--Arbetserfarenheter-->
+                        <div class="form-floating mt-4">
+                            <h5>Arbetserfarenheter</h5>
+                            <div class="input-group">
+                                <div class="form-floating w-50">
+                                    <input type="text" class="form-control" id="workplaceInput" placeholder="Arbetsgivare">
+                                    <label for="workplaceInput" class="form-label">Arbetsgivare</label>
+                                </div>
+                                <div class="form-floating w-50">
+                                    <input type="text" class="form-control" id="roleInput" placeholder="Arbetsroll">
+                                    <label for="roleInput" class="form-label">Arbetsroll</label>
+                                </div>
+                            </div>
+                            <div class="input-group">
+                                <input type="number" class="form-control" id="startInput" placeholder="Från" min="1900" max="2099">
+                                <input type="number" class="form-control" id="endInput" placeholder="Till" min="1900" max="2099">
+                                <button class="btn btn-outline-primary" id="addWorkButton">Lägg till</button>
+                            </div>
+                        
+                        <div id="workErrorMessage" class="text-danger"></div>
+                        <div id="formatErrorMessage" class="text-danger"></div>
+                        <ul class="list-group mt-2" id="workList">
+                            @if (Model.WorkExperiences != null && Model.WorkExperiences.Any())
+                            {
+                                var workIndex = 0; // Lägg till en räknare för att hålla reda på index
+                                foreach (var workExperience in Model.WorkExperiences)
+                                {
+                                    <li class="list-group-item list-group-item-primary">
+                                        <div>@workExperience.Workplace</div>
+                                        <div>@workExperience.Role</div>
+                                        <div>@workExperience.From - @workExperience.To</div>
+                                        <button class="btn btn-outline-danger btn-sm float-end" onclick="removeWork(this)">Ta bort</button>
+                                        <input type="hidden" name="WorkExperiences[@workIndex].Workplace" value="@workExperience.Workplace" />
+                                        <input type="hidden" name="WorkExperiences[@workIndex].Role" value="@workExperience.Role" />
+                                        <input type="hidden" name="WorkExperiences[@workIndex].From" value="@workExperience.From" />
+                                        <input type="hidden" name="WorkExperiences[@workIndex].To" value="@workExperience.To" />
+                                    </li>
+                                    workIndex++;
+                                }
+                            }
+                        </ul>
+
+                        <script>
+                            document.addEventListener('DOMContentLoaded', function () {
+                             
+                                var addWorkButton = document.getElementById('addWorkButton');
+                                var workplaceInput = document.getElementById('workplaceInput');
+                                var roleInput = document.getElementById('roleInput');
+                                var startInput = document.getElementById('startInput');
+                                var endInput = document.getElementById('endInput');
+                                var workList = document.getElementById('workList');
+                                var errorMessage = document.getElementById('workErrorMessage'); // Lägg till detta
+                                var formatErrorMessage = document.getElementById('formatErrorMessage');
+
+                                addWorkButton.addEventListener('click', function (event) {
+                                    event.preventDefault();
+
+                                    var workValue = workplaceInput.value;
+                                    var roleValue = roleInput.value;
+                                    var fromValue = parseInt(startInput.value);
+                                    var toValue = endInput.value ? parseInt(endInput.value) : null;
+                                        var workIndex = parseInt(workList.getAttribute('data-work-index'));
+                                    // Dölj tidigare felmeddelanden
+                                    errorMessage.textContent = "";
+                                    errorMessage.style.display = 'none'; // Dölj felmeddelandet
+                                    formatErrorMessage.textContent = "";
+                                    formatErrorMessage.style.display = 'none'; // Dölj felmeddelandet
+
+                                    if (workValue.trim() !== '' && roleValue.trim() !== '' && !isNaN(fromValue) && !isNaN(toValue)) {
+                                        // Kontrollera formatet på årtalen
+                                        var validFromYear = isValidYearFormat(fromValue.toString());
+                                        var validToYear = isValidYearFormat(toValue !== null ? toValue.toString() : '');
+
+                                        if (!validFromYear || !validToYear) {
+                                            // Visa felmeddelande för ogiltigt årtalsformat
+                                            formatErrorMessage.textContent = "Ogiltigt format! Ange ett giltigt årtal.";
+                                            formatErrorMessage.style.display = 'block';
+                                            return;
+                                        }
+
+                                        if (toValue !== null && toValue < fromValue) {
+                                            // Visa felmeddelande för otillåtet intervall
+                                            errorMessage.textContent = "'Från'-årtalet får inte vara mindre än 'Till'-årtalet.";
+                                            errorMessage.style.display = 'block';
+                                            return;
+                                        }
+
+                                        // Lägg till arbetsinformation och återställ inputfälten
+                                        addWorkInfo(workValue, roleValue, fromValue, toValue);
+                                        resetInputFields();
+                                    }
+
+                                });
+
+                                function addWorkInfo(work, role, from, to) {
+                                    var listItem = document.createElement('li');
+                                    listItem.className = 'list-group-item list-group-item-primary';
+
+                                    var textContent = document.createElement('div');
+                                    textContent.innerHTML = `<div>${work}</div><div>${role}</div><div>${from} - ${to}</div>`;
+
+                                    listItem.appendChild(textContent);
+
+                                    // Skapa dolda input-fält
+                                    var hiddenWorkInput = createHiddenInput(work, 'Workplace');
+                                    var hiddenRoleInput = createHiddenInput(role, 'Role');
+                                    var hiddenFromInput = createHiddenInput(from, 'From');
+                                    var hiddenToInput = createHiddenInput(to, 'To');
+
+                                    listItem.appendChild(hiddenWorkInput);
+                                    listItem.appendChild(hiddenRoleInput);
+                                    listItem.appendChild(hiddenFromInput);
+                                    listItem.appendChild(hiddenToInput);
+
+                                    // Lägg till Ta bort-knapp
+                                    var removeButton = createRemoveButton();
+                                    listItem.appendChild(removeButton);
+
+                                    workList.appendChild(listItem);
+
+                                    // Uppdatera index för arbete
+                                    updateWorkIndexes();
+                                }
+
+                                function createHiddenInput(value, name) {
+                                    var hiddenInput = document.createElement('input');
+                                    hiddenInput.type = 'hidden';
+                                    hiddenInput.value = value;
+                                    hiddenInput.name = `WorkExperiences[${workIndex}].${name}`;
+                                    return hiddenInput;
+                                }
+
+                                function createRemoveButton() {
+                                    var removeButton = document.createElement('button');
+                                    removeButton.textContent = 'Ta bort';
+                                    removeButton.className = 'btn btn-outline-danger btn-sm float-end';
+                                    removeButton.addEventListener('click', function () {
+                                        this.parentElement.remove();
+                                        updateWorkIndexes();
+                                    });
+                                    return removeButton;
+                                }
+
+
+                                function resetInputFields() {
+                                    workplaceInput.value = '';
+                                    roleInput.value = '';
+                                    startInput.value = '';
+                                    endInput.value = '';
+                                }
+
+                                function updateWorkIndexes() {
+
+                                    var allWorkExperiences = workList.querySelectorAll('li');
+                                    allWorkExperiences.forEach(function (item, index) {
+                                        var workInput = item.querySelector('input[name*=".Workplace"]');
+                                        var roleInput = item.querySelector('input[name*=".Role"]');
+                                        var fromInput = item.querySelector('input[name*=".From"]');
+                                        var toInput = item.querySelector('input[name*=".To"]');
+                                        if (workInput && roleInput && fromInput && toInput) {
+                                            workInput.name = `WorkExperiences[${index}].Workplace`;
+                                            roleInput.name = `WorkExperiences[${index}].Role`;
+                                            fromInput.name = `WorkExperiences[${index}].From`;
+                                            toInput.name = `WorkExperiences[${index}].To`;
+                                        }
+                                    });
+                                }
+
+                                function isValidYearFormat(year) {
+                                    return /^(19|20)\d{2}$/.test(year);
+                                }
+                            });
+                            function removeWork(button) {
+                                button.parentElement.remove();
+                                updateWorkIndexes();
+                            }
+                        </script>
+						</div>
+
+                        <!-- Bilduppladdning -->
+                        <div class="form-group mt-4">
+                            <h6>Ladda upp profilbild</h6>
+                            <div class="d-flex">
+                                <input type="file" class="form-control" asp-for="ProfileImage" id="inputGroupFile02">
+                                <button type="button" class="btn btn-outline-primary" for="inputGroupFile02" id="uploadBtn">Visa</button>
+
+                            </div>
+                        </div><script>
+                                  $(document).ready(function () {
+                                      $("#uploadBtn").click(function () {
+                                          var input = $("#inputGroupFile02")[0];
+                                          var file = input.files[0];
+
+                                          // Kolla om bilden redan visas
+                                          var imageVisible = $("#uploadedImage").is(":visible");
+
+                                          if (file) {
+                                              var reader = new FileReader();
+
+                                              reader.onload = function (e) {
+                                                  var image = $("#uploadedImage");
+
+                                                  // Om bilden redan visas, dölj den, annars visa den
+                                                  if (imageVisible) {
+                                                      image.hide();
+                                                  } else {
+                                                      image.attr("src", e.target.result).show();
+                                                  }
+                                              };
+
+                                              reader.readAsDataURL(file);
+                                          }
+                                      });
+                                  });
+                        </script>
+                        <!--Visa som rund grej--------------------------------------------------------------->
                         <div id="imageContainer" class="mt-2">
                             <img id="uploadedImage" class="img-fluid" src="#" alt="Uploaded Image" style="display: none;">
                         </div>
 
                         <!--Skills-->
-                        <div class="form-floating mt-2">
+                        <div class="form-floating mt-4">
+                            <h5>Skills</h5>
                             <div class="input-group mt-2">
-                                <input type="text" class="form-control" id="textInput" placeholder="Enter skill">
+                                <input type="text" class="form-control" id="textInput" placeholder="Lägg till skill">
                                 <div class="input-group-append">
-                                    <button class="btn btn-outline-primary" id="addSkillButton">Lägg till</button>
+                                    <button type="button" class="btn btn-outline-primary" id="addSkillButton">Lägg till</button>
                                 </div>
                             </div>
+                            <ul class="list-group list-group-flush" id="skillslist">
+                                @if (Model.Skills != null && Model.Skills.Any())
+                                {
+                                    var index = 0; // Lägg till en räknare för att hålla reda på index
+                                    foreach (var skill in Model.Skills)
+                                    {
+                                        <li class="list-group-item list-group-item-primary">
+                                            @skill.Name
+                                            <button class="btn btn-outline-danger btn-sm float-end" onclick="removeSkill(this)">Ta bort</button>
+                                            <input type="hidden" name="Skills[@index].Name" value="@skill.Name" />
+                                        </li>
+                                        index++;
+                                    }
+                                }
+                            </ul>
 
-                            <ul class="list-group list-group-flush" id="skillslist"></ul>
-                            <script>
-                                var addButton = document.getElementById('addSkillButton');
-                                var inputField = document.getElementById('textInput');
-                                var skillsList = document.getElementById('skillslist');
+                        </div>
+                        <script>
+                            var addButton = document.getElementById('addSkillButton');
+                            var inputField = document.getElementById('textInput');
+                            var skillsList = document.getElementById('skillslist');
 
-                                addButton.addEventListener('click', function (event) {
-                                    event.preventDefault();
-                                    var inputValue = inputField.value;
+                            addButton.addEventListener('click', function (event) {
+                                event.preventDefault();
+                                var inputValue = inputField.value;
 
-                                    if (inputValue.trim() !== '') {
-                                        // Lägg till listelementet i DOM:en
-                                        var listItem = document.createElement('li');
-                                        listItem.className = 'list-group-item list-group-item-light';
-                                        listItem.textContent = inputValue;
+                                if (inputValue.trim() !== '') {
+                                    addSkill(inputValue);
+                                    inputField.value = '';
+                                }
+                            });
 
-                                        var removeButton = document.createElement('button');
-                                        removeButton.textContent = 'Ta bort';
-                                        removeButton.className = 'btn btn-outline-danger btn-sm float-end';
+                            function addSkill(skillName) {
+                                var listItem = document.createElement('li');
+                                listItem.className = 'list-group-item list-group-item-light';
+                                listItem.textContent = skillName;
 
-                                        removeButton.addEventListener('click', function () {
-                                            RemoveSkill(listItem); // Anropa RemoveSkill med aktuell färdighet
-                                        });
+                                var hiddenInput = createHiddenInput(skillName);
+                                listItem.appendChild(hiddenInput);
 
-                                        listItem.appendChild(removeButton);
-                                        skillsList.appendChild(listItem);
-                                        inputField.value = '';
+                                var removeButton = createRemoveButton();
+                                listItem.appendChild(removeButton);
+
+                                skillsList.appendChild(listItem);
+                                updateSkillIndexes();
+                            }
+
+                            function createHiddenInput(value) {
+                                var hiddenInput = document.createElement('input');
+                                hiddenInput.type = 'hidden';
+                                hiddenInput.value = value;
+                                return hiddenInput;
+                            }
+
+                            function createRemoveButton() {
+                                var button = document.createElement('button');
+                                button.textContent = 'Ta bort';
+                                button.className = 'btn btn-outline-danger btn-sm float-end';
+                                button.addEventListener('click', function () {
+                                    this.parentElement.remove();
+                                    updateSkillIndexes();
+                                });
+                                return button;
+                            }
+
+                            function updateSkillIndexes() {
+                                var allSkills = skillsList.querySelectorAll('li');
+                                allSkills.forEach(function (item, index) {
+                                    var input = item.querySelector('input[type="hidden"]');
+                                    if (input) {
+                                        input.name = 'Skills[' + index + '].Name';
                                     }
                                 });
-                                function RemoveSkill(item) {
-                                    // Lägg till riktig funktionalitet för att ta bort en färdighet
-                                    item.remove();
-                                }
-                            </script>
-                        </div>
+                            }
+                            function removeSkill(button) {
+                                button.parentElement.remove();
+                                updateSkillIndexes();
+                            }
+                        </script>
 
                         <!--Privat profil checkbox-->
                         <div class="form-group mt-2">
@@ -194,16 +663,13 @@
                                 <label class="custom-control-label" for="privateprofilecheck">Privat profil</label>
                             </div>
                         </div>
-
-                        <!-- Submit knapp -->
-                        <div class="form-group text-center ">
-                            <button type="submit" class="btn btn-primary btn-block mt-2">Spara ändringar</button>
+                        <!--Skapa knapp-->
+                        <div class="form-group text-center">
+                            <button type="submit" class="btn btn-primary btn-block mt-2">Uppdatera</button>
                         </div>
                     </form>
-
                 </div>
             </div>
         </div>
     </div>
 </div>
-
