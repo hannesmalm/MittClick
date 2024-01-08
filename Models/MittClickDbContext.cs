@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Identity.Client;
 
 namespace MittClick.Models
 {
@@ -13,6 +14,10 @@ namespace MittClick.Models
 
         public DbSet<Image> Images { get; set; }
         public DbSet<PartOfProject> PartOfProjects { get; set; }
+        public DbSet<Education> Educations { get; set; }
+        public DbSet<WorkExperience>WorkExperiences { get; set; }
+        public DbSet<Skill> Skills { get; set; }
+        public DbSet<ContactInfo> Contacts { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

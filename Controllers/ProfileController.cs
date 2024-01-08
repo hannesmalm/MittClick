@@ -223,65 +223,10 @@ namespace MittClick.Controllers
 
                             userProfile.ProfileImage = image.Data;
                         }
-
-                        // Update ContactInfos
-                        userProfile.ContactInfos.Clear();
-                        if (editProfileViewModel.ContactInfos != null)
-                        {
-                            foreach (var contactInfo in editProfileViewModel.ContactInfos)
-                            {
-                                userProfile.ContactInfos.Add(new ContactInfo
-                                {
-                                    Type = contactInfo.Type,
-                                    Info = contactInfo.Info,
-                                    ProfileId = userProfile.ProfileId
-                                });
-                            }
-                        }
-
-                        // Update Skills
-                        userProfile.Skills.Clear();
-                        if (editProfileViewModel.Skills != null)
-                        {
-                            foreach (var skill in editProfileViewModel.Skills)
-                            {
-                                userProfile.Skills.Add(new Skill { Name = skill.Name, ProfileId = userProfile.ProfileId });
-                            }
-                        }
-
-                        // Update Educations
-                        userProfile.Educations.Clear();
-                        if (editProfileViewModel.Educations != null)
-                        {
-                            foreach (var education in editProfileViewModel.Educations)
-                            {
-                                userProfile.Educations.Add(new Education
-                                {
-                                    School = education.School,
-                                    Type = education.Type,
-                                    From = education.From,
-                                    To = education.To,
-                                    ProfileId = userProfile.ProfileId
-                                });
-                            }
-                        }
-
-                        // Update WorkExperiences
-                        userProfile.WorkExperiences.Clear();
-                        if (editProfileViewModel.WorkExperiences != null)
-                        {
-                            foreach (var workExperience in editProfileViewModel.WorkExperiences)
-                            {
-                                userProfile.WorkExperiences.Add(new WorkExperience
-                                {
-                                    Workplace = workExperience.Workplace,
-                                    Role = workExperience.Role,
-                                    From = workExperience.From,
-                                    To = workExperience.To,
-                                    ProfileId = userProfile.ProfileId
-                                });
-                            }
-                        }
+                        //UpdateContactInfos(userProfile, editProfileViewModel.ContactInfos);
+                        UpdateSkills(userProfile, editProfileViewModel.Skills);
+                        //UpdateEducations(userProfile, editProfileViewModel.Educations);
+                        //UpdateWorkExperiences(userProfile, editProfileViewModel.WorkExperiences);
 
                         dbContext.SaveChanges();
                         ViewBag.ContactInfos = userProfile.ContactInfos;
@@ -307,6 +252,91 @@ namespace MittClick.Controllers
                 Console.WriteLine("hehehehhehehehe");
                 
                 return View(editProfileViewModel);
+            }
+        }
+        private void UpdateSkills(Profile userProfile, ICollection<Skill> newSkills)
+        {
+            // Skapa en kopia av befintliga färdigheter
+            var existingSkillsCopy = new List<Skill>(userProfile.Skills);
+
+            // Ta bort alla befintliga färdigheter
+            foreach (var skillToRemove in existingSkillsCopy)
+            {
+                userProfile.Skills.Remove(skillToRemove);
+            }
+
+            // Lägg till alla nya färdigheter från formuläret
+            foreach (var skill in newSkills)
+            {
+                userProfile.Skills.Add(new Skill { Name = skill.Name, ProfileId = userProfile.ProfileId });
+            }
+        }
+
+        private void UpdateContactInfos(Profile userProfile, ICollection<ContactInfo> newContactInfos)
+        {
+            var existingContactInfosCopy = new List<ContactInfo>(userProfile.ContactInfos);
+
+            foreach (var contactInfoToRemove in existingContactInfosCopy)
+            {
+                userProfile.ContactInfos.Remove(contactInfoToRemove);
+            }
+
+            foreach (var contactInfo in newContactInfos)
+            {
+                userProfile.ContactInfos.Add(new ContactInfo
+                {
+                    Type = contactInfo.Type,
+                    Info = contactInfo.Info,
+                    ProfileId = userProfile.ProfileId
+                });
+            }
+        }
+
+        private void UpdateEducations(Profile userProfile, ICollection<Education> newEducations)
+        {
+            var existingEducationsCopy = new List<Education>(userProfile.Educations);
+
+            foreach (var educationToRemove in existingEducationsCopy)
+            {
+                userProfile.Educations.Remove(educationToRemove);
+            }
+
+            foreach (var education in newEducations)
+            {
+                userProfile.Educations.Add(new Education
+                {
+                    School = education.School,
+                    Type = education.Type,
+                    From = education.From,
+                    To = education.To,
+                    ProfileId = userProfile.ProfileId
+                });
+            }
+        }
+
+        private void UpdateWorkExperiences(Profile userProfile, ICollection<WorkExperience> newWorkExperiences)
+        {
+            Console.WriteLine("hoppelihopp");
+            // Skapa en kopia av befintliga arbetslivserfarenheter
+            var existingWorkExperiencesCopy = new List<WorkExperience>(userProfile.WorkExperiences);
+
+            // Ta bort alla befintliga arbetslivserfarenheter
+            foreach (var workExperienceToRemove in existingWorkExperiencesCopy)
+            {
+                userProfile.WorkExperiences.Remove(workExperienceToRemove);
+            }
+
+            // Lägg till alla nya arbetslivserfarenheter från formuläret
+            foreach (var workExperienceViewModel in newWorkExperiences)
+            {
+                userProfile.WorkExperiences.Add(new WorkExperience
+                {
+                    Workplace = workExperienceViewModel.Workplace,
+                    Role = workExperienceViewModel.Role,
+                    From = workExperienceViewModel.From,
+                    To = workExperienceViewModel.To,
+                    ProfileId = userProfile.ProfileId
+                });
             }
         }
 
