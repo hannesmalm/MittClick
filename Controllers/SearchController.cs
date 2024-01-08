@@ -23,7 +23,6 @@ namespace MittClick.Controllers
 
         public IActionResult SearchEmpty()
         {
-            // Check om användare är inloggad
             if (!User.Identity.IsAuthenticated)
             {
                 profileQuery = profileQuery.Where(p => !p.PrivateProfile);
@@ -35,13 +34,11 @@ namespace MittClick.Controllers
 
         public ActionResult SearchProfiles(string searchTerm)
         {
-            // Check om användare är inloggad
             if (!User.Identity.IsAuthenticated)
             {
                 profileQuery = profileQuery.Where(p => !p.PrivateProfile);
             }
 
-            // Fortsätt med vanlig söklogik
             if (!string.IsNullOrWhiteSpace(searchTerm))
             {
                 profileQuery = profileQuery.Where(p => p.FirstName.Contains(searchTerm) || p.LastName.Contains(searchTerm));
