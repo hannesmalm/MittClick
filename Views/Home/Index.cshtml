@@ -12,11 +12,7 @@
     <h1>Hej @User.Identity.Name!</h1>
 
     <br />
-    @if (User.Identity.IsAuthenticated)
-    {
-        <vc:inbox-badge></vc:inbox-badge>
-        <a href="@Url.Action("Inbox", "Message")" class="btn btn-primary mb-2">Inbox</a>
-    }
+
     <br />
 
     <h1 class="display-4">Välkommen!</h1>
@@ -45,10 +41,6 @@
 
 
     <br />
-
-    <div class="mb-3">
-        <button class="btn btn-info" onclick="loadRandomProfiles()">Ladda slumpade profiler</button>
-    </div>
 
     <div id="profilesList">
         @Html.Partial("SearchProfile", Model)
