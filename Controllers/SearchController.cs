@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Razor.Language;
 using MittClick.Models;
 
@@ -9,17 +8,16 @@ namespace MittClick.Controllers
     {
         private IQueryable<Profile> profileQuery;
         private MittClickDbContext profiles;
-        private UserManager<User> userManager;
-        public SearchController(MittClickDbContext service, UserManager<User> userManager)
+        public SearchController(MittClickDbContext service)
         {
-            this.profiles = service;
-            this.userManager = userManager;
+            profiles = service;
+            profileQuery = profiles.Profiles;
         }
 
         public IActionResult Result()
         {
             var profileList = from profile in profiles.Profiles
-                           select profile;
+                              select profile;
             return View(profileList.ToList());
         }
 
@@ -68,16 +66,13 @@ namespace MittClick.Controllers
                 return PartialView("SearchProfile", new List<Profile>());
             }
 
-            int seed = (int)DateTime.Now.Ticks; //Uppdateras varje millisekund
-
+            int seed = (int)DateTime.Now.Ticks; // Använd nuvarande tid i ticks som seed
             Random randomId = new Random(seed);
 
-            var randomProfiles = allProfiles
-                .Where(p => validProfileIds.Contains(p.ProfileId))
-                .ToList()
-                .OrderBy(p => randomId.Next())
-                .Take(5)
-                .ToList();
+            var randomProfiles = profileQuery.ToList() // Hämta data från databasen
+                                        .OrderBy(p => randomId.Next()) // Använd slumpmässig ordning
+                                        .Take(5) // Ta de fem första
+                                        .ToList();
 
             return PartialView("SearchProfile", randomProfiles);
         }
