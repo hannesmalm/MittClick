@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 
-namespace MittClick.Models
+namespace MittClick.Models.ViewModels
 {
     public class IndexViewModel : IEnumerable<Profile>
     {

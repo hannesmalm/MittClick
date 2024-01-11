@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MittClick.Models;
+using MittClick.Models.ViewModels;
 
 namespace MittClick.Controllers
 {

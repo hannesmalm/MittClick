@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace MittClick.Models
+namespace MittClick.Models.ViewModels
 {
     public class EditProfileViewModel
     {
@@ -10,7 +10,7 @@ namespace MittClick.Models
         public string FirstName { get; set; }
 
         [Required]
-        public string LastName { get;set; }
+        public string LastName { get; set; }
 
         [Required]
         public bool PrivateProfile { get; set; }
