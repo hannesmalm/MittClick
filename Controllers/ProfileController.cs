@@ -23,6 +23,10 @@ namespace MittClick.Controllers
         {
             var profileEntity = dbContext.Profiles
                                          .Include(p => p.User)
+                                         .Include(p => p.Skills)
+                                         .Include(p => p.ContactInfos)
+                                         .Include(p => p.Educations)
+                                         .Include(p => p.WorkExperiences)
                                          .FirstOrDefault(p => p.UserId == userId);
             if (profileEntity != null)
             {
@@ -38,8 +42,12 @@ namespace MittClick.Controllers
                     PrivateProfile = profileEntity.PrivateProfile,
                     Information = profileEntity.Information,
                     ProfileImage = profileEntity.ProfileImage,
+                    UserProjects = userProjects,
+                    Skills = profileEntity.Skills.ToList(),
+                    ContactInfos = profileEntity.ContactInfos.ToList(),
+                    Educations = profileEntity.Educations.ToList(),
+                    WorkExperiences = profileEntity.WorkExperiences.ToList(),
 
-                    UserProjects = userProjects
                 };
 
 
@@ -74,7 +82,6 @@ namespace MittClick.Controllers
                     LastName = createProfileViewModel.LastName,
                     PrivateProfile = createProfileViewModel.PrivateProfile,
                     Information = createProfileViewModel.Information,
-                    
                 };
 
                 // Profilbild
@@ -101,7 +108,7 @@ namespace MittClick.Controllers
                 }
                 foreach (var skill in createProfileViewModel.Skills)
                 {
-                    newProfile.Skills.Add(new Skill { Name = skill.Name, ProfileId = newProfile.ProfileId });
+                    //newProfile.Skills.Add(new Skill { Name = skill.Name, ProfileId = newProfile.ProfileId });
                 }
 
                 // Kontaktinfo
@@ -152,7 +159,7 @@ namespace MittClick.Controllers
             var userProfile = dbContext.Profiles
                 .Include(p => p.User)
                 .Include(p => p.ContactInfos)
-                .Include(p => p.Skills)
+                //.Include(p => p.Skills)
                 .Include(p => p.Educations)
                 .Include(p => p.WorkExperiences)
                 .FirstOrDefault(p => p.UserId == currentUser.Id);
@@ -166,7 +173,6 @@ namespace MittClick.Controllers
                     LastName = userProfile.LastName,
                     PrivateProfile = userProfile.PrivateProfile,
                     Information = userProfile.Information,
-                    // Populate additional collections
                     ContactInfos = userProfile.ContactInfos.Select(ci => new ContactInfo { Type = ci.Type, Info = ci.Info }).ToList(),
                     Skills = userProfile.Skills.Select(s => new Skill { Name = s.Name }).ToList(),
                     Educations = userProfile.Educations.Select(e => new Education { School = e.School, Type = e.Type, From = e.From, To = e.To }).ToList(),
@@ -196,7 +202,7 @@ namespace MittClick.Controllers
                     var userProfile = dbContext.Profiles
                         .Include(p => p.User)
                         .Include(p => p.ContactInfos)
-                        .Include(p => p.Skills)
+                        //.Include(p => p.Skills)
                         .Include(p => p.Educations)
                         .Include(p => p.WorkExperiences)
                         .FirstOrDefault(p => p.UserId == currentUser.Id);
@@ -222,7 +228,7 @@ namespace MittClick.Controllers
                             userProfile.ProfileImage = image.Data;
                         }
                         //UpdateContactInfos(userProfile, editProfileViewModel.ContactInfos);
-                        UpdateSkills(userProfile, editProfileViewModel.Skills);
+                        //UpdateSkills(userProfile, editProfileViewModel.Skills);
                         //UpdateEducations(userProfile, editProfileViewModel.Educations);
                         //UpdateWorkExperiences(userProfile, editProfileViewModel.WorkExperiences);
 
@@ -252,92 +258,115 @@ namespace MittClick.Controllers
                 return View(editProfileViewModel);
             }
         }
-        private void UpdateSkills(Profile userProfile, ICollection<Skill> newSkills)
+        //private void UpdateSkills(Profile userProfile, ICollection<Skill> newSkills)
+        //{
+        //    // Skapa en kopia av befintliga färdigheter
+        //    var existingSkillsCopy = new List<Skill>(userProfile.Skills);
+
+        //    // Ta bort alla befintliga färdigheter
+        //    foreach (var skillToRemove in existingSkillsCopy)
+        //    {
+        //        userProfile.Skills.Remove(skillToRemove);
+        //    }
+
+        //    // Lägg till alla nya färdigheter från formuläret
+        //    foreach (var skill in newSkills)
+        //    {
+        //        userProfile.Skills.Add(new Skill { Name = skill.Name, ProfileId = userProfile.ProfileId });
+        //    }
+        //}
+
+        //private void UpdateContactInfos(Profile userProfile, ICollection<ContactInfo> newContactInfos)
+        //{
+        //    var existingContactInfosCopy = new List<ContactInfo>(userProfile.ContactInfos);
+
+        //    foreach (var contactInfoToRemove in existingContactInfosCopy)
+        //    {
+        //        userProfile.ContactInfos.Remove(contactInfoToRemove);
+        //    }
+
+        //    foreach (var contactInfo in newContactInfos)
+        //    {
+        //        userProfile.ContactInfos.Add(new ContactInfo
+        //        {
+        //            Type = contactInfo.Type,
+        //            Info = contactInfo.Info,
+        //            ProfileId = userProfile.ProfileId
+        //        });
+        //    }
+        //}
+
+        //private void UpdateEducations(Profile userProfile, ICollection<Education> newEducations)
+        //{
+        //    var existingEducationsCopy = new List<Education>(userProfile.Educations);
+
+        //    foreach (var educationToRemove in existingEducationsCopy)
+        //    {
+        //        userProfile.Educations.Remove(educationToRemove);
+        //    }
+
+        //    foreach (var education in newEducations)
+        //    {
+        //        userProfile.Educations.Add(new Education
+        //        {
+        //            School = education.School,
+        //            Type = education.Type,
+        //            From = education.From,
+        //            To = education.To,
+        //            ProfileId = userProfile.ProfileId
+        //        });
+        //    }
+        //}
+
+        //private void UpdateWorkExperiences(Profile userProfile, ICollection<WorkExperience> newWorkExperiences)
+        //{
+        //    Console.WriteLine("hoppelihopp");
+        //    // Skapa en kopia av befintliga arbetslivserfarenheter
+        //    var existingWorkExperiencesCopy = new List<WorkExperience>(userProfile.WorkExperiences);
+
+        //    // Ta bort alla befintliga arbetslivserfarenheter
+        //    foreach (var workExperienceToRemove in existingWorkExperiencesCopy)
+        //    {
+        //        userProfile.WorkExperiences.Remove(workExperienceToRemove);
+        //    }
+
+        //    // Lägg till alla nya arbetslivserfarenheter från formuläret
+        //    foreach (var workExperienceViewModel in newWorkExperiences)
+        //    {
+        //        userProfile.WorkExperiences.Add(new WorkExperience
+        //        {
+        //            Workplace = workExperienceViewModel.Workplace,
+        //            Role = workExperienceViewModel.Role,
+        //            From = workExperienceViewModel.From,
+        //            To = workExperienceViewModel.To,
+        //            ProfileId = userProfile.ProfileId
+        //        });
+        //    }
+        //}
+
+
+        public async Task<IActionResult> UpdateSkills()
         {
-            // Skapa en kopia av befintliga färdigheter
-            var existingSkillsCopy = new List<Skill>(userProfile.Skills);
-
-            // Ta bort alla befintliga färdigheter
-            foreach (var skillToRemove in existingSkillsCopy)
+            var currentUser = await userManager.GetUserAsync(User);
+            if (currentUser == null)
             {
-                userProfile.Skills.Remove(skillToRemove);
+                // Hantera situationen när användaren inte hittas
+                return NotFound();
             }
 
-            // Lägg till alla nya färdigheter från formuläret
-            foreach (var skill in newSkills)
+            var userProfile = dbContext.Profiles
+                                       .Include(p => p.Skills)
+                                       .FirstOrDefault(p => p.UserId == currentUser.Id);
+
+            if (userProfile == null)
             {
-                userProfile.Skills.Add(new Skill { Name = skill.Name, ProfileId = userProfile.ProfileId });
+                // Hantera situationen när profilen inte hittas
+                return NotFound();
             }
+
+            // Skicka listan med färdigheter till vyn
+            return View(userProfile.Skills.ToList());
         }
-
-        private void UpdateContactInfos(Profile userProfile, ICollection<ContactInfo> newContactInfos)
-        {
-            var existingContactInfosCopy = new List<ContactInfo>(userProfile.ContactInfos);
-
-            foreach (var contactInfoToRemove in existingContactInfosCopy)
-            {
-                userProfile.ContactInfos.Remove(contactInfoToRemove);
-            }
-
-            foreach (var contactInfo in newContactInfos)
-            {
-                userProfile.ContactInfos.Add(new ContactInfo
-                {
-                    Type = contactInfo.Type,
-                    Info = contactInfo.Info,
-                    ProfileId = userProfile.ProfileId
-                });
-            }
-        }
-
-        private void UpdateEducations(Profile userProfile, ICollection<Education> newEducations)
-        {
-            var existingEducationsCopy = new List<Education>(userProfile.Educations);
-
-            foreach (var educationToRemove in existingEducationsCopy)
-            {
-                userProfile.Educations.Remove(educationToRemove);
-            }
-
-            foreach (var education in newEducations)
-            {
-                userProfile.Educations.Add(new Education
-                {
-                    School = education.School,
-                    Type = education.Type,
-                    From = education.From,
-                    To = education.To,
-                    ProfileId = userProfile.ProfileId
-                });
-            }
-        }
-
-        private void UpdateWorkExperiences(Profile userProfile, ICollection<WorkExperience> newWorkExperiences)
-        {
-            Console.WriteLine("hoppelihopp");
-            // Skapa en kopia av befintliga arbetslivserfarenheter
-            var existingWorkExperiencesCopy = new List<WorkExperience>(userProfile.WorkExperiences);
-
-            // Ta bort alla befintliga arbetslivserfarenheter
-            foreach (var workExperienceToRemove in existingWorkExperiencesCopy)
-            {
-                userProfile.WorkExperiences.Remove(workExperienceToRemove);
-            }
-
-            // Lägg till alla nya arbetslivserfarenheter från formuläret
-            foreach (var workExperienceViewModel in newWorkExperiences)
-            {
-                userProfile.WorkExperiences.Add(new WorkExperience
-                {
-                    Workplace = workExperienceViewModel.Workplace,
-                    Role = workExperienceViewModel.Role,
-                    From = workExperienceViewModel.From,
-                    To = workExperienceViewModel.To,
-                    ProfileId = userProfile.ProfileId
-                });
-            }
-        }
-
 
         private List<Project> GetUserProjects(string userId)
         {
@@ -347,6 +376,31 @@ namespace MittClick.Controllers
                            .Select(pop => pop.Project)
                            .ToList();
         }
+
+        //[HttpPost]
+        //public async Task<IActionResult> AddSkill(string skillName)
+        //{
+        //    var currentUser = userManager.GetUserAsync(User);
+        //    var _UserId = currentUser.Id;
+            
+
+
+        //    var userProfile = dbContext.Profiles
+        //                               .Include(p => p.Skills)
+        //                               .FirstOrDefault(p => p.UserId == _UserId);
+
+        //    if (userProfile == null)
+        //    {
+        //        // Hantera situationen när profilen inte hittas
+        //        return NotFound();
+        //    }
+
+        //    var newSkill = new Skill { Name = skillName, ProfileId = profileId };
+        //    dbContext.Skills.Add(newSkill);
+        //    await dbContext.SaveChangesAsync();
+
+        //    return RedirectToAction("UpdateSkills", new { profileId = profileId });
+        //}
 
 
         public IActionResult Index()

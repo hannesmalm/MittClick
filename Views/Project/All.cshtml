@@ -1,26 +1,10 @@
 ﻿@model List<Project>
 
-<style>
-    .card {
-        
-        height: 400px;
-        /* Justera andra egenskaper efter behov för att ge en enhetlig storlek för korten */
-        margin-bottom: 20px; /* Tillämpa marginal för att separera korten */
-    }
-
-    .card-img-top {
-        max-width: 100%; /* Sätt den maximala bredden till 100% av dess förälder */
-        max-height: 200px; /* Sätt den maximala höjden till 200px */
-        object-fit: cover; /* Behåll bildens proportioner och klipp om det behövs för att fylla ramen */
-    }
-
-</style>
-
 <div class="card-body d-flex flex-wrap justify-content-center">
     <div class="container">
         <div class="row">
 
-            <!-- Loopa igenom projekt -->
+            <!-- Loopa igenom projektkort -->
             @foreach (var project in Model)
             {
                 <div class="col-md-4 col-sm-6">
@@ -47,3 +31,19 @@
         </div>
     </div>
 </div>
+
+
+<style>
+    .card {
+        height: 400px;
+        /* Justera andra egenskaper efter behov för att ge en enhetlig storlek för korten */
+        margin-bottom: 20px; /* Tillämpa marginal för att separera korten */
+    }
+
+    .card-img-top {
+        max-width: 100%; /* Sätt den maximala bredden till 100% av dess förälder */
+        max-height: 200px; /* Sätt den maximala höjden till 200px */
+        object-fit: cover; /* Behåll bildens proportioner och klipp om det behövs för att fylla ramen */
+    }
+
+</style>

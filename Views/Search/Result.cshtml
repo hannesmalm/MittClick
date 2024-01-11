@@ -16,29 +16,36 @@
     </div>
 
     <script>
-        $(document).ready(function () {
-            onPageLoad();
-        });
+        document.addEventListener('DOMContentLoaded', onPageLoad);
 
-        function onPageLoad() {
-            searchProfiles();
-        }
+        // function onPageLoad() {
+        //     searchProfiles();
+        // }
 
         function searchProfiles() {
-            var searchValue = $('#searchBox').val();
-            $.ajax({
-                url: searchValue ? '@Url.Action("SearchProfiles", "Search")' : '@Url.Action("SearchEmpty", "Search")',
-                type: 'GET',
-                data: { searchTerm: searchValue },
-                success: function (data) {
+            var searchBox = document.getElementById('searchBox');
+            var searchValue = searchBox.value;
+            var url = searchValue ? '@Url.Action("SearchProfiles", "Search")' : '@Url.Action("SearchEmpty", "Search")';
+            url += `?searchTerm=${encodeURIComponent(searchValue)}`;
+
+            fetch(url, {
+                method: 'GET'
+            })
+                .then(response => response.text())
+                .then(data => {
+                    var profilesList = document.getElementById('profilesList');
                     if (data) {
-                        $('#profilesList').html(data);
+                        profilesList.innerHTML = data;
                     } else {
-                        $('#profilesList').empty();
+                        profilesList.innerHTML = '';
                     }
-                }
-            });
+                })
+                .catch(error => console.error('Error:', error));
         }
+
+        // Attach event listener to searchBox for keyup event
+        var searchBox = document.getElementById('searchBox');
+        searchBox.addEventListener('keyup', searchProfiles);
     </script>
 
     <div id="profilesList">
