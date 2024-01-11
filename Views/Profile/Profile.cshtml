@@ -10,7 +10,7 @@
     <div class="row">
         <!-- Vänster kolumn för profilbild och färdigheter -->
         <div class="col-md-4">
-            <div class="card mb-3">
+            <div class="card mb-3 shadow">
                 <!-- Profilbild -->
                 @if (Model.ProfileImage != null)
                 {
@@ -161,7 +161,7 @@
                             @foreach (var project in Model.UserProjects)
                             {
                                 <div class="col-md-4 col-sm-6">
-                                    <div class="card">
+                                    <div class="card shadow">
                                         @if (project.ProjectImage != null)
                                         {
                                             var imageBase64 = Convert.ToBase64String(project.ProjectImage);

@@ -3,12 +3,16 @@
 <div class="card-body d-flex flex-wrap justify-content-center">
     <div class="container">
         <div class="row">
-
+            @if (!Model.Any())
+            {
+                <h2>Inga projekt registrerade</h2>
+                <a asp-action="Add" asp-controller="Project">Du kan skapa det första här</a>
+            }
             <!-- Loopa igenom projektkort -->
             @foreach (var project in Model)
             {
                 <div class="col-md-4 col-sm-6">
-                    <div class="card">
+                    <div class="card shadow">
                         @if (project.ProjectImage != null)
                         {
                             var imageBase64 = Convert.ToBase64String(project.ProjectImage);

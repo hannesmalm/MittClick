@@ -14,7 +14,6 @@ namespace MittClick.Controllers
         private readonly MittClickDbContext dbContext;
         private readonly IImageService imageService;
 
-
         public ProjectController(UserManager<User> userManager, SignInManager<User> signInManager, MittClickDbContext dbContext, IImageService imageService)
         {
             this.userManager = userManager;
@@ -101,7 +100,7 @@ namespace MittClick.Controllers
                         Description = addProjectViewModel.Description,
                         UserId = currentUser.Id
                     };
-                    // Lägg till Projektbild
+
                     if (addProjectViewModel.ProjectImage != null && addProjectViewModel.ProjectImage.Length > 0)
                     {
                         var image = new Image
@@ -114,7 +113,6 @@ namespace MittClick.Controllers
 
                         newProject.ProjectImage = image.Data;
                     }
-                    // Spara till din databas, antingen via en DbContext eller annan datahanteringsmetod
                     dbContext.Projects.Add(newProject);
                     dbContext.SaveChanges();
 
@@ -132,8 +130,7 @@ namespace MittClick.Controllers
                 }
                 else
                 {
-                    // Efter att datan har sparats kan du omdirigera användaren till en annan vy eller handling
-                    return RedirectToAction("AddProject");
+                    return RedirectToAction("Add", "Project");
 
                 }
             }
@@ -180,31 +177,6 @@ namespace MittClick.Controllers
             dbContext.SaveChanges();
 
             return RedirectToAction("Project", new { projectId });
-        }
-
-        public IActionResult ViewUserProfile(string userId)
-        {
-            Console.WriteLine("User ID received: " + userId);
-
-            if (string.IsNullOrEmpty(userId))
-            {
-                var currentUser = userManager.GetUserAsync(User).Result;
-                if (currentUser == null)
-                {
-                    // Hantera scenariot där ingen inloggad användare finns
-                    return NotFound();
-                }
-                userId = currentUser.Id;
-            }
-
-            var userProfile = dbContext.Profiles.FirstOrDefault(p => p.UserId == userId);
-            if (userProfile == null)
-            {
-                Console.WriteLine("User profile not found for user ID: " + userId);
-                return NotFound();
-            }
-
-            return View(userProfile);
         }
 
         [HttpGet]

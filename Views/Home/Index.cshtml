@@ -69,7 +69,7 @@
                 <div class="card mb-4">
                     <div class="card-body">
                         <div class="row align-items-center">
-                            <h1>Senaste projektet:</h1>
+                            <h3>Senaste projektet:</h3>
                             @if (Model.Projects.Any())
                             {
                                 var latestProject = Model.Projects.OrderByDescending(p => p.ProjectId).First();
@@ -82,7 +82,7 @@
                                             {
                                                 var imageBase64 = Convert.ToBase64String(latestProject.ProjectImage);
                                                 var imageSrc = $"data:image/png;base64,{imageBase64}";
-                                                <img src="@imageSrc" class="card-img" alt="Project Image">
+                                                <img src="@imageSrc" class="card-img" style="overflow: hidden; min-width: " alt="Project Image">
                                             }
                                         </div>
 
@@ -99,17 +99,19 @@
                                         </div>
                                     </div>
                                 </div>
+                                <a asp-controller="Project" asp-action="All" class="btn btn-lg shadow">Visa alla projekt</a>
                             }
                             else
                             {
-                                <div class="card text-center mt-4">
-                                    <div class="card-body">
-                                        <p>Inga projekt tillgängliga för närvarande.</p>
-                                    </div>
+                                <div class="card-body">
+                                    <p>Inga projekt registrerade...</p>
+                                    @if (User.Identity.IsAuthenticated)
+                                    {
+									    <a asp-action="Add" asp-controller="Project">Du kan skapa det första här</a>
+                                    }
                                 </div>
                             }
                         </div>
-                        <a asp-controller="Project" asp-action="All" class="btn btn-primary">Visa alla projekt</a>
                     </div>
                 </div>
             </div>
