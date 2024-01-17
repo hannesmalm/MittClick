@@ -28,7 +28,7 @@
                     <p class="card-text">@Model.Information</p>
                     <div class="text-center">
 
-                        @if (currentUserName != Model.UserName)
+                        @if (currentUserName != Model.UserName || !User.Identity.IsAuthenticated)
                         {
                             
                             @if (User.Identity.IsAuthenticated)
