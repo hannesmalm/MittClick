@@ -1,6 +1,6 @@
 ﻿function addSkill(newSkill) {
 	$.ajax({
-		url: '/Profile/AddSkill', // Kontrollera att URL:en matchar din routing
+		url: '/Profile/AddSkill', 
 		type: 'POST',
 		data: { newSkill: newSkill },
 		success: function (response) {
@@ -8,8 +8,8 @@
 			window.location.reload(); // Ladda om sidan för att se den nya färdigheten
 		},
 		error: function (xhr, status, error) {
-			if (xhr.status === 400) { // Antag att servern returnerar status 400 för dubblett
-				alert(xhr.responseText); // Visa felmeddelandet
+			if (xhr.status === 400) { 
+				alert(xhr.responseText); // Visa felmeddelandet om man försöker lägga till dubblett
 			} else {
 				console.error("Error: " + error);
 			}
@@ -17,8 +17,6 @@
 
 	});
 }
-
-
 
 function deleteSkill(itemId) {
 	// Bekräfta att användaren verkligen vill ta bort utbildningen.

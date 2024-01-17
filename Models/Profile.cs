@@ -33,13 +33,10 @@ namespace MittClick.Models
 
         public virtual User User { get; set; }
         public virtual List<Skill> Skills { get; set; } = new List<Skill>();
+        public virtual List<ContactInfo> ContactInfos { get; set; } = new List<ContactInfo>();
 
-
-        public virtual ICollection<ContactInfo> ContactInfos { get; set; }
         public Profile()
         {
-            ContactInfos = new HashSet<ContactInfo>();
-            //nya
             Educations = new HashSet<Education>();
             WorkExperiences = new HashSet<WorkExperience>();
         }
