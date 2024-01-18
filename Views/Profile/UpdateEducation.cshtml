@@ -1,56 +1,73 @@
 ﻿@model MittClick.Models.ViewModels.UpdateEducationViewModel
 
-<h4>Uppdatera Utbildning</h4>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-9 col-lg-6">
+            <div class="card">
+                <div class="card-header text-center">
+                    <h4>Uppdatera utbildning</h4>
+                </div>
+                <div class="card-body">
+                    <form method="post" asp-action="AddEducation" asp-controller="Profile">
 
+                        <div class="form-floating mt-3">
+                            <input type="text" asp-for="School" id="school" class="form-control" placeholder="namnet på skola eller Universitet" />
+                            <label for="school" class="form-label">Skola/Universitet</label>
+                            <span asp-validation-for="School" class="text-danger"></span>
+                        </div>
 
-<form asp-action="AddEducation" asp-controller="Profile" method="post">
-    <div class="form-group">
-        <label asp-for="School">Skola/Universitet:</label>
-        <input asp-for="School" class="form-control" />
-    </div>
+                        <div class="form-floating mt-2">
+                            <input type="text" asp-for="Type" id="type" class="form-control" placeholder="Typ av utbildning" />
+                            <label for="type" class="form-label">Typ av utbildning</label>
+                            <span asp-validation-for="Type" class="text-danger"></span>
+                        </div>
 
-    <div class="form-group">
-        <label asp-for="Type">Typ av utbildning</label>
-        <input asp-for="Type" class="form-control" />
-    </div>
+                        <div class="input-group">
+							<div class="form-group col mt-2">
+								<label asp-for="From">Från:</label>
+								<select asp-for="From" class="form-control">
+									@for (int year = DateTime.Now.Year; year >= 1900; year--)
+									{
+										<option value="@year">@year</option>
+									}
+								</select>
+							</div>
 
-    <div class="form-group">
-        <label asp-for="From">Från:</label>
-        <select asp-for="From" class="form-control">
-            @for (int year = DateTime.Now.Year; year >= 1900; year--)
-            {
-                <option value="@year">@year</option>
-            }
-        </select>
-    </div>
+                            <div class="form-group col mt-2">
+								<label asp-for="To">Till:</label>
+								<select asp-for="To" class="form-control">
+									<option value="">Pågående</option>  <!-- Blir NULL i databasen eftersom value är tom-->
+									@for (int year = DateTime.Now.Year; year >= 1900; year--)
+									{
+										<option value="@year">@year</option>
+									}
+								</select>
+							</div>
+                        </div>
+                        
 
-    <div class="form-group">
-        <label asp-for="To">Till:</label>
-        <select asp-for="To" class="form-control">
-            @for (int year = DateTime.Now.Year; year >= 1900; year--)
-            {
-                <option value="@year">@year</option>
-            }
-        </select>
-    </div>
+                        <button type="submit" class="btn btn-primary mt-3">Lägg till</button>
 
-    <button type="submit" class="btn btn-primary">Submit</button>
-</form>
+                    </form>
 
-@foreach (var education in Model.Educations)
-{
-    <div class="card mb-3">
-        <div class="card-body">
-            <h5 class="card-title">@education.School</h5>
-            <p class="card-text">@education.Type</p>
-            <p class="card-text">@($"{education.From} - {education.To}")</p>
-            <form asp-action="DeleteEducation" asp-controller="Profile" method="post">
-                @Html.HiddenFor(model => education.Id)
-                <input type="hidden" name="id" value="@education.Id" />
-                <button type="submit" class="btn btn-danger">Ta bort</button>
-            </form>
+                    @foreach (var education in Model.Educations)
+                    {
+                        <div class="card mb-3 mt-3">
+                            <div class="card-body">
+                                <h5 class="card-title">@education.School</h5>
+                                <p class="card-text">@education.Type</p>
+                                <p class="card-text">@($"{education.From} - {education.To}")</p>
+                                <form asp-action="DeleteEducation" asp-controller="Profile" method="post">
+                                    @Html.HiddenFor(model => education.Id)
+                                    <input type="hidden" name="id" value="@education.Id" />
+                                    <button type="submit" class="btn btn-danger">Ta bort</button>
+                                </form>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
         </div>
     </div>
-}
-
+</div>
 
