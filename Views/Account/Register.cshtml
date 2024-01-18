@@ -5,8 +5,18 @@
 		<div class="row justify-content-center">
 			<div class="col-md-9 col-lg-6">
 				<div class="card">
-					<div class="card-header text-center">
-						<h4>Registrera nytt konto</h4>
+					<div class="card-header">
+						<div class="row d-flex justify-content-between">
+							<div class="col col-2">
+								<button class="btn btn-outline-secondary" onclick="history.back()">Tillbaka</button>
+							</div>
+							<div class="col col-8 text-center">
+								<h4>Registrera nytt konto</h4>
+							</div>
+							<div class="col col-2">
+								<!-- låt vara, balanserar spacet i headern mot knappen -->
+							</div>
+						</div>
 					</div>
 					<div class="card-body">
 						<form method="post" asp-action="Register">
