@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
 using MittClick.Models;
 using MittClick.Models.ViewModels;
@@ -340,8 +341,76 @@ namespace MittClick.Controllers
                            .Select(pop => pop.Project)
                            .ToList();
         }
+        // Arbetserfarenheter
+        [HttpGet]
+        public async Task<IActionResult> UpdateWorkExperience()
+        {
+            var currentUser = await userManager.GetUserAsync(User);
+            var userProfile = dbContext.Profiles
+                              .Include(p => p.User)
+                              .FirstOrDefault(p => p.UserId == currentUser.Id);
+            var workExperiences = userProfile.WorkExperiences.ToList();
+            var updateWorkExperienceViewModel = new UpdateWorkExperienceViewModel
+            {
+                Profile = userProfile,
+                WorkExperiences = workExperiences
+            };
+            return View(updateWorkExperienceViewModel);
+        }
+		[HttpPost]
+		public IActionResult DeleteWorkExperience(int id)
+		{
+			try
+			{
+				WorkExperience workExperience = dbContext.WorkExperiences.Find(id);
+				if (workExperience != null)
+				{
+					dbContext.WorkExperiences.Remove(workExperience);
+					dbContext.SaveChanges();
+				}
+			}
+			catch (Exception e)
+			{
+				Console.WriteLine(e.Message);
+				// Lägg eventuellt till ytterligare felhantering här
+				return BadRequest("Något gick fel vid borttagning av arbetslivserfarenheten.");
+			}
 
-        public IActionResult Index()
+			return RedirectToAction("UpdateWorkExperience", "Profile");
+		}
+
+		[HttpPost]
+		public async Task<IActionResult> AddWorkExperience(string workplace, string role, int from, int to)
+		{
+			var currentUser = await userManager.GetUserAsync(User);
+			var userProfile = dbContext.Profiles
+							  .Include(p => p.User)
+							  .FirstOrDefault(p => p.UserId == currentUser.Id);
+
+			WorkExperience newWorkExperience = new WorkExperience
+			{
+				Workplace = workplace,
+				Role = role,
+				From = from,
+				To = to,
+			};
+
+			try
+			{
+				userProfile.WorkExperiences.Add(newWorkExperience);
+				dbContext.SaveChanges();
+			}
+			catch (Exception e)
+			{
+				Console.WriteLine(e.Message);
+				// Lägg eventuellt till ytterligare felhantering här
+				return BadRequest("Något gick fel vid läggning till arbetslivserfarenheten.");
+			}
+
+			return RedirectToAction("UpdateWorkExperience", "Profile");
+		}
+
+		public IActionResult Index()
         {
             return View();
         }

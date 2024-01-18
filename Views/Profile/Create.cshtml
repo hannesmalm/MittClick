@@ -60,8 +60,8 @@
                                     var selectedContactType = ''; // Variabel för att hålla reda på det valda kontakttypen
 
                                     // Lyssna på klickhändelser på dropdown-alternativen
-                                    var dropdownItems = document.querySelectorAll('.dropdown-item');
-                                    dropdownItems.forEach(function (item) {
+                                   
+                                    dropdownItems.forEach(function (item) { var dropdownItems = document.querySelectorAll('.dropdown-item');
                                         item.addEventListener('click', function () {
                                             selectedContactType = item.getAttribute('data-value');
                                             contactDropDown.textContent = selectedContactType;
