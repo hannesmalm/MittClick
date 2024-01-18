@@ -353,7 +353,6 @@ namespace MittClick.Controllers
         [HttpPost]
         public async Task<IActionResult> AddContactInfo(string newContactType, string newContactInfo)
         {
-            Console.WriteLine("!!!!!! INFO: " + newContactType + " " + newContactInfo);
             var currentUser = await userManager.GetUserAsync(User);
             var userProfile = dbContext.Profiles
                               .Include(p => p.User)
@@ -367,7 +366,7 @@ namespace MittClick.Controllers
             if (contactExists)
             {
                 Response.StatusCode = 400; // Bad Request
-                return Content("Färdigheten finns redan.");
+                return Content("Denna kontaktinformation finns redan.");
             }
 
             ContactInfo contactInfo = new ContactInfo
@@ -387,6 +386,24 @@ namespace MittClick.Controllers
             }
             return RedirectToAction("UpdateContactInfo", "Profile");
         }
+
+            public IActionResult DeleteContactInfo(int id)
+            {
+                try
+                {
+                    ContactInfo contactInfo = dbContext.Contacts.Find(id);
+                    if (contactInfo != null)
+                    {
+                        dbContext.Contacts.Remove(contactInfo);
+                        dbContext.SaveChanges();
+                    }
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.Message);
+                }
+                return RedirectToAction("UpdateContactInfo", "Profile");
+            }
 
         private List<Project> GetUserProjects(string userId)
         {

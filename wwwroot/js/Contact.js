@@ -1,4 +1,6 @@
-﻿function getSelectedContactMethod() {
+﻿
+//Hämtar valet från radioknapparna
+function getSelectedContactMethod() {
     var radios = document.getElementsByName('btnradio');
     for (var i = 0; i < radios.length; i++) {
         if (radios[i].checked) {
@@ -10,12 +12,7 @@
 
 function addContactInfo(newContactInfo) {
 
-
     var newContactType = getSelectedContactMethod();
-
-    console.log("SKRIPT: " + "info: " + newContactInfo + "typ: " + newContactType)
-
-
 
     $.ajax({
         url: '/Profile/AddContactInfo',
@@ -33,4 +30,26 @@ function addContactInfo(newContactInfo) {
             }
         }
     });
+}
+
+function deleteContactInfo(itemId) {
+    // Bekräfta att användaren verkligen vill ta bort utbildningen.
+    var confirmDelete = confirm("Är du säker på att du vill ta bort kontaktinformationen?");
+    if (confirmDelete) {
+        // Skicka en AJAX-förfrågan för att ta bort utbildningen.
+        $.ajax({
+            type: "POST",
+            url: '/Profile/DeleteContactInfo/' + itemId,
+            success: function () {
+                // Ta bort det relevanta elementet från DOM.
+                $('#contact-' + itemId).remove();
+
+                // Ladda om sidan för att uppdatera CV:et.
+                location.reload();
+            },
+            error: function () {
+                alert("Något gick fel vid borttagning.");
+            }
+        });
+    }
 }
