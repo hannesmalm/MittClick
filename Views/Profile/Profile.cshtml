@@ -9,7 +9,7 @@
 <div class="container mt-4">
     <div class="row">
         <!-- Vänster kolumn för profilbild och färdigheter -->
-        <div class="col-md-4">
+        <div class="col-md-3">
             <div class="card mb-3 shadow">
                 <!-- Profilbild -->
                 @if (Model.ProfileImage != null)
@@ -121,10 +121,21 @@
                             }
                         </div>
                         <div class="card-body">
-                            @foreach (var education in Model.Educations)
-                            {
-                                <p><strong>@education.School</strong> (@education.Type, @education.From - @education.To)</p>
-                            }
+                            <ul class="list-group list-group-flush">
+                                @foreach (var education in Model.Educations)
+                                {
+                                    <li class="list-group-item">
+										<div class="row">
+											<div class="col">
+												<p><strong>@education.School</strong></p> @education.Type
+											</div>
+											<div class="col d-flex justify-content-end">
+												@education.From - @education.To
+											</div>
+										</div>
+                                    </li>
+                                }
+                            </ul>
                         </div>
                     </div>
                 </div>
