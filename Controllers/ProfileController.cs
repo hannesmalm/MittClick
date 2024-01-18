@@ -101,7 +101,7 @@ namespace MittClick.Controllers
                 }
 
                 dbContext.Profiles.Add(newProfile);
-                
+
 
                 // Skills
                 if (createProfileViewModel.Skills == null)
@@ -123,15 +123,15 @@ namespace MittClick.Controllers
                     newProfile.ContactInfos.Add(new ContactInfo { Type = contact.Type, Info = contact.Info, ProfileId = newProfile.ProfileId });
                 }
 
-				// Utbildning
-				if (createProfileViewModel.Educations == null)
-				{
-					createProfileViewModel.Educations = new List<Education>();
-				}
-				foreach (var education in createProfileViewModel.Educations)
-				{
-					newProfile.Educations.Add(new Education { School = education.School, Type = education.Type, From = education.From, To = education.To, ProfileId = newProfile.ProfileId });
-				}
+                // Utbildning
+                if (createProfileViewModel.Educations == null)
+                {
+                    createProfileViewModel.Educations = new List<Education>();
+                }
+                foreach (var education in createProfileViewModel.Educations)
+                {
+                    newProfile.Educations.Add(new Education { School = education.School, Type = education.Type, From = education.From, To = education.To, ProfileId = newProfile.ProfileId });
+                }
 
                 //Arbetserfarenheter
 
@@ -157,7 +157,7 @@ namespace MittClick.Controllers
         public async Task<IActionResult> Edit()
         {
             var currentUser = await userManager.GetUserAsync(User);
-            
+
             var userProfile = dbContext.Profiles
                 .Include(p => p.User)
                 .Include(p => p.ContactInfos)
@@ -256,7 +256,7 @@ namespace MittClick.Controllers
             else
             {
                 Console.WriteLine("hehehehhehehehe");
-                
+
                 return View(editProfileViewModel);
             }
         }
@@ -269,11 +269,11 @@ namespace MittClick.Controllers
                               .Include(p => p.User)
                               .FirstOrDefault(p => p.UserId == currentUser.Id);
             var skills = userProfile?.Skills.ToList();
-           
-            var updateSkillViewModel = new UpdateSkillViewModel 
-            { 
-                Profile = userProfile, 
-                Skills = skills 
+
+            var updateSkillViewModel = new UpdateSkillViewModel
+            {
+                Profile = userProfile,
+                Skills = skills
             };
 
             return View(updateSkillViewModel);
@@ -285,7 +285,7 @@ namespace MittClick.Controllers
             try
             {
                 Skill skill = dbContext.Skills.Find(id);
-                if(skill != null)
+                if (skill != null)
                 {
                     dbContext.Skills.Remove(skill);
                     dbContext.SaveChanges();
@@ -332,6 +332,79 @@ namespace MittClick.Controllers
             }
             return RedirectToAction("UpdateSkills", "Profile");
         }
+
+        [HttpGet]
+        public async Task<IActionResult> UpdateContactInfo()
+        {
+            var currentUser = await userManager.GetUserAsync(User);
+            var userProfile = dbContext.Profiles
+                              .Include(p => p.User)
+                              .FirstOrDefault(p => p.UserId == currentUser.Id);
+            var contactInfos = userProfile?.ContactInfos.ToList();
+
+            var updateContactInfoViewModel = new UpdateContactInfoViewModel
+            {
+                Profile = userProfile,
+                ContactInfos = contactInfos
+            };
+
+            return View(updateContactInfoViewModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddContactInfo(string newContactType, string newContactInfo)
+        {
+            var currentUser = await userManager.GetUserAsync(User);
+            var userProfile = dbContext.Profiles
+                              .Include(p => p.User)
+                              .FirstOrDefault(p => p.UserId == currentUser.Id);
+
+            bool contactExists = dbContext.Contacts
+                .Any(s => s.Type.ToUpper() == newContactType.ToUpper()
+                 && s.Info.ToUpper() == newContactInfo.ToUpper()
+                 && s.ProfileId == userProfile.ProfileId);
+
+            if (contactExists)
+            {
+                Response.StatusCode = 400; // Bad Request
+                return Content("Denna kontaktinformation finns redan.");
+            }
+
+            ContactInfo contactInfo = new ContactInfo
+            {
+                Type = newContactType,
+                Info = newContactInfo,
+                ProfileId = userProfile.ProfileId
+            };
+            try
+            {
+                dbContext.Contacts.Add(contactInfo);
+                dbContext.SaveChanges();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+            return RedirectToAction("UpdateContactInfo", "Profile");
+        }
+
+            public IActionResult DeleteContactInfo(int id)
+            {
+                try
+                {
+                    ContactInfo contactInfo = dbContext.Contacts.Find(id);
+                    if (contactInfo != null)
+                    {
+                        dbContext.Contacts.Remove(contactInfo);
+                        dbContext.SaveChanges();
+                    }
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.Message);
+                }
+                return RedirectToAction("UpdateContactInfo", "Profile");
+            }
 
         private List<Project> GetUserProjects(string userId)
         {
