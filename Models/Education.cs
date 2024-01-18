@@ -11,14 +11,16 @@ namespace MittClick.Models
 		public string School { get; set; }
 		
 		public string Type { get; set; }
+
 		public int From { get; set; }
 
 		[RegularExpression(@"^(19|20)\d{2}$")]
 		[Compare("From")]
-		public int? To { get; set; }
+		public int To { get; set; }
 
 		[ForeignKey(nameof(ProfileId))]
 		public int ProfileId { get; set; }
+
 		public virtual Profile? Profile { get; set; }
 	}
 }
