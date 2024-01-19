@@ -12,7 +12,6 @@ namespace MittClick.Models
         [Required(ErrorMessage = "Välj ett lösenord.")]
         [DataType(DataType.Password)]
         [Compare("RepeatPassword")]
-
         public string Password { get; set; }
 
         [Required(ErrorMessage = "Bekräfta lösenordet")]
