@@ -68,8 +68,15 @@
 
                                 </div>
                                 <div class="col d-flex justify-content-end">
-
-											<p>@education.From - @education.To</p>
+                                   
+                                    @if (education.To != 0)
+                                    {
+                                        <p>@education.From - @education.To</p>
+                                    }
+                                    else
+                                    {
+                                        <p>@education.From - pågående</p>
+                                    }
 
                                 </div>
                             </div>

@@ -130,7 +130,16 @@
 												<p><strong>@education.School</strong></p> @education.Type
 											</div>
 											<div class="col d-flex justify-content-end">
-												@education.From - @education.To
+
+                                                @if (education.To != 0)
+                                                {
+                                                    <p>@education.From - @education.To</p>
+                                                }
+                                                else
+                                                {
+                                                    <p>@education.From - pågående</p>
+                                                }
+
 											</div>
 										</div>
                                     </li>
