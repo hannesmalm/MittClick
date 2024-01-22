@@ -263,7 +263,42 @@ namespace MittClick.Controllers
                               .Include(p => p.User)
                               .FirstOrDefault(p => p.UserId == currentUser.Id);
 
-            Education education = new Education
+            //Kontroll för dublett
+
+            bool educationExists = dbContext.Educations
+                .Any(s => s.School.ToUpper() == school.ToUpper()
+                 && s.Type.ToUpper() == type.ToUpper()
+                 && s.From == from
+                 && s.To == to
+                 && s.ProfileId == userProfile.ProfileId);
+
+            if (educationExists)
+            {
+                ModelState.AddModelError("From", "Du har redan denna utbildning inlagd");
+
+                var updateEducationViewModel = new UpdateEducationViewModel
+                {
+                    Profile = userProfile,
+                    Educations = userProfile?.Educations
+                };
+                return View("UpdateEducation", updateEducationViewModel);
+            }
+
+            //Datumkontroll
+
+            if (to != null && from > to)
+            {
+                ModelState.AddModelError("From", "Fråndatumet måste vara lägre än slutdatumet");
+
+                var updateEducationViewModel = new UpdateEducationViewModel
+                {
+                    Profile = userProfile,
+                    Educations = userProfile?.Educations
+                };
+                return View("UpdateEducation", updateEducationViewModel);
+            }
+
+                Education education = new Education
             {
                 School = school,
                 Type = type,
@@ -361,9 +396,8 @@ namespace MittClick.Controllers
 
             if (skillExists)
             {
-                ModelState.AddModelError("Name", "Färdigheten finns redan.");
+                ModelState.AddModelError("Name", "Du har redan denna färdighet.");
 
-                // Förbereder modellen för att skicka tillbaka till vyn
                 var updateSkillViewModel = new UpdateSkillViewModel
                 {
                     Profile = userProfile,
@@ -493,6 +527,7 @@ namespace MittClick.Controllers
                               .Include(p => p.User)
                               .FirstOrDefault(p => p.UserId == currentUser.Id);
             var workExperiences = userProfile.WorkExperiences.ToList();
+
             var updateWorkExperienceViewModel = new UpdateWorkExperienceViewModel
             {
                 Profile = userProfile,
@@ -537,13 +572,31 @@ namespace MittClick.Controllers
 									  .Include(p => p.WorkExperiences)
 									  .FirstOrDefault(p => p.UserId == currentUser.Id);
 
-				// Om "Från" är större än eller lika med "Till", lägg till valideringsfel och returnera till vyn
-				
-                if (to != null && from >= to)
+                bool workExists = dbContext.WorkExperiences
+                .Any(s => s.Workplace.ToUpper() == workplace.ToUpper()
+                 && s.Role.ToUpper() == role.ToUpper()
+                 && s.From == from
+                 && s.To == to
+                 && s.ProfileId == userProfile.ProfileId);
+
+                if (workExists)
+                {
+                    ModelState.AddModelError("To", "Du har redan denna arbetshistorik inlagd");
+
+                    var updateWorkExperienceViewModel = new UpdateWorkExperienceViewModel
+                    {
+                        Profile = userProfile,
+                        WorkExperiences = userProfile?.WorkExperiences
+                    };
+                    return View("UpdateWorkExperience", updateWorkExperienceViewModel);
+                }
+
+                // Om "Från" är större än eller lika med "Till", lägg till valideringsfel och returnera till vyn
+
+                if (to != null && from > to)
 				{
 					ModelState.AddModelError("To", "Fråndatumet måste vara lägre än slutdatumet");
 
-					// Skapa en UpdateWorkExperienceViewModel och skicka tillbaka till vyn med valideringsfel
 					var updateWorkExperienceViewModel = new UpdateWorkExperienceViewModel
 					{
 						Profile = userProfile,
