@@ -27,7 +27,7 @@
 
                         <!--Beskrivning-->
                         <div class="form-floating mt-4">
-                            <textarea asp-for="Information" class="form-control" placeholder="Input description here"></textarea>
+                            <textarea asp-for="Information" class="form-control" placeholder="Input description here" style="height: 200px; resize: none;" ></textarea>
                             <label asp-for="Information" class="form-label">Kort beskrivning om dig:</label>
                             <span asp-validation-for="Information" class="text-danger"></span>
                         </div>
@@ -67,6 +67,7 @@
                                       });
                                   });
                         </script>
+
                         <!--Visa som rund grej-->
                         <div id="imageContainer" class="mt-2">
                             <img id="uploadedImage" class="img-fluid" src="#" alt="Uploaded Image" style="display: none;">

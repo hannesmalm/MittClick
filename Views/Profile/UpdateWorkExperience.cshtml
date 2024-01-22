@@ -26,7 +26,7 @@
                                 <label asp-for="Role" class="form-label">Arbetsroll</label>
                             </div>
                         
-                        <div class="input-group mt-3">
+                            <div class="input-group mt-3">
                                 <select asp-for="From" class="form-select" required>
                                     <option value="" selected>Från</option>
                                     @for (int year = DateTime.Now.Year; year >= 1900; year--)
