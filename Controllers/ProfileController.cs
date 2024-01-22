@@ -390,6 +390,8 @@ namespace MittClick.Controllers
             return RedirectToAction("UpdateSkills", "Profile");
         }
 
+        // KONTAKTINFORMATIONS HANTERING
+
         [HttpGet]
         public async Task<IActionResult> UpdateContactInfo()
         {
