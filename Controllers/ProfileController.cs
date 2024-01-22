@@ -256,7 +256,7 @@ namespace MittClick.Controllers
             return View(updateEducationViewModel);
         }
 
-        public async Task<IActionResult> AddEducation(string school, string type, int from, int to)
+        public async Task<IActionResult> AddEducation(string school, string type, int from, int? to)
         {
             var currentUser = await userManager.GetUserAsync(User);
             var userProfile = dbContext.Profiles

@@ -182,14 +182,20 @@
 												<p><strong>@experience.Role</strong></p>
 											</div>
 											<div class="col d-flex justify-content-end">
-												<p>@experience.From - @experience.To</p>
+												@if (experience.To == 0 || experience.To == null)
+												{
+													<p>@experience.From - pågående</p>
+												}
+												else
+												{
+													<p>@experience.From - @experience.To</p>
+												}
 											</div>
 										</div>
 										<div class="row">
 											<p>@experience.Workplace</p>
 										</div>
 									</li>
-									 
 								}
 							</ul>
 							
