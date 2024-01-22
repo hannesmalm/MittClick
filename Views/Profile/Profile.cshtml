@@ -2,232 +2,250 @@
 @model MittClick.Models.ViewModels.UserProfileViewModel
 
 @{
-    ViewData["Title"] = "Profile";
-    var currentUserName = User.Identity.Name;
+	ViewData["Title"] = "Profile";
+	var currentUserName = User.Identity.Name;
 }
 
 <div class="container mt-4">
-    <div class="row">
+	<div class="row">
 
-        <!-- Vänster kolumn för profilbild och färdigheter -->
-        <div class="col-md-3">
-            <div class="card mb-3">
+		<!-- Vänster kolumn för profilbild och färdigheter -->
+		<div class="col-md-3">
+			<div class="card mb-3">
 
-                <!-- Profilbild -->
-                @if (Model.ProfileImage != null)
-                {
-                    var imageBase64 = Convert.ToBase64String(Model.ProfileImage);
-                    var imageSrc = $"data:image/png;base64,{imageBase64}";
-                    <img class="img rounded-circle m-4" style="aspect-ratio: 1/1; object-fit: cover;" src="@imageSrc" alt="Profile Image">
-                }
-                else
-                {
-                    <img class="img rounded-circle m-5" style="aspect-ratio: 1/1; object-fit: cover;" src="~/lib/image/defaultprofileimg.jpg" alt="Default Profile Image">
-                }
+				<!-- Profilbild -->
+				@if (Model.ProfileImage != null)
+				{
+					var imageBase64 = Convert.ToBase64String(Model.ProfileImage);
+					var imageSrc = $"data:image/png;base64,{imageBase64}";
+					<img class="img rounded-circle m-4" style="aspect-ratio: 1/1; object-fit: cover;" src="@imageSrc" alt="Profile Image">
+				}
+				else
+				{
+					<img class="img rounded-circle m-5" style="aspect-ratio: 1/1; object-fit: cover;" src="~/lib/image/defaultprofileimg.jpg" alt="Default Profile Image">
+				}
 
-                <!-- Profilinformation -->
-                <div class="card-body">
-                    <h2 class="card-title">@Model.FirstName @Model.LastName</h2>
-                    <p style="color: gray;">@Model.UserName</p>
-                    <p class="card-text">@Model.Information</p>
+				<!-- Profilinformation -->
+				<div class="card-body">
+					<h2 class="card-title">@Model.FirstName @Model.LastName</h2>
+					<p style="color: gray;">@Model.UserName</p>
+					<p class="card-text">@Model.Information</p>
 
-                    <!-- Redigera profilknapp -->
-                    <div class="text-center">
-                        @if (currentUserName == Model.UserName)
-                        {
-                            <a asp-action="Edit" asp-controller="Profile" class="btn btn-outline-secondary shadow mt-3 mb-3">Redigera profiluppgifter</a>
-                        }
-                        @if (currentUserName != Model.UserName || !User.Identity.IsAuthenticated)
-                        {
+					<!-- Redigera profilknapp -->
+					<div class="text-center">
+						@if (currentUserName == Model.UserName)
+						{
+							<a asp-action="Edit" asp-controller="Profile" class="btn btn-outline-secondary shadow mt-3 mb-3">Redigera profiluppgifter</a>
+						}
+						@if (currentUserName != Model.UserName || !User.Identity.IsAuthenticated)
+						{
 
-                            @if (User.Identity.IsAuthenticated)
-                            {
+							@if (User.Identity.IsAuthenticated)
+							{
 
-                                var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-                                var receiverId = Model.UserId;
+								var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+								var receiverId = Model.UserId;
 
-                                <a href="@Url.Action("Send", "Message", new { senderId = currentUserId, receiverId = receiverId })" class="btn btn-success mb-2">Skicka meddelande</a>
-                            }
-                            else
-                            {
-                                var receiverId = Model.UserId;
-                                <a href="@Url.Action("Send", "Message", new { receiverId = receiverId })" class="btn btn-success mb-2">Skicka meddelande</a>
-                            }
-                        }
-                    </div>
-                </div>
-            </div>
+								<a href="@Url.Action("Send", "Message", new { senderId = currentUserId, receiverId = receiverId })" class="btn btn-success mb-2">Skicka meddelande</a>
+							}
+							else
+							{
+								var receiverId = Model.UserId;
+								<a href="@Url.Action("Send", "Message", new { receiverId = receiverId })" class="btn btn-success mb-2">Skicka meddelande</a>
+							}
+						}
+					</div>
+				</div>
+			</div>
 
-            <!-- Skills -->
-            <div class="card mb-3">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5>Färdigheter</h5>
-                    @if (currentUserName == Model.UserName && User.Identity.IsAuthenticated)
-                    {
-                        <a asp-action="UpdateSkills" asp-controller="Profile" class="icon-link" data-bs-toggle="tooltip" data-bs-placement="top" title="Redigera dina färdigheter">
-                            <!-- Ikon -->
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="gray" class="bi bi-pencil-fill" viewBox="0 0 16 16">
-                                <path d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.5.5 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11z" />
-                            </svg>
-                        </a>
-                    }
-                </div>
-                <div class="card-body">
-                    @foreach (var skill in Model.Skills)
-                    {
-                        <span class="badge bg-secondary">@skill.Name</span>
-                    }
-                </div>
-            </div>
-        </div>
+			<!-- Skills -->
+			<div class="card mb-3">
+				<div class="card-header d-flex justify-content-between align-items-center">
+					<h5>Färdigheter</h5>
+					@if (currentUserName == Model.UserName && User.Identity.IsAuthenticated)
+					{
+						<a asp-action="UpdateSkills" asp-controller="Profile" class="icon-link" data-bs-toggle="tooltip" data-bs-placement="top" title="Redigera dina färdigheter">
+							<!-- Ikon -->
+							<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="gray" class="bi bi-pencil-fill" viewBox="0 0 16 16">
+								<path d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.5.5 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11z" />
+							</svg>
+						</a>
+					}
+				</div>
+				<div class="card-body">
+					@foreach (var skill in Model.Skills)
+					{
+						<span class="badge bg-secondary">@skill.Name</span>
+					}
+				</div>
+			</div>
+		</div>
 
-        <!-- Höger kolumn för kontaktinfo, utbildning, arbete, projekt -->
-        <div class="col-md-8">
-            <!-- Kontaktinfo -->
-            <div class="card mb-3">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5 class="card-title">Kontaktinformation</h5>
-                    @if (currentUserName == Model.UserName && User.Identity.IsAuthenticated)
-                    {
-                        <a asp-action="UpdateContactInfo" asp-controller="Profile" class="icon-link" data-bs-toggle="tooltip" data-bs-placement="top" title="Redigera dina kontaktuppgifter">
-                            <!-- Ikon -->
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="gray" class="bi bi-pencil-fill" viewBox="0 0 16 16">
-                                <path d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.5.5 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11z" />
-                            </svg>
-                        </a>
-                    }
-                </div>
-                <div class="card-body">
-                    <ul class="list-group list-group-flush">
-                        @foreach (var contactInfo in Model.ContactInfos)
-                        {
-                            <li class="list-group-item">
+		<!-- Höger kolumn för kontaktinfo, utbildning, arbete, projekt -->
+		<div class="col-md-8">
+			<!-- Kontaktinfo -->
+			<div class="card mb-3">
+				<div class="card-header d-flex justify-content-between align-items-center">
+					<h5 class="card-title">Kontaktinformation</h5>
+					@if (currentUserName == Model.UserName && User.Identity.IsAuthenticated)
+					{
+						<a asp-action="UpdateContactInfo" asp-controller="Profile" class="icon-link" data-bs-toggle="tooltip" data-bs-placement="top" title="Redigera dina kontaktuppgifter">
+							<!-- Ikon -->
+							<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="gray" class="bi bi-pencil-fill" viewBox="0 0 16 16">
+								<path d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.5.5 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11z" />
+							</svg>
+						</a>
+					}
+				</div>
+				<div class="card-body">
+					<ul class="list-group list-group-flush">
+						@foreach (var contactInfo in Model.ContactInfos)
+						{
+							<li class="list-group-item">
 								<p><strong>@contactInfo.Type</strong> - @contactInfo.Info</p>
-                            </li>
-                        }
-                    </ul>
-                </div>
-            </div>
+							</li>
+						}
+					</ul>
+				</div>
+			</div>
 
-            <!-- Utbildning och Arbete i en rad -->
-            <div class="row">
-                <div class="col-md-6">
-                    <!-- Utbildning -->
-                    <div class="card mb-3">
-                        <div class="card-header d-flex justify-content-between align-items-center">
-                            <h5>Utbildning</h5>
-                            @if (currentUserName == Model.UserName && User.Identity.IsAuthenticated)
-                            {
-                                <a asp-action="UpdateEducation" asp-controller="Profile" class="icon-link" data-bs-toggle="tooltip" data-bs-placement="top" title="Redigera utbildningar">
-                                    <!-- Ikon -->
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="gray" class="bi bi-pencil-fill" viewBox="0 0 16 16">
-                                        <path d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.5.5 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11z" />
-                                    </svg>
-                                </a>
-                            }
-                        </div>
-                        <div class="card-body">
-                            <ul class="list-group list-group-flush">
-                                @foreach (var education in Model.Educations)
-                                {
-                                    <li class="list-group-item">
+			<!-- Utbildning och Arbete i en rad -->
+			<div class="row">
+				<div class="col-md-6">
+					<!-- Utbildning -->
+					<div class="card mb-3">
+						<div class="card-header d-flex justify-content-between align-items-center">
+							<h5>Utbildning</h5>
+							@if (currentUserName == Model.UserName && User.Identity.IsAuthenticated)
+							{
+								<a asp-action="UpdateEducation" asp-controller="Profile" class="icon-link" data-bs-toggle="tooltip" data-bs-placement="top" title="Redigera utbildningar">
+									<!-- Ikon -->
+									<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="gray" class="bi bi-pencil-fill" viewBox="0 0 16 16">
+										<path d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.5.5 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11z" />
+									</svg>
+								</a>
+							}
+						</div>
+						<div class="card-body">
+							<ul class="list-group list-group-flush">
+								@foreach (var education in Model.Educations)
+								{
+									<li class="list-group-item">
 										<div class="row">
 											<div class="col">
-												<p><strong>@education.School</strong></p> @education.Type
+												<p><strong>@education.School</strong></p>
 											</div>
 											<div class="col d-flex justify-content-end">
 
-                                                @if (education.To != 0)
-                                                {
-                                                    <p>@education.From - @education.To</p>
-                                                }
-                                                else
-                                                {
-                                                    <p>@education.From - pågående</p>
-                                                }
-
+												@if (education.To != 0)
+												{
+													<p>@education.From - @education.To</p>
+												}
+												else
+												{
+													<p>@education.From - pågående</p>
+												}
 											</div>
 										</div>
-                                    </li>
-                                }
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6">
+										<div class="row">
+											<p>@education.Type</p>
+										</div>
+									</li>
+								}
+							</ul>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-6">
 
-                    <!-- Arbete -->
-                    <div class="card mb-3">
-                        <div class="card-header d-flex justify-content-between align-items-center">
-                            <h5>Arbetserfarenhet</h5>
-                            @if (currentUserName == Model.UserName && User.Identity.IsAuthenticated)
-                            {
-                                <a asp-action="UpdateWorkExperience" asp-controller="Profile" class="icon-link" data-bs-toggle="tooltip" data-bs-placement="top" title="Redigera arbetserfarenhet">
-                                    <!-- Ikon -->
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="gray" class="bi bi-pencil-fill" viewBox="0 0 16 16">
-                                        <path d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.5.5 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11z" />
-                                    </svg>
-                                </a>
-                            }
-                        </div>
-                        <div class="card-body">
-                            @foreach (var experience in Model.WorkExperiences)
-                            {
-                                <p><strong>@experience.Role</strong> på @experience.Workplace (@experience.From - @experience.To)</p>
-                            }
-                        </div>
-                    </div>
-                </div>
-            </div>
+					<!-- Arbete -->
+					<div class="card mb-3">
+						<div class="card-header d-flex justify-content-between align-items-center">
+							<h5>Arbetserfarenhet</h5>
+							@if (currentUserName == Model.UserName && User.Identity.IsAuthenticated)
+							{
+								<a asp-action="UpdateWorkExperience" asp-controller="Profile" class="icon-link" data-bs-toggle="tooltip" data-bs-placement="top" title="Redigera arbetserfarenhet">
+									<!-- Ikon -->
+									<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="gray" class="bi bi-pencil-fill" viewBox="0 0 16 16">
+										<path d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.5.5 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11z" />
+									</svg>
+								</a>
+							}
+						</div>
+						<div class="card-body">
+							<ul class="list-group list-group-flush">
+								@foreach (var experience in Model.WorkExperiences)
+								{
+									<li class="list-group-item">
+										<div class="row">
+											<div class="col">
+												<p><strong>@experience.Role</strong></p>
+											</div>
+											<div class="col d-flex justify-content-end">
+												<p>@experience.From - @experience.To</p>
+											</div>
+										</div>
+										<div class="row">
+											<p>@experience.Workplace</p>
+										</div>
+									</li>
+									 
+								}
+							</ul>
+							
+						</div>
+					</div>
+				</div>
+			</div>
 
-            <!-- Projekt -->
-            <div class="card mb-3">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5 class="card-title mb-0">Projekt</h5>
-                    <!--Lägg till projekt-knapp-->
-                    @if (currentUserName == Model.UserName && User.Identity.IsAuthenticated)
-                    {
-                        <a asp-action="Add" asp-controller="Project" class="icon-link" data-bs-toggle="tooltip" data-bs-placement="top" title="Lägg till nytt projekt">
-                            <!-- Ikon -->
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="green" class="bi bi-plus-circle" viewBox="0 0 16 16">
-                                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
-                                <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4" />
-                            </svg>
-                        </a>
-                    }
-                </div>
-                <div class="card-body d-flex flex-wrap justify-content-center">
-                    <div class="container">
-                        <div class="row">
+			<!-- Projekt -->
+			<div class="card mb-3">
+				<div class="card-header d-flex justify-content-between align-items-center">
+					<h5 class="card-title mb-0">Projekt</h5>
+					<!--Lägg till projekt-knapp-->
+					@if (currentUserName == Model.UserName && User.Identity.IsAuthenticated)
+					{
+						<a asp-action="Add" asp-controller="Project" class="icon-link" data-bs-toggle="tooltip" data-bs-placement="top" title="Lägg till nytt projekt">
+							<!-- Ikon -->
+							<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="green" class="bi bi-plus-circle" viewBox="0 0 16 16">
+								<path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
+								<path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4" />
+							</svg>
+						</a>
+					}
+				</div>
+				<div class="card-body d-flex flex-wrap justify-content-center">
+					<div class="container">
+						<div class="row">
 
-                            <!--Loopa igenom projekt-->
-                            @foreach (var project in Model.UserProjects)
-                            {
-                                <div class="col-md-4 col-sm-6">
-                                    <div class="card shadow">
-                                        @if (project.ProjectImage != null)
-                                        {
-                                            var imageBase64 = Convert.ToBase64String(project.ProjectImage);
-                                            var imageSrc = $"data:image/png;base64,{imageBase64}";
-                                            <img class="card-img-top" src="@imageSrc" alt="Project Image">
-                                        }
-                                        <div class="card-body">
-                                            <h5 class="card-title text-center">@project.Title</h5>
-                                            <p class="card-text">@project.Summary</p>
-                                            <div class="d-flex justify-content-center">
-                                                <form asp-controller="Project" asp-action="Project" method="get">
-                                                    <input type="hidden" name="projectId" value="@project.ProjectId" />
-                                                    <button type="submit" class="btn btn-primary">Läs Mer</button>
-                                                </form>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            }
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+							<!--Loopa igenom projekt-->
+							@foreach (var project in Model.UserProjects)
+							{
+								<div class="col-md-4 col-sm-6">
+									<div class="card shadow">
+										@if (project.ProjectImage != null)
+										{
+											var imageBase64 = Convert.ToBase64String(project.ProjectImage);
+											var imageSrc = $"data:image/png;base64,{imageBase64}";
+											<img class="card-img-top" src="@imageSrc" alt="Project Image">
+										}
+										<div class="card-body">
+											<h5 class="card-title text-center">@project.Title</h5>
+											<p class="card-text">@project.Summary</p>
+											<div class="d-flex justify-content-center">
+												<form asp-controller="Project" asp-action="Project" method="get">
+													<input type="hidden" name="projectId" value="@project.ProjectId" />
+													<button type="submit" class="btn btn-primary">Läs Mer</button>
+												</form>
+											</div>
+										</div>
+									</div>
+								</div>
+							}
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 </div>

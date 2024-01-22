@@ -488,6 +488,7 @@ namespace MittClick.Controllers
             };
             return View(updateWorkExperienceViewModel);
         }
+
         [HttpPost]
         public IActionResult DeleteWorkExperience(int id)
         {
@@ -511,7 +512,7 @@ namespace MittClick.Controllers
         }
 
 		[HttpPost]
-		public async Task<IActionResult> AddWorkExperience(string workplace, string role, int from, int to)
+		public async Task<IActionResult> AddWorkExperience(string workplace, string role, int from, int? to)
 		{
 			try
 			{
@@ -525,7 +526,8 @@ namespace MittClick.Controllers
 									  .FirstOrDefault(p => p.UserId == currentUser.Id);
 
 				// Om "Från" är större än eller lika med "Till", lägg till valideringsfel och returnera till vyn
-				if (from >= to)
+				
+                if (to != null && from >= to)
 				{
 					ModelState.AddModelError("To", "Fråndatumet måste vara lägre än slutdatumet");
 
