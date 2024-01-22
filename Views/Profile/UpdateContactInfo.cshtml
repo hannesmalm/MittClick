@@ -10,25 +10,36 @@
                     </div>
 
                     <div class="card-body">
-                        <div class="input-group mb-3">
-                            <div class="input-group-prepend">
-                                <div class="input-group-text">
-                                    <input type="radio" name="btnradio" id="btnradio1" autocomplete="off" checked data-value="Email">
-                                    <label class="btn btn-outline-primary" for="btnradio1">Email</label>
+                        <div class="container mt-3">
+                            <div class="row">
+                                <div class="col-12">
+                                    <!-- Radio buttons -->
+                                    <div class="btn-group d-flex" role="group" aria-label="Basic radio toggle button group" style="width: 91%;">
+                                        <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" checked data-value="Email">
+                                        <label class="btn btn-outline-primary flex-fill" for="btnradio1">Email</label>
 
-                                    <input type="radio" name="btnradio" id="btnradio2" autocomplete="off" data-value="Telefon">
-                                    <label class="btn btn-outline-primary" for="btnradio2">Telefon</label>
+                                        <input type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off" data-value="Telefon">
+                                        <label class="btn btn-outline-primary flex-fill" for="btnradio2">Telefon</label>
 
-                                    <input type="radio" name="btnradio" id="btnradio3" autocomplete="off" data-value="Annat">
-                                    <label class="btn btn-outline-primary" for="btnradio3">Annat</label>
+                                        <input type="radio" class="btn-check" name="btnradio" id="btnradio3" autocomplete="off" data-value="Annat">
+                                        <label class="btn btn-outline-primary flex-fill" for="btnradio3">Annat</label>
+                                    </div>
                                 </div>
                             </div>
-                            <input type="text" id="inputNewContactInfo" />
-                            <a href="javascript:void(0);" onclick="addContactInfo(document.getElementById('inputNewContactInfo').value)">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="green" class="bi bi-plus-circle-fill" viewBox="0 0 16 16">
-                                    <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3z" />
-                                </svg>
-                            </a>
+                            <div class="row mt-2 mb-4 align-items-center">
+                                <div class="col-11">
+                                    <!-- Text field -->
+                                    <input type="text" id="inputNewContactInfo" class="form-control" placeholder="Kontaktinfo">
+                                </div>
+                                <div class="col-1">
+                                    <!-- Plus icon link -->
+                                    <a href="javascript:void(0);" onclick="addContactInfo(document.getElementById('inputNewContactInfo').value)">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="green" viewBox="0 0 16 16">
+                                            <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3z" />
+                                        </svg>
+                                    </a>
+                                </div>
+                            </div>
                         </div>
 
                         <dl class="list-group list-group-flush">

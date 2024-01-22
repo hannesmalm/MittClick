@@ -23,8 +23,6 @@ namespace MittClick.Models
 
         [ForeignKey("Image")]
         public byte[]? ProfileImage { get; set; }
-        public virtual ICollection<Education> Educations { get; set; }
-		public virtual ICollection<WorkExperience> WorkExperiences { get; set; }
 
 		[ForeignKey("User")]
         public string UserId { get; set; }
@@ -34,13 +32,7 @@ namespace MittClick.Models
         public virtual User User { get; set; }
         public virtual List<Skill> Skills { get; set; } = new List<Skill>();
         public virtual List<ContactInfo> ContactInfos { get; set; } = new List<ContactInfo>();
-
-        public Profile()
-        {
-            Educations = new HashSet<Education>();
-            WorkExperiences = new HashSet<WorkExperience>();
-        }
-        
-
+        public virtual List<Education> Educations { get; set; } = new List<Education>();
+        public virtual List<WorkExperience> WorkExperiences { get; set; } = new List<WorkExperience>();
     }
 }

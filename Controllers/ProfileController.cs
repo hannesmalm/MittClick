@@ -333,7 +333,7 @@ namespace MittClick.Controllers
             var userProfile = dbContext.Profiles
                               .Include(p => p.User)
                               .FirstOrDefault(p => p.UserId == currentUser.Id);
-            var skills = userProfile?.Skills.ToList();
+            var skills = userProfile?.Skills;
 
             var updateSkillViewModel = new UpdateSkillViewModel
             {
@@ -364,26 +364,35 @@ namespace MittClick.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddSkill(string newSkill)
+        public async Task<IActionResult> AddSkill(string name)
         {
             var currentUser = await userManager.GetUserAsync(User);
             var userProfile = dbContext.Profiles
                               .Include(p => p.User)
                               .FirstOrDefault(p => p.UserId == currentUser.Id);
 
+            //Kollar om objektet redan finns
             bool skillExists = dbContext.Skills
-                   .Any(s => s.Name.ToUpper() == newSkill.ToUpper()
+                   .Any(s => s.Name.ToUpper() == name.ToUpper()
                              && s.ProfileId == userProfile.ProfileId);
 
             if (skillExists)
             {
-                Response.StatusCode = 400; // Bad Request
-                return Content("Färdigheten finns redan.");
+                ModelState.AddModelError("Name", "Färdigheten finns redan.");
+
+                // Förbereder modellen för att skicka tillbaka till vyn
+                var updateSkillViewModel = new UpdateSkillViewModel
+                {
+                    Profile = userProfile,
+                    Skills = userProfile?.Skills
+                };
+
+                return View("UpdateSkills", updateSkillViewModel);
             }
 
             Skill skill = new Skill
             {
-                Name = newSkill,
+                Name = name,
                 ProfileId = userProfile.ProfileId,
             };
             try
