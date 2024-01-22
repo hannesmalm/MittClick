@@ -20,12 +20,12 @@
 
                         <div class="text-center" id="newSkillContainer">
                             <form method="post" asp-action="AddSkill" asp-controller="Profile" onsubmit="return validateForm()" class="row g-2 align-items-center justify-content-center mb-3" id="skillForm">
-                                <div class="col-sm-8 col-md-6 col-lg-4">
-                                    <input type="text" asp-for="Name" id="name" class="form-control p-1 fs-6" placeholder="Ny färdighet" required />
+                                <div class="col-md-6">
+                                    <div class="input-group mb-3 mt-2">
+                                        <input asp-for="Name" type="text" class="form-control" placeholder="Ny färdighet" id="name" required>
+                                        <button class="btn btn-success" type="submit">Lägg till</button>
+                                    </div>
                                     <span asp-validation-for="Name" class="text-warning"></span>
-                                </div>
-                                <div class="col-auto">
-                                    <button type="submit" class="btn btn-success p-1 fs-6">Lägg till</button>
                                 </div>
                             </form>
                         </div>

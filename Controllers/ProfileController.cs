@@ -390,6 +390,8 @@ namespace MittClick.Controllers
             return RedirectToAction("UpdateSkills", "Profile");
         }
 
+        // KONTAKTINFORMATIONS HANTERING
+
         [HttpGet]
         public async Task<IActionResult> UpdateContactInfo()
         {
@@ -402,14 +404,15 @@ namespace MittClick.Controllers
             var updateContactInfoViewModel = new UpdateContactInfoViewModel
             {
                 Profile = userProfile,
-                ContactInfos = contactInfos
+                ContactInfos = contactInfos,
+                Type = "Email"
             };
 
             return View(updateContactInfoViewModel);
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddContactInfo(string newContactType, string newContactInfo)
+        public async Task<IActionResult> AddContactInfo(string type, string info)
         {
             var currentUser = await userManager.GetUserAsync(User);
             var userProfile = dbContext.Profiles
@@ -417,20 +420,29 @@ namespace MittClick.Controllers
                               .FirstOrDefault(p => p.UserId == currentUser.Id);
 
             bool contactExists = dbContext.Contacts
-                .Any(s => s.Type.ToUpper() == newContactType.ToUpper()
-                 && s.Info.ToUpper() == newContactInfo.ToUpper()
+                .Any(s => s.Type.ToUpper() == type.ToUpper()
+                 && s.Info.ToUpper() == info.ToUpper()
                  && s.ProfileId == userProfile.ProfileId);
 
             if (contactExists)
             {
-                Response.StatusCode = 400; // Bad Request
-                return Content("Denna kontaktinformation finns redan.");
+                ModelState.AddModelError("Info", "Kontaktinformationen finns redan.");
+
+                var updateContactInfoViewModel = new UpdateContactInfoViewModel
+                {
+                    Profile = userProfile,
+                    ContactInfos = userProfile?.ContactInfos,
+                    Type = "Email"
+                };
+
+                return View("UpdateContactInfo", updateContactInfoViewModel);
             }
+
 
             ContactInfo contactInfo = new ContactInfo
             {
-                Type = newContactType,
-                Info = newContactInfo,
+                Type = type,
+                Info = info,
                 ProfileId = userProfile.ProfileId
             };
             try

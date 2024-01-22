@@ -6,53 +6,46 @@
             <div class="col-md-9 col-lg-6">
                 <div class="card">
                     <div class="card-header text-center">
-                        <h4>Uppdatera kontaktuppgifter</h4>
+                        <h4>Redigera kontaktuppgifter</h4>
                     </div>
 
                     <div class="card-body">
-                        <div class="container mt-3">
-                            <div class="row">
-                                <div class="col-12">
-                                    <!-- Radio buttons -->
-                                    <div class="btn-group d-flex" role="group" aria-label="Basic radio toggle button group" style="width: 91%;">
-                                        <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" checked data-value="Email">
-                                        <label class="btn btn-outline-primary flex-fill" for="btnradio1">Email</label>
+                        <form asp-action="AddContactInfo" asp-controller="Profile" method="post">
+                            <div class="container mt-3">
+                                <div class="row">
+                                    <div class="col-12">
 
-                                        <input type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off" data-value="Telefon">
-                                        <label class="btn btn-outline-primary flex-fill" for="btnradio2">Telefon</label>
+                                        <!-- Radio buttons -->
+                                        <div class="btn-group d-flex" role="group">
+                                            <input asp-for="Type" type="radio" class="btn-check" id="btnradio1" autocomplete="off" value="Email">
+                                            <label class="btn btn-outline-primary flex-fill" for="btnradio1">Email</label>
 
-                                        <input type="radio" class="btn-check" name="btnradio" id="btnradio3" autocomplete="off" data-value="Annat">
-                                        <label class="btn btn-outline-primary flex-fill" for="btnradio3">Annat</label>
+                                            <input asp-for="Type" type="radio" class="btn-check" id="btnradio2" autocomplete="off" value="Telefon">
+                                            <label class="btn btn-outline-primary flex-fill" for="btnradio2">Telefon</label>
+
+                                            <input asp-for="Type" type="radio" class="btn-check" id="btnradio3" autocomplete="off" value="Annat">
+                                            <label class="btn btn-outline-primary flex-fill" for="btnradio3">Annat</label>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="row mt-2 mb-4 align-items-center">
-                                <div class="col-11">
-                                    <!-- Text field -->
-                                    <input type="text" id="inputNewContactInfo" class="form-control" placeholder="Kontaktinfo">
+                                <div class="input-group mb-3 mt-2">
+                                    <input asp-for=Info type="text" class="form-control" placeholder="Kontaktinformation" aria-label="ContactInfo" required>
+                                    <button class="btn btn-success" type="submit">Lägg till</button>
                                 </div>
-                                <div class="col-1">
-                                    <!-- Plus icon link -->
-                                    <a href="javascript:void(0);" onclick="addContactInfo(document.getElementById('inputNewContactInfo').value)">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="green" viewBox="0 0 16 16">
-                                            <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3z" />
-                                        </svg>
-                                    </a>
-                                </div>
+                                <span asp-validation-for="Info" class="text-warning"></span>
                             </div>
-                        </div>
+                        </form>
 
-                        <dl class="list-group list-group-flush">
+                        <dl class="list-group list-group-flush me-4">
                             @foreach (var contact in Model.ContactInfos)
                             {
                                 <li class="list-group-item d-flex justify-content-between align-items-center">
                                     <dt class="col-sm-3">@contact.Type:</dt>
                                     <dd class="col-sm-9">@contact.Info</dd>
-                                    <a class="mb-0" style="line-height: 1;" href="javascript:void(0);" onclick="deleteContactInfo('@contact.Id')">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="Red" class="bi bi-x-circle-fill" viewBox="0 0 16 16">
-                                            <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M5.354 4.646a.5.5 0 1 0-.708.708L7.293 8l-2.647 2.646a.5.5 0 0 0 .708.708L8 8.707l2.646 2.647a.5.5 0 0 0 .708-.708L8.707 8l2.647-2.646a.5.5 0 0 0-.708-.708L8 7.293z" />
-                                        </svg>
-                                    </a>
+                                    <form asp-action="DeleteContactInfo" asp-controller="Profile" method="post">
+                                        <input type="hidden" name="id" value="@contact.Id" />
+                                    <button type="submit" class="btn btn-danger">X</button>
+                                    </form>
                                 </li>
                             }
                         </dl>
@@ -61,5 +54,4 @@
             </div>
         </div>
     </div>
-    <script src="~/js/Contact.js"></script>
 </body>
