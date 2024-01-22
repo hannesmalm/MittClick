@@ -137,13 +137,13 @@
 											</div>
 											<div class="col d-flex justify-content-end">
 
-												@if (education.To != 0)
+												@if (education.To == 0 || education.To == null)
 												{
-													<p>@education.From - @education.To</p>
+													<p>@education.From - pågående</p>
 												}
 												else
 												{
-													<p>@education.From - pågående</p>
+													<p>@education.From - @education.To</p>
 												}
 											</div>
 										</div>
