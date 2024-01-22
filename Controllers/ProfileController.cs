@@ -326,6 +326,9 @@ namespace MittClick.Controllers
             return RedirectToAction("UpdateEducation", "Profile");
         }
 
+
+        //     >>METODER FÖR ATT HANTERA SKILLS<<
+
         [HttpGet]
         public async Task<IActionResult> UpdateSkills()
         {
