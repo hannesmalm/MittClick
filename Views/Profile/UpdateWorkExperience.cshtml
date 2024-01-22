@@ -11,42 +11,86 @@
             <div class="col-md-9 col-lg-6">
                 <div class="card">
                     <div class="card-header text-center">
-                        <h4>Uppdatera arbetserfarenheter</h4>
+                        <h4>Redigera arbetserfarenheter</h4>
                     </div>
 
                     <div class="card-body">
-                            <div class="input-group">
-                                <div class="form-floating w-50">
-                                    <input type="text" class="form-control" id="workplaceInput" placeholder="Arbetsgivare">
-                                    <label for="workplaceInput" class="form-label">Arbetsgivare</label>
-                                </div>
-                                <div class="form-floating w-50">
-                                    <input type="text" class="form-control" id="roleInput" placeholder="Arbetsroll">
-                                    <label for="roleInput" class="form-label">Arbetsroll</label>
-                                </div>
+                        <form asp-action="AddWorkExperience" asp-controller="Profile" method="post">
+                        
+                            <div class="form-floating mt-3">
+                                <input asp-for="Workplace" class="form-control" placeholder="Arbetsgivare" required>
+                                <label asp-for="Workplace" class="form-label">Arbetsgivare</label>
                             </div>
-                            <div class="input-group">
-                                <input type="number" class="form-control" id="startInput" placeholder="Från" min="1900" max="2099" style="width: 40%;">
-                                <input type="number" class="form-control" id="endInput" placeholder="Till" min="1900" max="2099" style="width: 40%;">
-                                <button type="button" class="btn btn-outline-primary" id="addWorkButton" style="width: 20%;">Lägg till</button>
+                            <div class="form-floating mt-3">
+                                <input asp-for="Role" class="form-control" placeholder="Arbetsroll" required>
+                                <label asp-for="Role" class="form-label">Arbetsroll</label>
                             </div>
+                        
+                        <div class="input-group mt-3">
+                                <select asp-for="From" class="form-select" required>
+                                    <option value="" selected>Från</option>
+                                    @for (int year = DateTime.Now.Year; year >= 1900; year--)
+                                    {
+                                        <option value="@year">@year</option>
+                                    }
+                                </select>
 
-                        <div id="workErrorMessage" class="text-danger"></div>
-                        <div id="formatErrorMessage" class="text-danger"></div>
+                                <span class="input-group-text"> - </span>
+
+                                <select asp-for="To" class="form-select">
+                                    <option selected>Till</option>
+                                    <option value="">Pågående</option>  <!-- Blir NULL i databasen eftersom value är tom-->
+                                    @for (int year = DateTime.Now.Year; year >= 1900; year--)
+                                    {
+                                        <option value="@year">@year</option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="mt-3 d-flex justify-content-end">
+                                <button type="submit" class="btn btn-primary">Lägg till</button>
+                            </div>
+						</form>
                         <ul class="list-group list-group-flush">
-                                @foreach (var workExperience in Model.WorkExperiences)
-                                {
-                                    <li class="list-group-item list-group-item-primary">
-                                        <div>@workExperience.Workplace</div>
-                                        <div>@workExperience.Role</div>
-                                        <div>@workExperience.From - @workExperience.To</div>
-                                    <a class="mb-0" style="line-height: 1;" href="javascript:void(0);" onclick="deleteWork('@workExperience.Id')">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="Red" class="bi bi-x-circle-fill" viewBox="0 0 16 16">
-                                            <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M5.354 4.646a.5.5 0 1 0-.708.708L7.293 8l-2.647 2.646a.5.5 0 0 0 .708.708L8 8.707l2.646 2.647a.5.5 0 0 0 .708-.708L8.707 8l2.647-2.646a.5.5 0 0 0-.708-.708L8 7.293z" />
-                                        </svg>
-                                    </a>
+                            @foreach (var workExperience in Model.WorkExperiences)
+                            {
+                                <li class="list-group-item list-group-item">
+                                    <div class="row">
+                                        <div class="col">
+
+                                            <p><strong>@workExperience.Workplace</strong></p>
+
+                                        </div>
+                                        <div class="col d-flex justify-content-end">
+
+                                            @if (workExperience.To != 0)
+                                            {
+                                                <p>@workExperience.From - @workExperience.To</p>
+                                            }
+                                            else
+                                            {
+                                                <p>@workExperience.From - pågående</p>
+                                            }
+
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col">
+
+                                            <p>@workExperience.Role</p>
+
+                                        </div>
+                                        <div class="col d-flex justify-content-end">
+
+                                            <form asp-action="DeleteWorkExperience" asp-controller="Profile" method="post">
+                                                @Html.HiddenFor(model => workExperience.Id)
+                                                <input type="hidden" name="id" value="@workExperience.Id" />
+                                                <button type="submit" class="btn btn-danger">Ta bort</button>
+                                            </form>
+
+                                        </div>
+                                    </div>
                                 </li>
-                                }
+                            }
                         </ul>
                     </div>
                 </div>

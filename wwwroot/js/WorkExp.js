@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', function () {
     var addWorkButton = document.getElementById('addWorkButton');
-    var workErrorMessageDiv = document.getElementById('workErrorMessage');
-    var formatErrorMessageDiv = document.getElementById('formatErrorMessage');
+    //var workErrorMessageDiv = document.getElementById('workErrorMessage');
+    //var formatErrorMessageDiv = document.getElementById('formatErrorMessage');
 
     addWorkButton.addEventListener('click', function () {
         var workplaceValue = document.getElementById('workplaceInput').value;
@@ -10,10 +10,10 @@ document.addEventListener('DOMContentLoaded', function () {
         var endValue = parseInt(document.getElementById('endInput').value, 10);
 
         // Validera att startdatumet inte är mindre än tilldatumet
-        if (isNaN(startValue) || isNaN(endValue) || startValue > endValue) {
-            workErrorMessageDiv.textContent = 'Felaktiga datum. Kontrollera att startdatumet är mindre än tilldatumet.';
-            return; // Avbryt funktionen om valideringen misslyckas
-        }
+        //if (isNaN(startValue) || isNaN(endValue) || startValue > endValue) {
+        //    workErrorMessageDiv.textContent = 'Felaktiga datum. Kontrollera att startdatumet är mindre än tilldatumet.';
+        //    return; // Avbryt funktionen om valideringen misslyckas
+        //}
 
         // Anropa funktionen för att lägga till arbete om valideringen är framgångsrik
         addWork(workplaceValue, roleValue, startValue, endValue);
