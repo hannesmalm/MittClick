@@ -306,6 +306,9 @@ namespace MittClick.Controllers
             return RedirectToAction("UpdateEducation", "Profile");
         }
 
+
+        //     >>METODER FÖR ATT HANTERA SKILLS<<
+
         [HttpGet]
         public async Task<IActionResult> UpdateSkills()
         {
@@ -313,7 +316,7 @@ namespace MittClick.Controllers
             var userProfile = dbContext.Profiles
                               .Include(p => p.User)
                               .FirstOrDefault(p => p.UserId == currentUser.Id);
-            var skills = userProfile?.Skills.ToList();
+            var skills = userProfile?.Skills;
 
             var updateSkillViewModel = new UpdateSkillViewModel
             {
@@ -344,26 +347,35 @@ namespace MittClick.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddSkill(string newSkill)
+        public async Task<IActionResult> AddSkill(string name)
         {
             var currentUser = await userManager.GetUserAsync(User);
             var userProfile = dbContext.Profiles
                               .Include(p => p.User)
                               .FirstOrDefault(p => p.UserId == currentUser.Id);
 
+            //Kollar om objektet redan finns
             bool skillExists = dbContext.Skills
-                   .Any(s => s.Name.ToUpper() == newSkill.ToUpper()
+                   .Any(s => s.Name.ToUpper() == name.ToUpper()
                              && s.ProfileId == userProfile.ProfileId);
 
             if (skillExists)
             {
-                Response.StatusCode = 400; // Bad Request
-                return Content("Färdigheten finns redan.");
+                ModelState.AddModelError("Name", "Färdigheten finns redan.");
+
+                // Förbereder modellen för att skicka tillbaka till vyn
+                var updateSkillViewModel = new UpdateSkillViewModel
+                {
+                    Profile = userProfile,
+                    Skills = userProfile?.Skills
+                };
+
+                return View("UpdateSkills", updateSkillViewModel);
             }
 
             Skill skill = new Skill
             {
-                Name = newSkill,
+                Name = name,
                 ProfileId = userProfile.ProfileId,
             };
             try
@@ -498,38 +510,62 @@ namespace MittClick.Controllers
             return RedirectToAction("UpdateWorkExperience", "Profile");
         }
 
-        [HttpPost]
-        public async Task<IActionResult> AddWorkExperience(string workplace, string role, int from, int to)
-        {
-            var currentUser = await userManager.GetUserAsync(User);
-            var userProfile = dbContext.Profiles
-                              .Include(p => p.User)
-                              .FirstOrDefault(p => p.UserId == currentUser.Id);
+		[HttpPost]
+		public async Task<IActionResult> AddWorkExperience(string workplace, string role, int from, int to)
+		{
+			try
+			{
+				// Hämta aktuell användare
+				var currentUser = await userManager.GetUserAsync(User);
 
-            WorkExperience newWorkExperience = new WorkExperience
-            {
-                Workplace = workplace,
-                Role = role,
-                From = from,
-                To = to,
-            };
+				// Hämta användarens profil inklusive arbetslivserfarenheter
+				var userProfile = dbContext.Profiles
+									  .Include(p => p.User)
+									  .Include(p => p.WorkExperiences)
+									  .FirstOrDefault(p => p.UserId == currentUser.Id);
 
-            try
-            {
-                userProfile.WorkExperiences.Add(newWorkExperience);
-                dbContext.SaveChanges();
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
-                // Lägg eventuellt till ytterligare felhantering här
-                return BadRequest("Något gick fel vid läggning till arbetslivserfarenheten.");
-            }
+				// Om "Från" är större än eller lika med "Till", lägg till valideringsfel och returnera till vyn
+				if (from >= to)
+				{
+					ModelState.AddModelError("To", "Fråndatumet måste vara lägre än slutdatumet");
 
-            return RedirectToAction("UpdateWorkExperience", "Profile");
-        }
+					// Skapa en UpdateWorkExperienceViewModel och skicka tillbaka till vyn med valideringsfel
+					var updateWorkExperienceViewModel = new UpdateWorkExperienceViewModel
+					{
+						Profile = userProfile,
+						WorkExperiences = userProfile.WorkExperiences
+					};
 
-        public IActionResult Index()
+					return View("UpdateWorkExperience", updateWorkExperienceViewModel);
+				}
+
+				// Skapa en ny arbetslivserfarenhet och lägg till den i användarens profil
+				WorkExperience newWorkExperience = new WorkExperience
+				{
+					Workplace = workplace,
+					Role = role,
+					From = from,
+					To = to,
+				};
+
+				userProfile.WorkExperiences.Add(newWorkExperience);
+
+				// Spara ändringarna till databasen
+				dbContext.SaveChanges();
+
+				// Återvänd till sidan för att uppdatera arbetslivserfarenheter
+				return RedirectToAction("UpdateWorkExperience", "Profile");
+			}
+			catch (Exception e)
+			{
+				Console.WriteLine(e.Message);
+				// Lägg eventuellt till ytterligare felhantering här
+				return BadRequest("Något gick fel vid läggning till arbetslivserfarenheten.");
+			}
+		}
+
+
+		public IActionResult Index()
         {
             return View();
         }

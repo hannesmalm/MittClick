@@ -17,30 +17,29 @@
                     </div>
 
                     <div class="card-body">
+
                         <div class="text-center" id="newSkillContainer">
-                            <input type="text" id="inputNewSkill" />
-                            <a href="javascript:void(0);" onclick="addSkill(document.getElementById('inputNewSkill').value)">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="green" class="bi bi-plus-circle-fill" viewBox="0 0 16 16">
-                                    <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3z" />
-                                </svg>
-                            </a>
+                            <form method="post" asp-action="AddSkill" asp-controller="Profile" onsubmit="return validateForm()" class="row g-2 align-items-center justify-content-center mb-3" id="skillForm">
+                                <div class="col-sm-8 col-md-6 col-lg-4">
+                                    <input type="text" asp-for="Name" id="name" class="form-control p-1 fs-6" placeholder="Ny färdighet" required />
+                                    <span asp-validation-for="Name" class="text-warning"></span>
+                                </div>
+                                <div class="col-auto">
+                                    <button type="submit" class="btn btn-success p-1 fs-6">Lägg till</button>
+                                </div>
+                            </form>
                         </div>
-                        @if (TempData["Error"] != null)
-                        {
-                            <div class="alert alert-danger">
-                                @TempData["Error"]
-                            </div>
-                        }
+
                         <ul class="list-group list-group-flush">
                             @foreach (var skill in Model.Skills)
                             {
                                 <li class="list-group-item d-flex justify-content-between align-items-center">
-                                    <h6 class ="mb-0" style="line-height: 1;">@skill.Name</h6>
-                                    <a class="mb-0" style="line-height: 1;" href="javascript:void(0);" onclick="deleteSkill('@skill.Id')">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="Red" class="bi bi-x-circle-fill" viewBox="0 0 16 16">
-                                            <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M5.354 4.646a.5.5 0 1 0-.708.708L7.293 8l-2.647 2.646a.5.5 0 0 0 .708.708L8 8.707l2.646 2.647a.5.5 0 0 0 .708-.708L8.707 8l2.647-2.646a.5.5 0 0 0-.708-.708L8 7.293z" />
-                                        </svg>
-                                    </a>
+                                    <h6 class="mb-0" style="line-height: 1;">@skill.Name</h6>
+                                    <!-- Ta-bortknapp -->
+                                    <form asp-action="DeleteSkill" asp-controller="Profile" method="post">
+                                        <input type="hidden" name="id" value="@skill.Id" />
+                                        <button type="submit" class="btn btn-danger">X</button>
+                                    </form>
                                 </li>
                             }
                         </ul>
@@ -49,6 +48,5 @@
             </div>
         </div>
     </div>
-    <script src="~/js/Skill.js"></script>
 </body>
 </html>
