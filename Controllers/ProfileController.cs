@@ -159,10 +159,6 @@ namespace MittClick.Controllers
 
             var userProfile = dbContext.Profiles
                 .Include(p => p.User)
-                .Include(p => p.ContactInfos)
-                //.Include(p => p.Skills)
-                .Include(p => p.Educations)
-                .Include(p => p.WorkExperiences)
                 .FirstOrDefault(p => p.UserId == currentUser.Id);
 
             if (userProfile != null)
@@ -173,11 +169,7 @@ namespace MittClick.Controllers
                     FirstName = userProfile.FirstName,
                     LastName = userProfile.LastName,
                     PrivateProfile = userProfile.PrivateProfile,
-                    Information = userProfile.Information,
-                    ContactInfos = userProfile.ContactInfos.Select(ci => new ContactInfo { Type = ci.Type, Info = ci.Info }).ToList(),
-                    Skills = userProfile.Skills.Select(s => new Skill { Name = s.Name }).ToList(),
-                    Educations = userProfile.Educations.Select(e => new Education { School = e.School, Type = e.Type, From = e.From, To = e.To }).ToList(),
-                    WorkExperiences = userProfile.WorkExperiences.Select(we => new WorkExperience { Workplace = we.Workplace, Role = we.Role, From = we.From, To = we.To }).ToList()
+                    Information = userProfile.Information
                 };
 
 
@@ -202,10 +194,6 @@ namespace MittClick.Controllers
 
                     var userProfile = dbContext.Profiles
                         .Include(p => p.User)
-                        .Include(p => p.ContactInfos)
-                        //.Include(p => p.Skills)
-                        .Include(p => p.Educations)
-                        .Include(p => p.WorkExperiences)
                         .FirstOrDefault(p => p.UserId == currentUser.Id);
 
                     if (userProfile != null)
@@ -228,16 +216,8 @@ namespace MittClick.Controllers
 
                             userProfile.ProfileImage = image.Data;
                         }
-                        //UpdateContactInfos(userProfile, editProfileViewModel.ContactInfos);
-                        //UpdateSkills(userProfile, editProfileViewModel.Skills);
-                        //UpdateEducations(userProfile, editProfileViewModel.Educations);
-                        //UpdateWorkExperiences(userProfile, editProfileViewModel.WorkExperiences);
 
                         dbContext.SaveChanges();
-                        ViewBag.ContactInfos = userProfile.ContactInfos;
-                        ViewBag.Skills = userProfile.Skills;
-                        ViewBag.Educations = userProfile.Educations;
-                        ViewBag.WorkExperiences = userProfile.WorkExperiences;
                         return RedirectToAction("Profile", "Profile", new { userId = currentUser.Id });
                     }
                     else

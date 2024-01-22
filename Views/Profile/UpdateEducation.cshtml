@@ -42,7 +42,7 @@
 
                             <select asp-for="To" class="form-select">
                                     <option selected>Till</option>
-									<option value="">Pågående</option>  <!-- Blir NULL i databasen eftersom value är tom-->
+									<option value="">Pågående</option>  <!-- Blir NULL i databasen eftersom value är tom, ändrar detta till "pågående" i profilen sen-->
 									@for (int year = DateTime.Now.Year; year >= 1900; year--)
 									{
 										<option value="@year">@year</option>
@@ -87,7 +87,6 @@
                                     <div class="col d-flex justify-content-end">
 
                                         <form asp-action="DeleteEducation" asp-controller="Profile" method="post">
-                                            @Html.HiddenFor(model => education.Id)
                                             <input type="hidden" name="id" value="@education.Id" />
                                             <button type="submit" class="btn btn-danger">Ta bort</button>
                                         </form>

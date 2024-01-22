@@ -8,9 +8,11 @@
 
 <div class="container mt-4">
     <div class="row">
+
         <!-- Vänster kolumn för profilbild och färdigheter -->
         <div class="col-md-3">
-            <div class="card mb-3 shadow">
+            <div class="card mb-3">
+
                 <!-- Profilbild -->
                 @if (Model.ProfileImage != null)
                 {
@@ -22,16 +24,18 @@
                 {
                     <img class="img rounded-circle m-5" style="aspect-ratio: 1/1; object-fit: cover;" src="~/lib/image/defaultprofileimg.jpg" alt="Default Profile Image">
                 }
+
                 <!-- Profilinformation -->
                 <div class="card-body">
                     <h2 class="card-title">@Model.FirstName @Model.LastName</h2>
                     <p style="color: gray;">@Model.UserName</p>
                     <p class="card-text">@Model.Information</p>
+
                     <!-- Redigera profilknapp -->
                     <div class="text-center">
                         @if (currentUserName == Model.UserName)
                         {
-                            <a asp-action="Edit" asp-controller="Profile" class="btn btn-gray shadow mt-3 mb-3">Redigera profiluppgifter</a>
+                            <a asp-action="Edit" asp-controller="Profile" class="btn btn-outline-secondary shadow mt-3 mb-3">Redigera profiluppgifter</a>
                         }
                         @if (currentUserName != Model.UserName || !User.Identity.IsAuthenticated)
                         {
@@ -53,6 +57,7 @@
                     </div>
                 </div>
             </div>
+
             <!-- Skills -->
             <div class="card mb-3">
                 <div class="card-header d-flex justify-content-between align-items-center">
@@ -93,13 +98,14 @@
                     }
                 </div>
                 <div class="card-body">
-                    <dl class="row">
+                    <ul class="list-group list-group-flush">
                         @foreach (var contactInfo in Model.ContactInfos)
                         {
-                            <dt class="col-sm-3">@contactInfo.Type:</dt>
-                            <dd class="col-sm-9">@contactInfo.Info</dd>
+                            <li class="list-group-item">
+								<p><strong>@contactInfo.Type</strong> - @contactInfo.Info</p>
+                            </li>
                         }
-                    </dl>
+                    </ul>
                 </div>
             </div>
 
