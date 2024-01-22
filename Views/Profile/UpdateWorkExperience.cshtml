@@ -34,7 +34,7 @@
                                         <option value="@year">@year</option>
                                     }
                                 </select>
-
+                                
                                 <span class="input-group-text"> - </span>
 
                                 <select asp-for="To" class="form-select">
@@ -44,8 +44,10 @@
                                     {
                                         <option value="@year">@year</option>
                                     }
-                                </select>
-                            </div>
+								</select>
+
+							</div>
+                            <span asp-validation-for="To" class="text-danger"></span>
                             <div class="mt-3 d-flex justify-content-end">
                                 <button type="submit" class="btn btn-primary">Lägg till</button>
                             </div>
