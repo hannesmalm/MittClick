@@ -64,13 +64,13 @@
                                         </div>
                                         <div class="col d-flex justify-content-end">
 
-                                            @if (workExperience.To != 0)
+                                            @if (workExperience.To != null)
                                             {
                                                 <p>@workExperience.From - @workExperience.To</p>
                                             }
                                             else
                                             {
-                                                <p>@workExperience.From - pågående</p>
+                                                <p>@workExperience.From - Pågående</p>
                                             }
 
                                         </div>
