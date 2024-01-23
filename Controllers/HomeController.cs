@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MittClick.Models;
+using MittClick.Models.ViewModels;
 using System.Diagnostics;
 using System.Security.Claims;
 

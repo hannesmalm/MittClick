@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace MittClick.Models
+namespace MittClick.Models.ViewModels
 {
     public class ImageUploadViewModel
     {

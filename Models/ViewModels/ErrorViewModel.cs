@@ -1,4 +1,4 @@
-namespace MittClick.Models
+namespace MittClick.Models.ViewModels
 {
     public class ErrorViewModel
     {

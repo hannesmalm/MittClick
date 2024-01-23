@@ -1,13 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
 
-namespace MittClick.Models
+namespace MittClick.Models.ViewModels
 {
 
     public class RegisterViewModel
     {
         [Required(ErrorMessage = "Välj ett användarnamn.")]
-        public String UserName { get; set; }
+        public string UserName { get; set; }
 
         [Required(ErrorMessage = "Välj ett lösenord.")]
         [DataType(DataType.Password)]

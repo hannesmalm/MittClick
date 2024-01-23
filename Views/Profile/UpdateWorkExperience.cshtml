@@ -1,0 +1,120 @@
+﻿@using System.Security.Claims
+@model MittClick.Models.ViewModels.UpdateWorkExperienceViewModel
+<!DOCTYPE html>
+<html>
+<head>
+    <title>EditWorkExperience</title>
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-9 col-lg-6">
+                <div class="card">
+                    
+                    @{
+                        var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                    }
+                    <div class="card-header">
+                        <div class="row d-flex justify-content-between">
+                            <div class="col col-2">
+                                <a href="@Url.Action("Profile", "Profile", new { userId = currentUserId })" class="btn btn-outline-secondary mb-2">Tillbaka</a>
+                            </div>
+                            <div class="col col-8 text-center">
+                                <h4>Uppdatera erfarenheter</h4>
+                            </div>
+                            <div class="col col-2">
+                                <!-- låt vara, balanserar spacet i headern mot knappen -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+                        <form asp-action="AddWorkExperience" asp-controller="Profile" method="post">
+                        
+                            <div class="form-floating mt-3">
+                                <input asp-for="Workplace" class="form-control" placeholder="Arbetsgivare" required>
+                                <label asp-for="Workplace" class="form-label">Arbetsgivare</label>
+                            </div>
+                            <div class="form-floating mt-3">
+                                <input asp-for="Role" class="form-control" placeholder="Arbetsroll" required>
+                                <label asp-for="Role" class="form-label">Arbetsroll</label>
+                            </div>
+                        
+                            <div class="input-group mt-3">
+                                <select asp-for="From" class="form-select" required>
+                                    <option value="" selected>Från</option>
+                                    @for (int year = DateTime.Now.Year; year >= 1900; year--)
+                                    {
+                                        <option value="@year">@year</option>
+                                    }
+                                </select>
+                                
+                                <span class="input-group-text"> - </span>
+
+                                <select asp-for="To" class="form-select">
+                                    <option selected>Till</option>
+                                    <option value="">Pågående</option>  <!-- Blir NULL i databasen eftersom value är tom-->
+                                    @for (int year = DateTime.Now.Year; year >= 1900; year--)
+                                    {
+                                        <option value="@year">@year</option>
+                                    }
+								</select>
+
+							</div>
+                            <span asp-validation-for="To" class="text-warning"></span>
+                            <div class="mt-3 d-flex justify-content-end">
+                                <button type="submit" class="btn btn-success">Lägg till</button>
+                            </div>
+						</form>
+                        <ul class="list-group list-group-flush">
+                            @foreach (var workExperience in Model.WorkExperiences)
+                            {
+                                <li class="list-group-item list-group-item">
+                                    <div class="row">
+                                        <div class="col">
+
+                                            <p><strong>@workExperience.Workplace</strong></p>
+
+                                        </div>
+                                        <div class="col d-flex justify-content-end">
+
+                                            @if (workExperience.To == 0 || workExperience.To == null)
+                                            {
+                                                <p>@workExperience.From - pågående</p>
+                                            }
+                                            else
+                                            {
+                                                
+                                                <p>@workExperience.From - @workExperience.To</p>
+                                            }
+
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col">
+
+                                            <p>@workExperience.Role</p>
+
+                                        </div>
+                                        <div class="col d-flex justify-content-end">
+
+                                            <form asp-action="DeleteWorkExperience" asp-controller="Profile" method="post">
+                                                @Html.HiddenFor(model => workExperience.Id)
+                                                <input type="hidden" name="id" value="@workExperience.Id" />
+                                                <button type="submit" class="btn btn-danger">X</button>
+                                            </form>
+
+                                        </div>
+                                    </div>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+</body>
+</html>

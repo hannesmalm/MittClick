@@ -1,0 +1,118 @@
+﻿@model MittClick.Models.ViewModels.UpdateEducationViewModel
+@using System.Security.Claims
+
+@{
+
+    var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-9 col-lg-6">
+
+            <div class="card">
+                
+                <div class="card-header">
+                    <div class="row d-flex justify-content-between">
+                        <div class="col col-2">
+                            <a href="@Url.Action("Profile", "Profile", new { userId = currentUserId })" class="btn btn-outline-secondary mb-2">Tillbaka</a>
+                        </div>
+                        <div class="col col-8 text-center">
+                            <h4>Uppdatera utbildning</h4>
+                        </div>
+                        <div class="col col-2">
+                            <!-- låt vara, balanserar spacet i headern mot knappen -->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-body">
+
+                    <form method="post" asp-action="AddEducation" asp-controller="Profile" onsubmit="return validateForm()">
+
+                        <div class="form-floating mt-3">
+                            <input type="text" asp-for="School" id="school" class="form-control" placeholder="namnet på skola eller Universitet" required/>
+                            <label for="school" class="form-label">Skola/Universitet</label>
+                        </div>
+
+                        <div class="form-floating mt-3">
+                            <input type="text" asp-for="Type" id="type" class="form-control" placeholder="Typ av utbildning" required/>
+                            <label for="type" class="form-label">Typ av utbildning</label>
+                        </div>
+
+                        <div class="input-group mt-3">
+                            <select asp-for="From" class="form-select" required>
+                                    <option value="" selected>Från</option>
+									@for (int year = DateTime.Now.Year; year >= 1900; year--)
+									{
+										<option value="@year">@year</option>
+									}
+								</select>
+
+                            <span class="input-group-text"> - </span>
+
+                            <select asp-for="To" class="form-select">
+                                    <option selected>Till</option>
+									<option value="">Pågående</option>  <!-- Blir NULL i databasen eftersom value är tom, ändrar detta till "pågående" i profilen sen-->
+									@for (int year = DateTime.Now.Year; year >= 1900; year--)
+									{
+										<option value="@year">@year</option>
+									}
+								</select>
+                        </div>
+
+                        <!--Varningstext om dublett-->
+                        <span asp-validation-for="From" class="text-warning"></span>
+
+                        <div class="mt-3 d-flex justify-content-end">
+							<button type="submit" class="btn btn-primary">Lägg till</button>
+                        </div>
+                    </form>
+
+                    <ul class="list-group list-group-flush mt-3">
+                    @foreach (var education in Model.Educations)
+                    {
+                        <li class="list-group-item">
+                            <div class="row">
+                                <div class="col">
+
+                                        <p><strong>@education.School</strong></p>
+
+                                </div>
+                                <div class="col d-flex justify-content-end">
+                                   
+                                    @if (education.To == 0 || education.To == null)
+                                    {
+                                       <p>@education.From - pågående</p>
+                                    }
+                                    else
+                                    {  
+                                        <p>@education.From - @education.To</p>
+                                    }
+
+                                </div>
+                            </div>
+                                <div class="row">
+                                    <div class="col">
+
+                                        <p>@education.Type</p>
+
+                                    </div>
+                                    <div class="col d-flex justify-content-end">
+
+                                        <form asp-action="DeleteEducation" asp-controller="Profile" method="post">
+                                            <input type="hidden" name="id" value="@education.Id" />
+                                            <button type="submit" class="btn btn-danger">Ta bort</button>
+                                        </form>
+
+                                    </div>
+                                </div>
+                        </li>
+                    }
+					</ul>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

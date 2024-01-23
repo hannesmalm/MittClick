@@ -29,6 +29,11 @@
                                             </svg> Markera som läst
                                         </a>
                                     }
+                                    
+                                    @if (message.SenderId != null)
+                                    {
+                                        <a href="@Url.Action("Send", "Message", new { receiverId = @message.SenderId })" class="btn btn-success mt-2">Svara</a>
+                                    }
                                 </div>
                             </div>
                         </div>

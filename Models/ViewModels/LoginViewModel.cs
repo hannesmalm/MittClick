@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
 
-namespace MittClick.Models
+namespace MittClick.Models.ViewModels
 {
     public class LoginViewModel
     {

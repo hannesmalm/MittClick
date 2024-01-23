@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace MittClick.Models
+namespace MittClick.Models.ViewModels
 {
     public class CreateProfileViewModel
     {
@@ -22,11 +22,11 @@ namespace MittClick.Models
 
         public IFormFile? ProfileImage { get; set; }
 
-		public virtual ICollection<Education>? Educations { get; set; }
+        public virtual ICollection<Education>? Educations { get; set; }
 
-		public virtual ICollection<WorkExperience>? WorkExperiences { get; set; }
+        public virtual ICollection<WorkExperience>? WorkExperiences { get; set; }
 
-		public virtual ICollection<Skill>? Skills { get; set; }
+        public virtual ICollection<Skill>? Skills { get; set; }
 
         public virtual ICollection<ContactInfo>? ContactInfos { get; set; }
     }

@@ -2,7 +2,7 @@
 
 namespace MittClick.Models
 {
-    public class Skill
+    public partial class Skill
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }

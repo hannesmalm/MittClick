@@ -1,0 +1,67 @@
+﻿@using System.Security.Claims
+@model MittClick.Models.ViewModels.UpdateSkillViewModel
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>EditSkill</title>
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+
+<body>
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-9 col-lg-6">
+                <div class="card">
+                    
+                    @{
+                        var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                    }
+                    <div class="card-header">
+                        <div class="row d-flex justify-content-between">
+                            <div class="col col-2">
+                                <a href="@Url.Action("Profile", "Profile", new { userId = currentUserId })" class="btn btn-outline-secondary mb-2">Tillbaka</a>
+                            </div>
+                            <div class="col col-8 text-center">
+                                <h4>Uppdatera färdigheter</h4>
+                            </div>
+                            <div class="col col-2">
+                                <!-- låt vara, balanserar spacet i headern mot knappen -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+
+                        <div class="text-center" id="newSkillContainer">
+                            <form method="post" asp-action="AddSkill" asp-controller="Profile" onsubmit="return validateForm()" class="row g-2 align-items-center justify-content-center mb-3" id="skillForm">
+                                <div class="col-md-6">
+                                    <div class="input-group mb-3 mt-2">
+                                        <input asp-for="Name" type="text" class="form-control" placeholder="Ny färdighet" id="name" required>
+                                        <button class="btn btn-success" type="submit">Lägg till</button>
+                                    </div>
+                                    <span asp-validation-for="Name" class="text-warning"></span>
+                                </div>
+                            </form>
+                        </div>
+
+                        <ul class="list-group list-group-flush">
+                            @foreach (var skill in Model.Skills)
+                            {
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <h6 class="mb-0" style="line-height: 1;">@skill.Name</h6>
+                                    <!-- Ta-bortknapp -->
+                                    <form asp-action="DeleteSkill" asp-controller="Profile" method="post">
+                                        <input type="hidden" name="id" value="@skill.Id" />
+                                        <button type="submit" class="btn btn-danger">X</button>
+                                    </form>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

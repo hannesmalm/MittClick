@@ -1,8 +1,47 @@
 ﻿@model List<Project>
 
+<div class="card-body d-flex flex-wrap justify-content-center">
+    <div class="container">
+        <div class="row">
+            @if (!Model.Any())
+            {
+                <h2>Inga projekt registrerade</h2>
+                <a asp-action="Add" asp-controller="Project">Du kan skapa det första här</a>
+            }
+            <!-- Loopa igenom projektkort -->
+            @foreach (var project in Model)
+            {
+                <div class="col-md-4 col-sm-6">
+                    <div class="card shadow">
+                        @if (project.ProjectImage != null)
+                        {
+                            var imageBase64 = Convert.ToBase64String(project.ProjectImage);
+                            var imageSrc = $"data:image/png;base64,{imageBase64}";
+                            <img class="card-img-top" src="@imageSrc" alt="Project Image">
+                        }
+                        <div class="card-body overflow-hidden">
+                            <h5 class="card-title text-center">@project.Title</h5>
+                            <p class="card-text">@project.Summary</p>
+                            <div class="d-flex justify-content-center">
+                                
+                            </div>
+                        </div>
+                        <div class="card-footer mb-2 bg-transparent text-center" style="border: none;">
+                            <form asp-controller="Project" asp-action="Project" method="get">
+                                <input type="hidden" name="projectId" value="@project.ProjectId" />
+                                <button type="submit" class="btn btn-primary">Läs Mer</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+
 <style>
     .card {
-        
         height: 400px;
         /* Justera andra egenskaper efter behov för att ge en enhetlig storlek för korten */
         margin-bottom: 20px; /* Tillämpa marginal för att separera korten */
@@ -15,35 +54,3 @@
     }
 
 </style>
-
-<div class="card-body d-flex flex-wrap justify-content-center">
-    <div class="container">
-        <div class="row">
-
-            <!-- Loopa igenom projekt -->
-            @foreach (var project in Model)
-            {
-                <div class="col-md-4 col-sm-6">
-                    <div class="card">
-                        @if (project.ProjectImage != null)
-                        {
-                            var imageBase64 = Convert.ToBase64String(project.ProjectImage);
-                            var imageSrc = $"data:image/png;base64,{imageBase64}";
-                            <img class="card-img-top" src="@imageSrc" alt="Project Image">
-                        }
-                        <div class="card-body">
-                            <h5 class="card-title text-center">@project.Title</h5>
-                            <p class="card-text">@project.Summary</p>
-                            <div class="d-flex justify-content-center">
-                                <form asp-controller="Project" asp-action="Project" method="get">
-                                    <input type="hidden" name="projectId" value="@project.ProjectId" />
-                                    <button type="submit" class="btn btn-primary">Läs Mer</button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            }
-        </div>
-    </div>
-</div>

@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace MittClick.Models
+namespace MittClick.Models.ViewModels
 {
     public class AddProjectViewModel
     {

@@ -1,4 +1,4 @@
-﻿@model RegisterViewModel
+﻿@model MittClick.Models.ViewModels.RegisterViewModel
 
 <body>
 	<div class="container mt-5">
@@ -22,6 +22,9 @@
 								<input type="text" asp-for="Password" id="password" type="password" class="form-control" placeholder="Input password here" />
 									<label for="password" class="form-label">Välj lösenord</label>
 									<span asp-validation-for="Password" class="text-danger"></span>
+								<!-- By default, Identity requires that passwords contain an uppercase character,
+								lowercase character, a digit, and a non-alphanumeric character. Passwords must be
+								at least six characters long. -->
 								</div>
 
 							<div class="form-floating mt-2">

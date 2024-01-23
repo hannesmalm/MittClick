@@ -16,31 +16,41 @@
     </div>
 
     <script>
-        $(document).ready(function () {
-            onPageLoad();
-        });
+
+        document.addEventListener('DOMContentLoaded', onPageLoad);
 
         function onPageLoad() {
-            searchProfiles();
+            searchProfiles(); // Denna funktion anropas när sidan laddas
         }
 
         function searchProfiles() {
-            var searchValue = $('#searchBox').val();
-            $.ajax({
-                url: searchValue ? '@Url.Action("SearchProfiles", "Search")' : '@Url.Action("SearchEmpty", "Search")',
-                type: 'GET',
-                data: { searchTerm: searchValue },
-                success: function (data) {
+            var searchBox = document.getElementById('searchBox');
+            var searchValue = searchBox.value;
+            var url = searchValue ? '@Url.Action("SearchProfiles", "Search")' : '@Url.Action("SearchEmpty", "Search")';
+            url += `?searchTerm=${encodeURIComponent(searchValue)}`;
+
+            fetch(url, {
+                method: 'GET'
+            })
+                .then(response => response.text())
+                .then(data => {
+                    var profilesList = document.getElementById('profilesList');
                     if (data) {
-                        $('#profilesList').html(data);
+                        profilesList.innerHTML = data; // Uppdaterar innehållet baserat på serverns svar
                     } else {
-                        $('#profilesList').empty();
+                        profilesList.innerHTML = 'Inga profiler hittades.';
                     }
-                }
-            });
+                })
+                .catch(error => console.error('Error:', error));
         }
+
+        var searchBox = document.getElementById('searchBox');
+        searchBox.addEventListener('keyup', searchProfiles);
+
     </script>
 
     <div id="profilesList">
-		@Html.Partial("SearchProfile", Model)
+        @Html.Partial("SearchProfile", Model)
     </div>
+
+</div>
