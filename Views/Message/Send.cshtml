@@ -13,24 +13,31 @@
                     <form asp-action="Send" asp-controller="Message" method="post" enctype="multipart/form-data">
 
                         <input type="hidden" asp-for="ReceiverId" value="@Model.ReceiverId" />
+  
+                        <input type="hidden" asp-for="ReceiverName" value="@Model.ReceiverName" />
+                        
+                        <div class="form-floating mt-2">
+							<p id="receiver" class="form-control-static"><strong>Till:</strong> @Model.ReceiverName</p>
+                        </div>
 
-                        <div class="form-floating">
+                        <div class="form-floating mt-2">
+                            <textarea asp-for="Text" class="form-control" placeholder="Meddelande" style="resize: none;height: 200px;"></textarea>
+                            <label for="Text" class="form-label">Meddelande</label>
+                            <span asp-validation-for="Text" class="text-danger"></span>
+                        </div>
+
+                        @if (!User.Identity.IsAuthenticated)
+                        {
+                           <div class="form-floating mt-2">
                             <input type="text" asp-for="SenderName" id="Sender" class="form-control" placeholder="Avsändare" />
                             <label for="Sender" class="form-label">Avsändare</label>
                             <span asp-validation-for="SenderName" class="text-danger"></span>
-                        </div>
-
-                        <div class="form-floating mt-2">
-                            <input type="text" asp-for="ReceiverName" id="Receiver" class="form-control" placeholder="Mottagare" />
-                            <label for="receiver" class="form-label">Mottagare</label>
-                            <span asp-validation-for="ReceiverName" class="text-danger"></span>
-                        </div>
-
-                        <div class="form-floating mt-2">
-                            <textarea asp-for="Text" class="form-control" placeholder="Meddelande" style="resize: none;height: 150px;"></textarea>
-                            <label asp-for="Text" class="form-label">Meddelande</label>
-                            <span asp-validation-for="Text" class="text-danger"></span>
-                        </div>
+                            </div>
+                        }
+                        else
+                        {
+                            @Html.HiddenFor(model => model.SenderName)
+                        }
 
                         <div class="form-group text-center ">
                             <button type="submit" class="btn btn-primary btn-block mt-2">Skicka</button>

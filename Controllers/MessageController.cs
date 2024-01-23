@@ -60,22 +60,29 @@ namespace MittClick.Controllers
         [HttpPost]
         public IActionResult Send(SendMessageViewModel sendMessageViewModel)
         {
-            string? senderId = userManager.GetUserId(User);
-            string senderName = sendMessageViewModel.SenderName;
-            string receiverId = sendMessageViewModel.ReceiverId;
-            string receiverName = sendMessageViewModel.ReceiverName;
-            string text = sendMessageViewModel.Text;
-
-            if (senderId != null)
+            if (ModelState.IsValid)
             {
-                Create(senderId, senderName, receiverId, receiverName, text);
+                string? senderId = userManager.GetUserId(User);
+                string senderName = sendMessageViewModel.SenderName;
+                string receiverId = sendMessageViewModel.ReceiverId;
+                string receiverName = sendMessageViewModel.ReceiverName;
+                string text = sendMessageViewModel.Text;
+
+                if (senderId != null)
+                {
+                    Create(senderId, senderName, receiverId, receiverName, text);
+                }
+                else
+                {
+                    Create(null, senderName, receiverId, receiverName, text);
+                }
+
+                return RedirectToAction("Index", "Home");
             }
             else
             {
-                Create(null, senderName, receiverId, receiverName, text);
-            }
-
-            return RedirectToAction("Index", "Home");
+                return View(sendMessageViewModel);
+            }  
         }
 
         private Models.Message Create(string? senderId, string senderName, string receiverId, string receiverName, string text)
