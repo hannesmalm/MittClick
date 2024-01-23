@@ -79,7 +79,7 @@
 				<div class="card-body">
 					@foreach (var skill in Model.Skills)
 					{
-						<span class="badge bg-secondary">@skill.Name</span>
+						<span class="badge bg-secondary mb-1" style="font-size: 13px;">@skill.Name</span>
 					}
 				</div>
 			</div>
@@ -231,7 +231,7 @@
 							<!--Loopa igenom projekt-->
 							@foreach (var project in Model.UserProjects)
 							{
-								<div class="col-md-4 col-sm-6 mb-2">
+								<div class="col-md-4 col-sm-6 mb-3">
 									<div class="card shadow" style="height: 350px;">
 										@if (project.ProjectImage != null)
 										{
