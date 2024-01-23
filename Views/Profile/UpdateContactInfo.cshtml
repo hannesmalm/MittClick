@@ -1,12 +1,27 @@
-﻿@model MittClick.Models.ViewModels.UpdateContactInfoViewModel
+﻿@using System.Security.Claims
+@model MittClick.Models.ViewModels.UpdateContactInfoViewModel
 
 <body>
     <div class="container mt-5">
         <div class="row justify-content-center">
             <div class="col-md-9 col-lg-6">
                 <div class="card">
-                    <div class="card-header text-center">
-                        <h4>Redigera kontaktuppgifter</h4>
+                    
+                    @{
+                        var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                    }
+                    <div class="card-header">
+                        <div class="row d-flex justify-content-between">
+                            <div class="col col-2">
+                                <a href="@Url.Action("Profile", "Profile", new { userId = currentUserId })" class="btn btn-outline-secondary mb-2">Tillbaka</a>
+                            </div>
+                            <div class="col col-8 text-center">
+                                <h4>Uppdatera Kontaktinfo</h4>
+                            </div>
+                            <div class="col col-2">
+                                <!-- låt vara, balanserar spacet i headern mot knappen -->
+                            </div>
+                        </div>
                     </div>
 
                     <div class="card-body">
