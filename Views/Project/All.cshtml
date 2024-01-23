@@ -19,15 +19,18 @@
                             var imageSrc = $"data:image/png;base64,{imageBase64}";
                             <img class="card-img-top" src="@imageSrc" alt="Project Image">
                         }
-                        <div class="card-body">
+                        <div class="card-body overflow-hidden">
                             <h5 class="card-title text-center">@project.Title</h5>
                             <p class="card-text">@project.Summary</p>
                             <div class="d-flex justify-content-center">
-                                <form asp-controller="Project" asp-action="Project" method="get">
-                                    <input type="hidden" name="projectId" value="@project.ProjectId" />
-                                    <button type="submit" class="btn btn-primary">Läs Mer</button>
-                                </form>
+                                
                             </div>
+                        </div>
+                        <div class="card-footer mb-2 bg-transparent text-center" style="border: none;">
+                            <form asp-controller="Project" asp-action="Project" method="get">
+                                <input type="hidden" name="projectId" value="@project.ProjectId" />
+                                <button type="submit" class="btn btn-primary">Läs Mer</button>
+                            </form>
                         </div>
                     </div>
                 </div>
