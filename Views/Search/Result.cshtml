@@ -16,11 +16,12 @@
     </div>
 
     <script>
+
         document.addEventListener('DOMContentLoaded', onPageLoad);
 
-        // function onPageLoad() {
-        //     searchProfiles();
-        // }
+        function onPageLoad() {
+            searchProfiles(); // Denna funktion anropas när sidan laddas
+        }
 
         function searchProfiles() {
             var searchBox = document.getElementById('searchBox');
@@ -35,19 +36,21 @@
                 .then(data => {
                     var profilesList = document.getElementById('profilesList');
                     if (data) {
-                        profilesList.innerHTML = data;
+                        profilesList.innerHTML = data; // Uppdaterar innehållet baserat på serverns svar
                     } else {
-                        profilesList.innerHTML = '';
+                        profilesList.innerHTML = 'Inga profiler hittades.';
                     }
                 })
                 .catch(error => console.error('Error:', error));
         }
 
-        // Attach event listener to searchBox for keyup event
         var searchBox = document.getElementById('searchBox');
         searchBox.addEventListener('keyup', searchProfiles);
+
     </script>
 
     <div id="profilesList">
-		@Html.Partial("SearchProfile", Model)
+        @Html.Partial("SearchProfile", Model)
     </div>
+
+</div>
