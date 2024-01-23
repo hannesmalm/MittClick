@@ -28,7 +28,7 @@
 
                         <div class="form-group">
                             <label asp-for="Description">Beskrivning</label>
-                            <textarea asp-for="Description" class="form-control auto-expand" style="resize: none"></textarea>
+                            <textarea asp-for="Description" class="form-control" id="description" placeholder="Beskrivning" required style="resize: none; height: 200px;"></textarea>
                             <span asp-validation-for="Description" class="text-danger"></span>
                         </div>
 
